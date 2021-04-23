@@ -16,7 +16,7 @@ public:
    Shape  shape;
    Tile(Shape shape, Colour colour);
    void printTile();
-   std::string getTile();
+   std::string toString();
 };
 
 #endif // ASSIGN2_TILE_H

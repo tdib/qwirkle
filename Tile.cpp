@@ -13,7 +13,7 @@ void Tile::printTile()
    std::cout << this->colour << this->shape;
 }
 
-std::string Tile::getTile()
+std::string Tile::toString()
 {
    return this->colour + std::to_string(this->shape);
 }

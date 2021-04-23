@@ -10,6 +10,10 @@ Bag::Bag(std::string bagInfo)
 
 }
 
+void initialiseTiles()
+{
+   
+}
 
 Tile* Bag::popTile()
 {

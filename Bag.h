@@ -13,6 +13,7 @@ class Bag
       Tile* popTile();
       void pushTile(Tile* tile);
       void scrambleTiles(std::vector<Tile*>* tilesToScramble);
+      void initialiseTiles();
 
    private:
       LinkedList* tiles;

@@ -134,8 +134,7 @@ std::string LinkedList::getContents()
       {
          contents += ',';
       }
-      contents += currentNode->tile->colour;
-      contents += std::to_string(currentNode->tile->shape);
+      contents += currentNode->tile->toString();
       currentNode = currentNode->next;
    }
 
