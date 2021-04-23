@@ -36,6 +36,12 @@ int main(void) {
          std::string player1Name=" ";
          std::string player2Name=" ";
 
+         // Create a game and create the players
+
+         // Game* game = new Game();
+         // Player* player1 = new Player();
+         // Player* player2 = new Player();
+
          while(!isValidName(player1Name)&&!std::cin.eof())
          {
          std::cout << 
@@ -43,6 +49,7 @@ int main(void) {
             << std::endl;
          std::cout << "> ";
          std::getline(std::cin, player1Name);
+         // player1->setName(player1Name);
          }
 
          while(!isValidName(player2Name)&&!std::cin.eof())
@@ -52,9 +59,13 @@ int main(void) {
             << std::endl;
          std::cout << "> ";
          std::getline(std::cin, player2Name);
+         // player2->setName(player2Name);
          }
 
          std::cout << "Let's Play!" << std::endl;
+         // game->playGame();
+         // delete game;
+
       }
       if(input=="2")
       {
@@ -99,6 +110,9 @@ int main(void) {
 
    }
 
+   std::cout << std::endl;
+   std::cout << "--- TESTING ---" << std::endl;
+
    std::cout << "Test - Reading from tiles.txt" << std::endl;
    Game* game = new Game();
 
@@ -114,32 +128,7 @@ int main(void) {
    // Where do I put this game input loop in Game.cpp :(
    // Should it be here? In qwirkle.cpp?
    std::cout << "Test - Game Input Loop" << std::endl;
-
-   bool validInput = false;
-   std::string input;
-
-   while (!std::cin.eof() && validInput == false) {
-      
-      try {
-         std::cout << "> ";
-         std::cin >> input;
-
-         // Need to check the input. For now, hard-coded with random inputs
-         if (input == "place") {
-            // TODO
-            validInput = true;
-         } else if (input == "quit") {
-            // TODO: quit the game, THEN quit the qwirkle program?
-            validInput = true;
-         } else {
-            throw std::invalid_argument("Invalid Input");
-         }
-         
-      } catch (std::exception& e) {
-         std::cout << e.what() << std::endl;
-      }
-   }
-
+   game->playGame();
    delete game;
 
    return EXIT_SUCCESS;
@@ -167,6 +156,7 @@ void printCredits()
    printStudent("Thomas Joseph Dib", "3838765");
    std::cout << "----------------------------------" << std::endl;
 }
+
 void printStudent(std::string name, std::string id)
 {
    std::cout << "Name: " << name << std::endl;
@@ -174,10 +164,12 @@ void printStudent(std::string name, std::string id)
    std::cout << "Email: s" << id << "@student.rmit.edu.au" << std::endl;
    std::cout << std::endl;
 }
+
 void printQuitMessage()
 {
    std::cout << "Goodbye" << std::endl;
 }
+
 // returns false if there is a lower case letter.
 bool isValidName(std::string name)
 {

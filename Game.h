@@ -11,10 +11,11 @@ class Game {
 public:
 
    Game();
-   Game(std::string* string);
+   Game(std::string* gameInfo);
    ~Game();
 
    // Public or else qwirkle.cpp can't use them
+   void playGame();
    void initialiseTiles();
    void loadTiles(std::string* string);
    void printState();
