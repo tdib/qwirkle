@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <string>
+#include <iostream>
 #include "Tile.h"
 #include "Board.h"
 #include "Bag.h"

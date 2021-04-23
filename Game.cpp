@@ -1,10 +1,4 @@
-#include <iostream>
-#include <string>
-#include <random>
-#include <fstream>
-
 #include "Game.h"
-#include "Tile.h"
 
 // Playing a fresh new game
 Game::Game() {

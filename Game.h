@@ -2,6 +2,10 @@
 #define ASSIGN2_GAME_H
 
 #include <string>
+#include <iostream>
+#include <random>
+#include <fstream>
+#include "Tile.h"
 
 class Game {
 public:

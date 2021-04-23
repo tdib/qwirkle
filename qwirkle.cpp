@@ -11,8 +11,6 @@ void printStudent(std::string name, std::string id);
 void printQuitMessage();
 bool isValidName(std::string name);
 
-#define EXIT_SUCCESS    0
-
 int main(void) {
 
    LinkedList* list = new LinkedList();
