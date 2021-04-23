@@ -1,7 +1,8 @@
-
 #include "LinkedList.h"
+#include "Game.h"
 
 #include <iostream>
+#include <exception>
 #include <string>
 
 void printMenu();
@@ -13,6 +14,7 @@ bool isValidName(std::string name);
 #define EXIT_SUCCESS    0
 
 int main(void) {
+
    LinkedList* list = new LinkedList();
    delete list;
 
@@ -99,7 +101,51 @@ int main(void) {
 
    }
 
+   std::cout << "Test - Reading from tiles.txt" << std::endl;
+   Game* game = new Game();
+
+   try {
+      game->initialiseTiles();
+   } catch (std::exception& e) {
+      return EXIT_FAILURE;
+   }
+
+   std::cout << "Test - Printing board state" << std::endl;
+   game->printState();
+   
+   // Where do I put this game input loop in Game.cpp :(
+   // Should it be here? In qwirkle.cpp?
+   std::cout << "Test - Game Input Loop" << std::endl;
+
+   bool validInput = false;
+   std::string input;
+
+   while (!std::cin.eof() && validInput == false) {
+      
+      try {
+         std::cout << "> ";
+         std::cin >> input;
+
+         // Need to check the input. For now, hard-coded with random inputs
+         if (input == "place") {
+            // TODO
+            validInput = true;
+         } else if (input == "quit") {
+            // TODO: quit the game, THEN quit the qwirkle program?
+            validInput = true;
+         } else {
+            throw std::invalid_argument("Invalid Input");
+         }
+         
+      } catch (std::exception& e) {
+         std::cout << e.what() << std::endl;
+      }
+   }
+
+   delete game;
+
    return EXIT_SUCCESS;
+
 }
 
 void printMenu()
