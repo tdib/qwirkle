@@ -9,8 +9,9 @@
 class Player
 {
    public:
-      Player(Bag* bag, Board* board);
+      Player();
       Player(std::string playerInfo);
+      Player::~Player();
       bool drawTile();
       bool placeTile(Tile* tile, std::string coordinate);
       bool swapTile();
@@ -20,6 +21,9 @@ class Player
       void setName(std::string newName);
       int getScore();
       std::string getHand();
+
+      void setBag(Bag* bag);
+      void setBoard(Board* board);
    
    private:
       std::string name;

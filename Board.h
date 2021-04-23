@@ -1,3 +1,6 @@
+#ifndef BOARD_H
+#define BOARD_H
+
 #include <string>
 #include "Tile.h"
 #include <vector>
@@ -13,3 +16,5 @@ class Board
 
       std::vector<std::vector<Tile*>> tilesOnBoard;
 };
+
+#endif // BOARD_H

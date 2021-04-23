@@ -2,11 +2,13 @@
 #include <string>
 #include <iostream>
 
-Player::Player(Bag* bag, Board* board)
+Player::Player():
+   bag(nullptr),
+   board(nullptr),
+   hand(new LinkedList()),
+   name(""),
+   score(0)
 {
-   this->bag = bag;
-   this->board = board;
-   this->score = 0;
 }
 
 Player::Player(std::string playerInfo)
@@ -15,12 +17,26 @@ Player::Player(std::string playerInfo)
     * playeronename
     * playeronescore
     * playeronehand
-    * 
     */
 
    std::string newName = "";
    // this->setName(std::getline(playerInfo, newName));
 
+}
+
+Player::~Player()
+{
+   delete hand;
+}
+
+void Player::setBag(Bag* bag)
+{
+   this->bag = bag;
+}
+
+void Player::setBoard(Board* board)
+{
+   this->board = board;
 }
 
 bool Player::drawTile()
