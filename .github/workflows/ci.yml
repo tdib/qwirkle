@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  Lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Environment
+        run: clang-format-11 --version
+      - uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "2.x"
+          architecture: x64
+      - name: clang-format
+        run: curl -s https://raw.githubusercontent.com/Sarcasm/run-clang-format/39081c9c42768ab5e8321127a7494ad1647c6a2f/run-clang-format.py | python - --color always --clang-format-executable clang-format-11 -r .
