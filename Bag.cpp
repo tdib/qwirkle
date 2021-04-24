@@ -7,7 +7,9 @@ Bag::Bag()
 }
 
 Bag::Bag(std::string bagInfo)
+    : tiles(new LinkedList())
 {
+   // TODO: Parse bagInfo and generate tiles
 }
 
 Bag::~Bag()
@@ -24,6 +26,7 @@ void Bag::initialiseTiles()
 {
    Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
    Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
+
    // iterate through every tile for however many sets are defined
    int tileSets = 2;
    std::vector<Tile*> tempTiles;

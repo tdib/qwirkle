@@ -27,8 +27,8 @@ public:
    void printState();
    bool saveGame();
    void quit();
-   std::vector<std::string> splitString(std::string rawUserInput,
-                                        char delimiter);
+   std::vector<std::string> splitString(
+      std::string rawUserInput, char delimiter);
 
 private:
    // player as a vector

@@ -71,8 +71,8 @@ void Game::initalisePlayers()
       } // TODO: exception handling
 
       players.push_back(new Player());
-      std::transform(playerName.begin(), playerName.end(), playerName.begin(),
-                     ::toupper);
+      std::transform(
+         playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       players[i]->setName(playerName);
    }
 }
@@ -199,8 +199,8 @@ void Game::quit()
    // crash :)
 }
 
-std::vector<std::string> Game::splitString(std::string rawUserInput,
-                                           char delimiter)
+std::vector<std::string> Game::splitString(
+   std::string rawUserInput, char delimiter)
 { // change to return std:;string array
 
    // TODO

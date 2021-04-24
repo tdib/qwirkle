@@ -129,7 +129,6 @@ std::string LinkedList::getContents()
 {
    std::string contents = "";
 
-   // TODO: use a function instead of treating Tile as public
    Node* currentNode = head;
    while (currentNode != nullptr)
    {

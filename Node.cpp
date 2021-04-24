@@ -6,8 +6,3 @@ Node::Node(Tile* tile, Node* next)
 {
    // No further initialization needed
 }
-
-// Node::Node(Node& other)
-// {
-
-// }

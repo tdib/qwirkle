@@ -15,6 +15,7 @@ public:
    Tile* getTile(std::string tile);
    int calculateScore(Tile* placedTile);
 
+private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
 };
 
