@@ -3,26 +3,39 @@
 
 #include <string>
 #include <iostream>
-#include <random>
 #include <fstream>
+#include <sstream>
+#include <vector>
+#include <algorithm>
+
 #include "Tile.h"
+#include "Player.h"
+#include "Bag.h"
+#include "InputCodes.h"
 
 class Game {
 public:
 
    Game();
-   Game(std::string* gameInfo);
+   Game(std::string* fileName);
    ~Game();
 
    // Public or else qwirkle.cpp can't use them
    void playGame();
-   void initialiseTiles();
-   void loadTiles(std::string* string);
+   void initalisePlayers();
+   void loadTiles(std::string* tilesInfo);
    void printState();
    bool saveGame();
    void quit();
+   std::vector<std::string> splitString(std::string rawUserInput, char delimiter);
 
 private:
+
+   // player as a vector
+   
+   Board* board;
+   Bag* bag;
+   std::vector<Player*> players;
 
 };
 

@@ -3,7 +3,7 @@
 
 #define PLACE     "PLACE"
 #define REPLACE   "REPLACE"
-#define QUIT      "QUIT"
+#define QUITGAME  "QUIT"
 #define AT        "AT"
 #define SAVE      "SAVE"
 

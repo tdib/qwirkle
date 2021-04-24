@@ -17,11 +17,11 @@ void Board::printBoard()
 
 Tile* Board::getTile(std::string tile)
 {
-
+    return nullptr;
 }
 
 int Board::calculateScore(Tile* placedTile)
 {
-
+    return -1;
 }
 

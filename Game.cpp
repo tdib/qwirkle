@@ -4,83 +4,149 @@
 Game::Game() {
    // TODO
 
-   // initialiseTiles(); // ?
+   // initialising board
+   this->board = new Board();
+
+   // initialising bag
+   this->bag = new Bag();
+
+   // initialising players
+   initalisePlayers();
+
+   // Set board and bag for all players
+   for (Player* player : players) {
+      player->setBoard(this->board);
+      player->setBag(this->bag);
+
+      // Draw tile five/six(?) times (per player)
+
+   }
     
 }
 
 // Loading a saved game
-Game::Game(std::string* gameInfo) {
+Game::Game(std::string* fileName) {
    // TODO
+
 
 }
 
 Game::~Game(){
    // TODO
+   delete board;
+   delete bag;
+   for (Player* player : players) {
+      delete player;
+   }
+}
+
+void Game::initalisePlayers() {
+
+   // move the qwirkle asking player name code here
+   // M3: in the future, you'd ask for how many players and the vector would count for that many
+   
+
+
+   // get the names of the two players (std::cin)
+   // set their names
+   // for each player, set their board and bag ->
+
+   // will update later by asking for how many players want to play
+   int numPlayers = 2;
+
+   for (int i = 0; i < numPlayers; i++) {
+
+      bool validInput = false;
+      std::string playerName = "";
+
+      while (!validInput && !std::cin.eof()) {
+         std::cout << "Enter a name for player " << i + 1 << 
+            " (uppercase characters only, no spaces)" << std::endl;
+         std::cout << "> ";
+
+         std::getline(std::cin, playerName); // if we can, we would then check against isValidName()
+         validInput = true;
+      } // TODO: exception handling
+
+      players.push_back(new Player());
+      std::transform(playerName.begin(), playerName.end(), 
+            playerName.begin(), ::toupper);
+      players[i]->setName(playerName);
+      
+   }
+
 }
 
 void Game::playGame() {
 
-   bool validInput = false;
-   std::string input;
+   /**
+    * 
+    * executeTurn()
+    * Should take input from the user
+    * Depending on input, do the thing
+    * CHECK IF INPUT STARTS WITH PLACE/REPLACE/ETC
+    * 
+    * if place -> go to placeTile()
+    * check that it exists in the hand
+    * 
+    * 
+    * 
+    * if replace -> go to swapTile()
+    * check that it exists in the hand
+    * 
+    */
 
-   while (!std::cin.eof() && validInput == false) {
+
+   // 
+   // for (Player* player : players) {
+      // executeTurn();
+   // }
+
+   bool gameRunning = true;   
+
+   while (!std::cin.eof() && gameRunning == true) {
+
+      std::string input = "";
       
       try {
+         
          std::cout << "> ";
-         std::cin >> input;
+         getline(std::cin, input);
 
-         // Need to check the input. For now, hard-coded with random inputs
-         if (input == "place") {
-            // TODO
-            validInput = true;
-         } else if (input == "quit") {
-            // TODO: quit the game, THEN quit the qwirkle program?
-            validInput = true;
+         // uppercase before putting the words into the vector
+         std::transform(input.begin(), input.end(), input.begin(), ::toupper);
+         std::vector<std::string> rawUserInput = splitString(input, ' ');
+         std::string command = "";
+
+         if (rawUserInput.size() > 0) {
+            command = rawUserInput[0];
+         }  
+
+         if (command == PLACE) {
+            std::cout << "place" << std::endl;
+            // loop through hand, validate tile exists in hand and pick out the tile to place + placement coordinate
+            // placeTile();
+         } else if (command == REPLACE) {
+            std::cout << "replace" << std::endl;
+            // replaceTile();
+         } else if (command == QUITGAME) {
+            gameRunning = false;
          } else {
             throw std::invalid_argument("Invalid Input");
          }
-         
-      } catch (std::exception& e) {
+
+      } catch (std::invalid_argument& e) {
+         std::cout << e.what() << std::endl;
+      } catch (std::exception& e) { // Martin tasukete. catch all or specific ones?
          std::cout << e.what() << std::endl;
       }
+      
    }
 
 }
 
-void Game::initialiseTiles() {
-   // TODO
-
-   // should initialise the board too
-
-   try {
-
-      std::ifstream file("tiles.txt");
-      file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-      Colour readColour; // char
-      Shape readShape; // int
-
-      while (!file.eof()) {
-         file >> readColour;
-         file >> readShape;
-         std::cout << readColour << readShape << std::endl;
-
-         // Note: shuffle INSIDE of vector
-         // TODO: put tiles into the LinkedList Bag after it's implemented?
-
-      }
-
-      file.close();
-
-   } catch (std::exception& e) {
-      std::cout << "Error reading tiles.txt" << std::endl;
-      throw e;
-   }
-
-}
-
-void Game::loadTiles(std::string* string) {
-   // TODO
+void Game::loadTiles(std::string* tilesInfo) {
+   // TODO (for loading tiles in from a saved file)
 }
 
 void Game::printState() {
@@ -119,3 +185,18 @@ void Game::quit() {
    // TODO
    // crash :)
 }
+
+std::vector<std::string> Game::splitString(std::string rawUserInput, char delimiter) { // change to return std:;string array
+   
+   // TODO
+   std::istringstream stringStream(rawUserInput);
+   std::string currWord = "";
+   std::vector<std::string> userCommand;
+   while (std::getline(stringStream, currWord, delimiter))
+   {
+      userCommand.push_back(currWord);
+   }
+   return userCommand;
+
+}
+

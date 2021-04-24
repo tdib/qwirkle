@@ -12,10 +12,10 @@ class Player
    public:
       Player();
       Player(std::string playerInfo);
-      Player::~Player();
+      ~Player();
       bool drawTile();
       bool placeTile(Tile* tile, std::string coordinate);
-      bool swapTile();
+      bool swapTile(Tile* tileToSwap);
       void addScore();
 
       std::string getName();
@@ -27,11 +27,11 @@ class Player
       void setBoard(Board* board);
    
    private:
-      std::string name;
-      int score;
       Bag* bag;
       Board* board;
       LinkedList* hand;
+      std::string name;
+      int score;  
 };
 
 #endif // PLAYER_H

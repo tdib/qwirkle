@@ -1,4 +1,3 @@
-
 #ifndef ASSIGN1_TILECODES_H
 #define ASSIGN1_TILECODES_H
 
@@ -9,7 +8,6 @@
 #define GREEN  'G'
 #define BLUE   'B'
 #define PURPLE 'P'
-Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
 
 // Shapes
 #define CIRCLE    1
@@ -18,6 +16,5 @@ Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
 #define SQUARE    4
 #define STAR_6    5
 #define CLOVER    6
-Shape shapes[] = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
 
 #endif // ASSIGN1_TILECODES_H

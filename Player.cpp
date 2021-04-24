@@ -47,7 +47,7 @@ bool Player::placeTile(Tile* tile, std::string coordinate)
    return false;
 }
 
-bool Player::swapTile()
+bool Player::swapTile(Tile* tileToSwap)
 {
    
    return false;
@@ -75,6 +75,6 @@ int Player::getScore()
 
 std::string Player::getHand()
 {
-
+   return "";
 }
 

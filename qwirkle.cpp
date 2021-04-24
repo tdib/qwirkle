@@ -37,35 +37,12 @@ int main(void) {
          std::string player1Name=" ";
          std::string player2Name=" ";
 
-         // Create a game and create the players
+         // Create a game. Game will create the players
 
-         // Game* game = new Game();
-         // Player* player1 = new Player();
-         // Player* player2 = new Player();
-
-         while(!isValidName(player1Name)&&!std::cin.eof())
-         {
-         std::cout << 
-            "Enter a name for player 1 (uppercase characters only, no spaces)"
-            << std::endl;
-         std::cout << "> ";
-         std::getline(std::cin, player1Name);
-         // player1->setName(player1Name);
-         }
-
-         while(!isValidName(player2Name)&&!std::cin.eof())
-         {
-         std::cout << 
-            "Enter a name for player 2 (uppercase characters only, no spaces)"
-            << std::endl;
-         std::cout << "> ";
-         std::getline(std::cin, player2Name);
-         // player2->setName(player2Name);
-         }
-
+         Game* game = new Game();
          std::cout << "Let's Play!" << std::endl;
-         // game->playGame();
-         // delete game;
+         game->playGame();
+         delete game; // move to the end as we would need the game still (if we were doing high scores or something)
 
       }
       if(input=="2")
@@ -110,27 +87,6 @@ int main(void) {
       }
 
    }
-
-   std::cout << std::endl;
-   std::cout << "--- TESTING ---" << std::endl;
-
-   std::cout << "Test - Reading from tiles.txt" << std::endl;
-   Game* game = new Game();
-
-   try {
-      game->initialiseTiles();
-   } catch (std::exception& e) {
-      return EXIT_FAILURE;
-   }
-
-   std::cout << "Test - Printing board state" << std::endl;
-   game->printState();
-   
-   // Where do I put this game input loop in Game.cpp :(
-   // Should it be here? In qwirkle.cpp?
-   std::cout << "Test - Game Input Loop" << std::endl;
-   game->playGame();
-   delete game;
 
    return EXIT_SUCCESS;
 
