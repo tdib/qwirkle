@@ -1,11 +1,13 @@
 #include "Node.h"
 
-Node::Node(Tile* tile, Node* next) : tile(tile), next(nullptr)
+Node::Node(Tile* tile, Node* next)
+    : tile(tile)
+    , next(nullptr)
 {
    // No further initialization needed
 }
 
 // Node::Node(Node& other)
 // {
-   
+
 // }

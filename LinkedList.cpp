@@ -1,6 +1,8 @@
 #include "LinkedList.h"
 
-LinkedList::LinkedList() : head(nullptr), tail(nullptr)
+LinkedList::LinkedList()
+    : head(nullptr)
+    , tail(nullptr)
 {
    // no further initialization needed
 }
@@ -15,8 +17,8 @@ LinkedList::~LinkedList()
       current = next;
    }
    current = nullptr;
-   head = nullptr;
-   tail = nullptr;
+   head    = nullptr;
+   tail    = nullptr;
 }
 
 void LinkedList::push(Tile* tile)
@@ -31,7 +33,7 @@ void LinkedList::push(Tile* tile)
    else
    {
       tail->next = node;
-      tail = node;
+      tail       = node;
    }
 }
 
@@ -65,9 +67,9 @@ Tile* LinkedList::grab(int index)
    Tile* tempTile = nullptr;
 
    Node* currentNode = head;
-   Node* prevNode = nullptr;
-   int currentIndex = 0;
-   bool found = false;
+   Node* prevNode    = nullptr;
+   int currentIndex  = 0;
+   bool found        = false;
    while (currentNode != nullptr && !found)
    {
       if (currentIndex == index)
@@ -77,13 +79,14 @@ Tile* LinkedList::grab(int index)
       else
       {
          currentIndex++;
-         prevNode = currentNode;
+         prevNode    = currentNode;
          currentNode = currentNode->next;
       }
    }
 
    // when found
-   if (found) {
+   if (found)
+   {
       // remove Node from chain of linked list
       if (prevNode != nullptr)
       {

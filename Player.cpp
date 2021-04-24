@@ -1,11 +1,11 @@
 #include "Player.h"
 
-Player::Player():
-   bag(nullptr),
-   board(nullptr),
-   hand(new LinkedList()),
-   name(""),
-   score(0)
+Player::Player()
+    : bag(nullptr)
+    , board(nullptr)
+    , hand(new LinkedList())
+    , name("")
+    , score(0)
 {
 }
 
@@ -19,7 +19,6 @@ Player::Player(std::string playerInfo)
 
    std::string newName = "";
    // this->setName(std::getline(playerInfo, newName));
-
 }
 
 Player::~Player()
@@ -49,13 +48,11 @@ bool Player::placeTile(Tile* tile, std::string coordinate)
 
 bool Player::swapTile(Tile* tileToSwap)
 {
-   
    return false;
 }
 
 void Player::addScore()
 {
-
 }
 
 std::string Player::getName()
@@ -77,4 +74,3 @@ std::string Player::getHand()
 {
    return "";
 }
-

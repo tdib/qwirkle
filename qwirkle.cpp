@@ -1,8 +1,8 @@
-#include "LinkedList.h"
 #include "Game.h"
+#include "LinkedList.h"
 
-#include <iostream>
 #include <exception>
+#include <iostream>
 #include <string>
 
 void printMenu();
@@ -12,8 +12,8 @@ void printQuitMessage();
 bool isValidName(std::string name);
 void loadGame(std::string fileName);
 
-int main(void) {
-
+int main(void)
+{
    LinkedList* list = new LinkedList();
    delete list;
 
@@ -21,31 +21,31 @@ int main(void) {
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
    std::cout << std::endl;
-   bool validInput=false;
+   bool validInput = false;
    std::string input;
    printMenu();
-   while(validInput==false)
+   while (validInput == false)
    {
       std::getline(std::cin, input);
-      if(input=="1")
+      if (input == "1")
       {
          validInput = true;
          std::cout << std::endl;
          std::cout << "Starting a New Game" << std::endl;
          std::cout << std::endl;
 
-         std::string player1Name=" ";
-         std::string player2Name=" ";
+         std::string player1Name = " ";
+         std::string player2Name = " ";
 
          // Create a game. Game will create the players
 
          Game* game = new Game();
          std::cout << "Let's Play!" << std::endl;
          game->playGame();
-         delete game; // move to the end as we would need the game still (if we were doing high scores or something)
-
+         delete game; // move to the end as we would need the game still (if we
+                      // were doing high scores or something)
       }
-      if(input=="2")
+      if (input == "2")
       {
          validInput = true;
          std::cout << std::endl;
@@ -55,46 +55,44 @@ int main(void) {
          // if valid
          std::cout << std::endl;
          std::cout << "Qwirkle game successfully loaded" << std::endl;
-         //spec doesn't say what to do if invalid.
-      }   
-      if(input=="3")
+         // spec doesn't say what to do if invalid.
+      }
+      if (input == "3")
       {
          validInput = true;
          std::cout << std::endl;
          printCredits();
-      }   
-      if(input=="4")
-      {  
+      }
+      if (input == "4")
+      {
          validInput = true;
          std::cout << std::endl;
          printQuitMessage();
-      }   
-      if(std::cin.eof())
+      }
+      if (std::cin.eof())
       {
          validInput = true;
          printQuitMessage();
       }
-      if(validInput ==false)
+      if (validInput == false)
       {
          std::cout << "Invalid Input" << std::endl;
          std::cout << "> ";
       }
       // temp to make it go back to main menu after showing credits.
-      if(input=="3")
+      if (input == "3")
       {
          validInput = false;
          printMenu();
       }
-
    }
 
    return EXIT_SUCCESS;
-
 }
 
 void loadGame(std::string fileName)
 {
-   std::ifstream savedGame (fileName + ".save");
+   std::ifstream savedGame(fileName + ".save");
    if (savedGame)
    {
       // player one name
@@ -133,8 +131,8 @@ void loadGame(std::string fileName)
       std::string dimStr = "";
       getline(savedGame, dimStr);
       size_t commaIndex = dimStr.find(",");
-      int dimY = std::stoi(dimStr.substr(0, commaIndex));
-      int dimX = std::stoi(dimStr.substr(commaIndex+1));
+      int dimY          = std::stoi(dimStr.substr(0, commaIndex));
+      int dimX          = std::stoi(dimStr.substr(commaIndex + 1));
       std::cout << "Height:" << dimY << ", Width:" << dimX << std::endl;
 
       // board state
@@ -192,13 +190,13 @@ void printQuitMessage()
 // returns false if there is a lower case letter.
 bool isValidName(std::string name)
 {
-   int length = name.length();
+   int length   = name.length();
    bool isValid = true;
-   for(int i =0; i<length; i++)
+   for (int i = 0; i < length; i++)
    {
-      if(!isupper(name[i]))
+      if (!isupper(name[i]))
       {
-       isValid =false;  
+         isValid = false;
       }
    }
    return isValid;

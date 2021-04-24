@@ -2,12 +2,13 @@
 #ifndef ASSIGN2_LINKEDLIST_H
 #define ASSIGN2_LINKEDLIST_H
 
-#include <string>
 #include "Node.h"
 
-class LinkedList {
-public:
+#include <string>
 
+class LinkedList
+{
+public:
    LinkedList();
    ~LinkedList();
 

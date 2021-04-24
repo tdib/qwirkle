@@ -1,14 +1,13 @@
 #include "Bag.h"
 
-Bag::Bag():
-   tiles(new LinkedList())
+Bag::Bag()
+    : tiles(new LinkedList())
 {
    initialiseTiles();
 }
 
 Bag::Bag(std::string bagInfo)
 {
-   
 }
 
 Bag::~Bag()
@@ -24,7 +23,7 @@ Bag::~Bag()
 void Bag::initialiseTiles()
 {
    Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
-   Shape shapes[] = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
+   Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
    // iterate through every tile for however many sets are defined
    int tileSets = 2;
    std::vector<Tile*> tempTiles;

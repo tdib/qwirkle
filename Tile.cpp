@@ -1,11 +1,11 @@
 #include "Tile.h"
+
 #include <iostream>
 
-Tile::Tile(Shape shape, Colour colour):
-   shape(shape),
-   colour(colour)
+Tile::Tile(Shape shape, Colour colour)
+    : shape(shape)
+    , colour(colour)
 {
-
 }
 
 void Tile::printTile()
@@ -17,4 +17,3 @@ std::string Tile::toString()
 {
    return this->colour + std::to_string(this->shape);
 }
-
