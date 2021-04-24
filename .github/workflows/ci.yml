@@ -7,7 +7,6 @@ on:
 
 jobs:
   Lint:
-    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Environment
@@ -20,3 +19,11 @@ jobs:
           architecture: x64
       - name: clang-format
         run: curl -s https://raw.githubusercontent.com/Sarcasm/run-clang-format/39081c9c42768ab5e8321127a7494ad1647c6a2f/run-clang-format.py | python - --color always --clang-format-executable clang-format-11 -r .
+  Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Qwirkle
+        run: make
+      - name: Run tests
+        run: echo "Not yet implemented"
