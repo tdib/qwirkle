@@ -29,6 +29,7 @@ public:
    void quit();
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
+   bool isValidName(std::string name);
 
 private:
    // player as a vector

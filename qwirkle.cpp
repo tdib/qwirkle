@@ -9,7 +9,7 @@ void printMenu();
 void printCredits();
 void printStudent(std::string name, std::string id);
 void printQuitMessage();
-bool isValidName(std::string name);
+// bool isValidName(std::string name); // Used in Game.cpp now
 void loadGame(std::string fileName);
 
 int main(void)
@@ -33,9 +33,6 @@ int main(void)
          std::cout << std::endl;
          std::cout << "Starting a New Game" << std::endl;
          std::cout << std::endl;
-
-         std::string player1Name = " ";
-         std::string player2Name = " ";
 
          // Create a game. Game will create the players
 
@@ -188,16 +185,16 @@ void printQuitMessage()
 }
 
 // returns false if there is a lower case letter.
-bool isValidName(std::string name)
-{
-   int length   = name.length();
-   bool isValid = true;
-   for (int i = 0; i < length; i++)
-   {
-      if (!isupper(name[i]))
-      {
-         isValid = false;
-      }
-   }
-   return isValid;
-}
+// bool isValidName(std::string name)
+// {
+//    int length   = name.length();
+//    bool isValid = true;
+//    for (int i = 0; i < length; i++)
+//    {
+//       if (!isupper(name[i]))
+//       {
+//          isValid = false;
+//       }
+//    }
+//    return isValid;
+// }

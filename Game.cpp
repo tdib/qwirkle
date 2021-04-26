@@ -56,10 +56,10 @@ void Game::initalisePlayers()
 
    for (int i = 0; i < numPlayers; i++)
    {
-      bool validInput        = false;
-      std::string playerName = "";
+      std::string playerName = " ";
+      bool validName         = false;
 
-      while (!validInput && !std::cin.eof())
+      while (validName == false && !std::cin.eof())
       {
          std::cout << "Enter a name for player " << i + 1
                    << " (uppercase characters only, no spaces)" << std::endl;
@@ -67,8 +67,16 @@ void Game::initalisePlayers()
 
          std::getline(std::cin, playerName); // if we can, we would then check
                                              // against isValidName()
-         validInput = true;
-      } // TODO: exception handling
+
+         try
+         {
+            validName = isValidName(playerName);
+         }
+         catch (std::invalid_argument& e)
+         {
+            std::cout << e.what() << std::endl;
+         }
+      }
 
       players.push_back(new Player());
       std::transform(
@@ -212,4 +220,19 @@ std::vector<std::string> Game::splitString(
       userCommand.push_back(currWord);
    }
    return userCommand;
+}
+
+bool Game::isValidName(std::string name)
+{
+   int length   = name.length();
+   bool isValid = true;
+   for (int i = 0; i < length; i++)
+   {
+      if (!isupper(name[i]))
+      {
+         isValid = false;
+         throw std::invalid_argument("Invalid Input");
+      }
+   }
+   return isValid;
 }
