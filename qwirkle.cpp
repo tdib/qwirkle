@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "InputCodes.h"
 #include "LinkedList.h"
 
 #include <exception>
@@ -9,7 +10,6 @@ void printMenu();
 void printCredits();
 void printStudent(std::string name, std::string id);
 void printQuitMessage();
-// bool isValidName(std::string name); // Used in Game.cpp now
 void loadGame(std::string fileName);
 
 int main(void)
@@ -27,7 +27,7 @@ int main(void)
    while (validInput == false)
    {
       std::getline(std::cin, input);
-      if (input == "1")
+      if (input == NEW_GAME)
       {
          validInput = true;
          std::cout << std::endl;
@@ -42,7 +42,7 @@ int main(void)
          delete game; // move to the end as we would need the game still (if we
                       // were doing high scores or something)
       }
-      if (input == "2")
+      if (input == LOAD_GAME)
       {
          validInput = true;
          std::cout << std::endl;
@@ -54,13 +54,13 @@ int main(void)
          std::cout << "Qwirkle game successfully loaded" << std::endl;
          // spec doesn't say what to do if invalid.
       }
-      if (input == "3")
+      if (input == CREDITS)
       {
          validInput = true;
          std::cout << std::endl;
          printCredits();
       }
-      if (input == "4")
+      if (input == QUIT)
       {
          validInput = true;
          std::cout << std::endl;
@@ -183,18 +183,3 @@ void printQuitMessage()
 {
    std::cout << "Goodbye" << std::endl;
 }
-
-// returns false if there is a lower case letter.
-// bool isValidName(std::string name)
-// {
-//    int length   = name.length();
-//    bool isValid = true;
-//    for (int i = 0; i < length; i++)
-//    {
-//       if (!isupper(name[i]))
-//       {
-//          isValid = false;
-//       }
-//    }
-//    return isValid;
-// }
