@@ -74,13 +74,16 @@ void Game::initalisePlayers()
 
          std::getline(std::cin, playerName);
 
-         try
+         if (!std::cin.eof())
          {
-            validName = isValidName(playerName);
-         }
-         catch (std::invalid_argument& e)
-         {
-            std::cout << e.what() << std::endl;
+            try
+            {
+               validName = isValidName(playerName);
+            }
+            catch (std::invalid_argument& e)
+            {
+               std::cout << e.what() << std::endl;
+            }
          }
       }
 
@@ -298,6 +301,7 @@ bool Game::isValidName(std::string name)
 {
    int length   = name.length();
    bool isValid = true;
+
    for (int i = 0; i < length; i++)
    {
       if (!isupper(name[i]))
