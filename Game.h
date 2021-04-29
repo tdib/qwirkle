@@ -16,7 +16,7 @@
 class Game
 {
 public:
-   Game();
+   Game(int numPlayers);
    Game(std::string* fileName);
    ~Game();
 
@@ -25,7 +25,7 @@ public:
    void initalisePlayers();
    void loadTiles(std::string* tilesInfo);
    void printState();
-   bool saveGame();
+   bool saveGame(std::string saveFileName);
    void quit();
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
@@ -37,6 +37,7 @@ private:
    Board* board;
    Bag* bag;
    std::vector<Player*> players;
+   int numPlayers;
 };
 
 #endif // ASSIGN2_GAME_H

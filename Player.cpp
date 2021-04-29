@@ -74,3 +74,8 @@ std::string Player::getHand()
 {
    return "";
 }
+
+bool Player::isEmptyHand()
+{
+   return hand->isEmpty();
+}

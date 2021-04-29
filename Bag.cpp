@@ -1,25 +1,25 @@
 #include "Bag.h"
 
 Bag::Bag()
-    : tiles(new LinkedList())
+    : tilesInBag(new LinkedList())
 {
    initialiseTiles();
 }
 
 Bag::Bag(std::string bagInfo)
-    : tiles(new LinkedList())
+    : tilesInBag(new LinkedList())
 {
    // TODO: Parse bagInfo and generate tiles
 }
 
 Bag::~Bag()
 {
-   while (!tiles->isEmpty())
+   while (!tilesInBag->isEmpty())
    {
-      delete tiles->pop();
+      delete tilesInBag->pop();
    }
-   delete tiles;
-   tiles = nullptr;
+   delete tilesInBag;
+   tilesInBag = nullptr;
 }
 
 void Bag::initialiseTiles()
@@ -50,7 +50,7 @@ Tile* Bag::popTile()
 
 void Bag::pushTile(Tile* tile)
 {
-   tiles->push(tile);
+   tilesInBag->push(tile);
 }
 
 void Bag::scrambleTiles(std::vector<Tile*> tilesToScramble)
@@ -59,6 +59,11 @@ void Bag::scrambleTiles(std::vector<Tile*> tilesToScramble)
    std::shuffle(std::begin(tilesToScramble), std::end(tilesToScramble), rng);
    for (Tile* tile : tilesToScramble)
    {
-      tiles->push(tile);
+      tilesInBag->push(tile);
    }
+}
+
+LinkedList* Bag::getTilesInBag()
+{
+   return tilesInBag;
 }

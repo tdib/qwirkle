@@ -1,9 +1,10 @@
 #include "Game.h"
 
 // Playing a fresh new game
-Game::Game()
+Game::Game(int numPlayers)
 {
-   // TODO
+   // setting the number of players :)
+   this->numPlayers = numPlayers;
 
    // initialising board
    this->board = new Board();
@@ -14,14 +15,18 @@ Game::Game()
    // initialising players
    initalisePlayers();
 
-   // Set board and bag for all players
-   for (Player* player : players)
-   {
-      player->setBoard(this->board);
-      player->setBag(this->bag);
+   // Set board and bag for all players (moved to initalisePlayers() for
+   // efficiency, needa test it)
+   // for (int i = 0; i < numPlayers; i++)
+   // {
+   //    players[i]->setBoard(this->board);
+   //    players[i]->setBag(this->bag);
+   // }
 
-      // Draw tile five/six(?) times (per player)
-   }
+   // Draw tile six times (per player) -> i.e. initial hand drawing
+   // for (int i = 0; i < 6; i++) {
+   //    player->drawTile();
+   // }
 }
 
 // Loading a saved game
@@ -33,40 +38,41 @@ Game::Game(std::string* fileName)
 Game::~Game()
 {
    // TODO
-   delete board;
-   delete bag;
+
    for (Player* player : players)
    {
       delete player;
    }
+
+   delete board;
+   delete bag;
 }
 
 void Game::initalisePlayers()
 {
-   // move the qwirkle asking player name code here
    // M3: in the future, you'd ask for how many players and the vector would
    // count for that many
-
-   // get the names of the two players (std::cin)
-   // set their names
-   // for each player, set their board and bag ->
 
    // will update later by asking for how many players want to play
    int numPlayers = 2;
 
    for (int i = 0; i < numPlayers; i++)
    {
+      players.push_back(new Player());
+   }
+
+   for (int j = 0; j < numPlayers; j++)
+   {
       std::string playerName = " ";
       bool validName         = false;
 
       while (validName == false && !std::cin.eof())
       {
-         std::cout << "Enter a name for player " << i + 1
-                   << " (uppercase characters only, no spaces)" << std::endl;
+         std::cout << "Enter a name for player " << j + 1
+                   << " (uppercase characters only)" << std::endl;
          std::cout << "> ";
 
-         std::getline(std::cin, playerName); // if we can, we would then check
-                                             // against isValidName()
+         std::getline(std::cin, playerName);
 
          try
          {
@@ -81,7 +87,15 @@ void Game::initalisePlayers()
       players.push_back(new Player());
       std::transform(
          playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
-      players[i]->setName(playerName);
+      players[j]->setName(playerName);
+      players[j]->setBoard(this->board);
+      players[j]->setBag(this->bag);
+   }
+
+   if (!std::cin.eof())
+   {
+      std::cout << std::endl;
+      std::cout << "Let's Play!" << std::endl;
    }
 }
 
@@ -89,7 +103,6 @@ void Game::playGame()
 {
    /**
     *
-    * executeTurn()
     * Should take input from the user
     * Depending on input, do the thing
     * CHECK IF INPUT STARTS WITH PLACE/REPLACE/ETC
@@ -97,66 +110,148 @@ void Game::playGame()
     * if place -> go to placeTile()
     * check that it exists in the hand
     *
-    *
-    *
     * if replace -> go to swapTile()
     * check that it exists in the hand
     *
     */
 
-   //
-   // for (Player* player : players) {
-   // executeTurn();
-   // }
-
    bool gameRunning = true;
+
+   // Ryan note for later: exception handling is bugged: ctrl+z throws an
+   // exception so research more into them
 
    while (!std::cin.eof() && gameRunning == true)
    {
-      std::string input = "";
-
-      try
+      // for (Player* player : players)
+      for (int i = 0; i < numPlayers; i++)
       {
-         std::cout << "> ";
-         getline(std::cin, input);
+         bool validInput = false;
 
-         // uppercase before putting the words into the vector
-         std::transform(input.begin(), input.end(), input.begin(), ::toupper);
-         std::vector<std::string> rawUserInput = splitString(input, ' ');
-         std::string command                   = "";
+         while (validInput == false && gameRunning == true)
+         {
+            std::string rawUserInput = "";
+            // Will change this output later on, using for testing atm :)
+            std::cout << "it is player " << players[i]->getName() << "'s turn"
+                      << std::endl;
+            printState();
+            try
+            {
+               std::cout << "> ";
+               getline(std::cin, rawUserInput);
 
-         if (rawUserInput.size() > 0)
-         {
-            command = rawUserInput[0];
-         }
+               // uppercase before putting the words into the vector
+               std::transform(rawUserInput.begin(), rawUserInput.end(),
+                  rawUserInput.begin(), ::toupper);
+               std::vector<std::string> rawCommand =
+                  splitString(rawUserInput, ' ');
+               std::string command = "";
 
-         if (command == PLACE)
-         {
-            std::cout << "place" << std::endl;
-            // loop through hand, validate tile exists in hand and pick out the
-            // tile to place + placement coordinate placeTile();
+               if (rawCommand.size() > 0)
+               {
+                  command = rawCommand[0];
+               }
+
+               if (command == PLACE)
+               {
+                  if (rawCommand.size() == 4)
+                  {
+                     if (rawCommand[2] != "AT")
+                     {
+                        throw std::invalid_argument("Invalid Input");
+                     }
+                     // TODO:
+                     // loop through hand, validate tile exists in hand and
+                     // pick out the tile to place + placement coordinate.
+                     // pass info to placeTile();
+
+                     // IMPORTANT:
+                     // 100% MAKE A METHOD to check if they type in a valid tile
+                     std::string tileToPlace         = rawCommand[1];
+                     std::string placementCoordinate = rawCommand[3];
+
+                     std::cout << "placing " << tileToPlace;
+                     std::cout << " at " << placementCoordinate << std::endl;
+
+                     // LinkedList* tilesInHand = nullptr;
+                     // tilesInHand             = player->getHand();
+                     validInput = true;
+                     // go through tilesInHand and make sure the user input
+                     // matches a tile in the hand if match:
+                     // player->placeTile(); else: throw
+                     // std::invalid_argument("Invalid Input");
+                  }
+                  else
+                  {
+                     throw std::invalid_argument("Invalid Input");
+                  }
+               }
+               else if (command == REPLACE)
+               {
+                  if (rawCommand.size() == 2)
+                  {
+                     std::string tileToReplace = rawCommand[1];
+                     std::cout << "replacing tile " << tileToReplace
+                               << std::endl;
+                     // check if tile exists in the player's hand
+                     // follow the spec :)
+                     // replaceTile();
+                     validInput = true;
+                  }
+                  else
+                  {
+                     throw std::invalid_argument("Invalid Input");
+                  }
+               }
+               else if (command == SAVE)
+               {
+                  if (rawCommand.size() == 2)
+                  {
+                     std::string saveFileName = rawCommand[1];
+                     std::cout << "Game successfully saved" << std::endl;
+                     validInput = true;
+                     // Need to now run a saveGame function :)
+                     // saveGame(saveFileName);
+                  }
+                  else
+                  {
+                     throw std::invalid_argument("Invalid Input");
+                  }
+               }
+
+               else if (command == QUITGAME)
+               {
+                  validInput  = true;
+                  gameRunning = false;
+                  // quitGame()?
+                  // Do I even need a quit method?
+               }
+               else if (std::cin.eof())
+               {
+                  validInput  = true;
+                  gameRunning = false;
+               }
+               else
+               {
+                  throw std::invalid_argument("Invalid Input");
+               }
+            }
+            catch (std::invalid_argument& e)
+            {
+               std::cout << e.what() << std::endl;
+            }
+            catch (std::exception& e)
+            {
+               std::cout << e.what() << std::endl;
+            }
+
+            // checking if the current player's hand and the bag is empty
+            // if both are true, game is over (and we award them 6 extra
+            // points?)
+            if (players[i]->isEmptyHand() && bag->getTilesInBag()->isEmpty())
+            {
+               gameRunning = false;
+            }
          }
-         else if (command == REPLACE)
-         {
-            std::cout << "replace" << std::endl;
-            // replaceTile();
-         }
-         else if (command == QUITGAME)
-         {
-            gameRunning = false;
-         }
-         else
-         {
-            throw std::invalid_argument("Invalid Input");
-         }
-      }
-      catch (std::invalid_argument& e)
-      {
-         std::cout << e.what() << std::endl;
-      }
-      catch (std::exception& e)
-      { // Martin tasukete. catch all or specific ones?
-         std::cout << e.what() << std::endl;
       }
    }
 }
@@ -168,33 +263,12 @@ void Game::loadTiles(std::string* tilesInfo)
 
 void Game::printState()
 {
-   // TODO
+   board->printBoard();
 
-   std::cout << std::endl;
-   std::cout << " ";
-
-   for (int i = 0; i < 26; i++)
-   { // Columns
-      std::cout << "  " << i;
-   }
-
-   std::cout << std::endl;
-   std::cout << "  ";
-
-   for (int j = 0; j < 47; j++)
-   {
-      std::cout << "--";
-   }
-
-   std::cout << std::endl;
-
-   for (char k = 'A'; k <= 'Z'; k++)
-   { // Rows
-      std::cout << k << " |" << std::endl;
-   }
+   // TODO. Full implementation with Board.cpp, etc
 }
 
-bool Game::saveGame()
+bool Game::saveGame(std::string saveFileName)
 {
    // TODO
    // bool false if the file is open or something?
@@ -208,11 +282,9 @@ void Game::quit()
 }
 
 std::vector<std::string> Game::splitString(
-   std::string rawUserInput, char delimiter)
-{ // change to return std:;string array
-
-   // TODO
-   std::istringstream stringStream(rawUserInput);
+   std::string rawCommand, char delimiter)
+{
+   std::istringstream stringStream(rawCommand);
    std::string currWord = "";
    std::vector<std::string> userCommand;
    while (std::getline(stringStream, currWord, delimiter))
@@ -234,5 +306,19 @@ bool Game::isValidName(std::string name)
          throw std::invalid_argument("Invalid Input");
       }
    }
+
+   int size = players.size();
+   if (size > 1)
+   {
+      for (int i = 0; i < size; i++)
+      {
+         if (players[i]->getName() == name)
+         {
+            isValid = false;
+            throw std::invalid_argument("Invalid Input");
+         }
+      }
+   }
+
    return isValid;
 }

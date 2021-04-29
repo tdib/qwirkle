@@ -19,9 +19,10 @@ public:
    void pushTile(Tile* tile);
    void scrambleTiles(std::vector<Tile*> tilesToScramble);
    void initialiseTiles();
+   LinkedList* getTilesInBag();
 
 private:
-   LinkedList* tiles;
+   LinkedList* tilesInBag;
 };
 
 #endif // BAG_H

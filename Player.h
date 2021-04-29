@@ -24,6 +24,8 @@ public:
    int getScore();
    std::string getHand();
 
+   bool isEmptyHand();
+
    void setBag(Bag* bag);
    void setBoard(Board* board);
 

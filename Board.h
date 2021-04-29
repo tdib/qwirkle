@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
 

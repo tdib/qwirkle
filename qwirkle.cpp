@@ -2,8 +2,8 @@
 #include "InputCodes.h"
 #include "LinkedList.h"
 
-#include <exception>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 void printMenu();
@@ -36,11 +36,11 @@ int main(void)
 
          // Create a game. Game will create the players
 
-         Game* game = new Game();
-         std::cout << "Let's Play!" << std::endl;
+         Game* game = new Game(2);
          game->playGame();
-         delete game; // move to the end as we would need the game still (if we
-                      // were doing high scores or something)
+         delete game; // move this delete to the end later on as we would need
+                      // the game still (if we were doing high scores or
+                      // something for M3)
       }
       if (input == LOAD_GAME)
       {
@@ -181,5 +181,7 @@ void printStudent(std::string name, std::string id)
 
 void printQuitMessage()
 {
+   std::cout << std::endl;
+   std::cout << std::endl;
    std::cout << "Goodbye" << std::endl;
 }
