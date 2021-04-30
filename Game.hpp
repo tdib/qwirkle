@@ -1,10 +1,10 @@
 #ifndef ASSIGN2_GAME_H
 #define ASSIGN2_GAME_H
 
-#include "Bag.h"
-#include "InputCodes.h"
-#include "Player.h"
-#include "Tile.h"
+#include "Bag.hpp"
+#include "InputCodes.hpp"
+#include "Player.hpp"
+#include "Tile.hpp"
 
 #include <algorithm>
 #include <fstream>

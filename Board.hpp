@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "Tile.h"
+#include "Tile.hpp"
 
 #include <iostream>
 #include <string>

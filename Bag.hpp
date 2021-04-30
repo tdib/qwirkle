@@ -1,8 +1,8 @@
 #ifndef BAG_H
 #define BAG_H
 
-#include "LinkedList.h"
-#include "TileCodes.h"
+#include "LinkedList.hpp"
+#include "TileCodes.hpp"
 
 #include <algorithm>
 #include <random>

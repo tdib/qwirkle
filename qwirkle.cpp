@@ -1,6 +1,6 @@
-#include "Game.h"
-#include "InputCodes.h"
-#include "LinkedList.h"
+#include "Game.hpp"
+#include "InputCodes.hpp"
+#include "LinkedList.hpp"
 
 #include <iostream>
 #include <stdexcept>

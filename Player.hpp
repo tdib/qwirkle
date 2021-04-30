@@ -1,9 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Bag.h"
-#include "Board.h"
-#include "Tile.h"
+#include "Bag.hpp"
+#include "Board.hpp"
+#include "Tile.hpp"
 
 #include <iostream>
 #include <string>

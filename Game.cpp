@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Game.hpp"
 
 // Playing a fresh new game
 Game::Game(int numPlayers)

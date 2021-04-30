@@ -1,4 +1,4 @@
-#include "Bag.h"
+#include "Bag.hpp"
 
 Bag::Bag()
     : tilesInBag(new LinkedList())
