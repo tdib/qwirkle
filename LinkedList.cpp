@@ -142,3 +142,31 @@ std::string LinkedList::getContents()
 
    return contents;
 }
+
+int LinkedList::findTileIndex(std::string tileString)
+{
+   int tileIndex = -1;
+
+   int currentIndex  = 0;
+   Node* currentNode = head;
+   bool found        = false;
+   while (currentNode != nullptr && !found)
+   {
+      if (currentNode->tile->toString() == tileString)
+      {
+         found = true;
+      }
+      else
+      {
+         currentNode = currentNode->next;
+         currentIndex++;
+      }
+   }
+
+   if (found)
+   {
+      tileIndex = currentIndex;
+   }
+
+   return tileIndex;
+}

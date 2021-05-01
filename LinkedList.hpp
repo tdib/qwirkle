@@ -17,6 +17,7 @@ public:
    Tile* grab(int index);
    bool isEmpty();
    std::string getContents();
+   int findTileIndex(std::string tileString);
 
 private:
    Node* head;
