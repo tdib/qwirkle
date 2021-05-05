@@ -14,19 +14,6 @@ Game::Game(int numPlayers)
 
    // initialising players
    initalisePlayers();
-
-   // Set board and bag for all players (moved to initalisePlayers() for
-   // efficiency, needa test it)
-   // for (int i = 0; i < numPlayers; i++)
-   // {
-   //    players[i]->setBoard(this->board);
-   //    players[i]->setBag(this->bag);
-   // }
-
-   // Draw tile six times (per player) -> i.e. initial hand drawing
-   // for (int i = 0; i < 6; i++) {
-   //    player->drawTile();
-   // }
 }
 
 // Loading a saved game
@@ -38,7 +25,6 @@ Game::Game(std::string* fileName)
 Game::~Game()
 {
    // TODO
-
    for (Player* player : players)
    {
       delete player;
@@ -93,6 +79,12 @@ void Game::initalisePlayers()
       players[j]->setName(playerName);
       players[j]->setBoard(this->board);
       players[j]->setBag(this->bag);
+
+      // Works perfectly
+      for (int i = 0; i < 6; i++)
+      {
+         players[j]->drawTile();
+      }
    }
 
    if (!std::cin.eof())
@@ -130,13 +122,18 @@ void Game::playGame()
       {
          bool validInput = false;
 
+         // Will change this output later on, using for testing atm :)
+         std::cout << "it is player " << players[i]->getName() << "'s turn"
+                   << std::endl;
+
+         // Printing the player's hand
+         std::cout << players[i]->getHand() << std::endl;
+         printState();
+
          while (validInput == false && gameRunning == true)
          {
             std::string rawUserInput = "";
-            // Will change this output later on, using for testing atm :)
-            std::cout << "it is player " << players[i]->getName() << "'s turn"
-                      << std::endl;
-            printState();
+
             try
             {
                std::cout << "> ";
@@ -192,13 +189,32 @@ void Game::playGame()
                {
                   if (rawCommand.size() == 2)
                   {
-                     std::string tileToReplace = rawCommand[1];
-                     std::cout << "replacing tile " << tileToReplace
-                               << std::endl;
+                     std::string tileToSwap = rawCommand[1];
+
                      // check if tile exists in the player's hand
                      // follow the spec :)
                      // replaceTile();
-                     validInput = true;
+                     if (!bag->getTilesInBag()->isEmpty())
+                     {
+                        if (isValidTile(players[i], tileToSwap))
+                        {
+                           std::cout << "replacing tile " << tileToSwap
+                                     << std::endl;
+                           if (players[i]->swapTile(tileToSwap))
+                           {
+                              validInput = true;
+                           }
+                           else
+                           {
+                              throw std::invalid_argument("Invalid Input");
+                           }
+                        }
+                     }
+                     else
+                     {
+                        throw std::invalid_argument(
+                           "Bag is empty. Cannot swap.");
+                     }
                   }
                   else
                   {
@@ -250,8 +266,18 @@ void Game::playGame()
             // checking if the current player's hand and the bag is empty
             // if both are true, game is over (and we award them 6 extra
             // points?)
-            if (players[i]->isEmptyHand() && bag->getTilesInBag()->isEmpty())
+            if (players[i]->isEmptyHand())
             {
+               std::cout << "Game over" << std::endl;
+               for (int j = 0; j < numPlayers; j++)
+               {
+                  std::cout << "Score for " << players[j]->getName() << ": "
+                            << players[j]->getScore() << std::endl;
+               }
+               // TODO: figure out which player has the highest score
+               std::cout << "Player ... won!" << std::endl;
+
+               // Does the player who ran out first get extra points?
                gameRunning = false;
             }
          }
@@ -322,6 +348,24 @@ bool Game::isValidName(std::string name)
             throw std::invalid_argument("Invalid Input");
          }
       }
+   }
+
+   return isValid;
+}
+
+bool Game::isValidTile(Player* player, std::string tileToValidate)
+{
+   // use findTileIndex
+   bool isValid = false;
+
+   // im so sorryu
+   if (player->tileInHand(tileToValidate) == true)
+   {
+      isValid = true;
+   }
+   else
+   {
+      throw std::invalid_argument("Invalid Input");
    }
 
    return isValid;

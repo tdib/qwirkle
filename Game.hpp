@@ -30,6 +30,7 @@ public:
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
    bool isValidName(std::string name);
+   bool isValidTile(Player* player, std::string tileToValidate);
 
 private:
    // player as a vector

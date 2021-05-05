@@ -38,7 +38,7 @@ void Board::printBoard()
    std::cout << std::endl;
    std::cout << "  ";
 
-   for (int i = 0; i < 78; i++)
+   for (int i = 0; i < 79; i++)
    {
       std::cout << "-";
    }

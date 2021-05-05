@@ -23,6 +23,11 @@ Player::Player(std::string playerInfo)
 
 Player::~Player()
 {
+   while (!hand->isEmpty())
+   {
+      delete hand->pop();
+   }
+
    delete hand;
 }
 
@@ -38,7 +43,17 @@ void Player::setBoard(Board* board)
 
 bool Player::drawTile()
 {
-   return false;
+   bool canDraw = false;
+   if (!bag->getTilesInBag()->isEmpty())
+   {
+      canDraw         = true;
+      Tile* drawnTile = nullptr;
+
+      drawnTile = bag->popTile();
+      hand->push(drawnTile);
+   }
+
+   return canDraw;
 }
 
 bool Player::placeTile(Tile* tile, std::string coordinate)
@@ -46,12 +61,24 @@ bool Player::placeTile(Tile* tile, std::string coordinate)
    return false;
 }
 
-bool Player::swapTile(Tile* tileToSwap)
+bool Player::swapTile(std::string tileToSwap)
 {
-   return false;
+   bool matchingTile = false;
+   int tileIndex     = hand->findTileIndex(tileToSwap);
+
+   if (tileIndex != -1)
+   {
+      Tile* tempTile = hand->grab(tileIndex);
+      bag->pushTile(tempTile);
+      drawTile();
+
+      matchingTile = true;
+   }
+
+   return matchingTile;
 }
 
-void Player::addScore()
+void Player::addScore(int score)
 {
 }
 
@@ -72,10 +99,15 @@ int Player::getScore()
 
 std::string Player::getHand()
 {
-   return "";
+   return hand->getContents();
 }
 
 bool Player::isEmptyHand()
 {
    return hand->isEmpty();
+}
+
+bool Player::tileInHand(std::string tileToValidate)
+{
+   return (hand->findTileIndex(tileToValidate) != -1);
 }

@@ -1,7 +1,5 @@
 #include "Tile.hpp"
 
-#include <iostream>
-
 Tile::Tile(Shape shape, Colour colour)
     : shape(shape)
     , colour(colour)

@@ -105,7 +105,7 @@ Tile* LinkedList::grab(int index)
       }
       else if (tail == currentNode && tail != nullptr)
       {
-         tail = nullptr;
+         tail = prevNode;
       }
 
       // grab Tile and cleanup Node
@@ -155,6 +155,7 @@ int LinkedList::findTileIndex(std::string tileString)
       if (currentNode->tile->toString() == tileString)
       {
          found = true;
+         std::cout << "FOUND TILE" << std::endl;
       }
       else
       {

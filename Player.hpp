@@ -16,8 +16,8 @@ public:
    ~Player();
    bool drawTile();
    bool placeTile(Tile* tile, std::string coordinate);
-   bool swapTile(Tile* tileToSwap);
-   void addScore();
+   bool swapTile(std::string tileToSwap);
+   void addScore(int score);
 
    std::string getName();
    void setName(std::string newName);
@@ -28,6 +28,8 @@ public:
 
    void setBag(Bag* bag);
    void setBoard(Board* board);
+
+   bool tileInHand(std::string tileToValidate);
 
 private:
    Bag* bag;

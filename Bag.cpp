@@ -45,7 +45,7 @@ void Bag::initialiseTiles()
 
 Tile* Bag::popTile()
 {
-   return this->popTile();
+   return tilesInBag->pop();
 }
 
 void Bag::pushTile(Tile* tile)
@@ -55,7 +55,7 @@ void Bag::pushTile(Tile* tile)
 
 void Bag::scrambleTiles(std::vector<Tile*> tilesToScramble)
 {
-   auto rng = std::default_random_engine {};
+   std::random_device rng;
    std::shuffle(std::begin(tilesToScramble), std::end(tilesToScramble), rng);
    for (Tile* tile : tilesToScramble)
    {
