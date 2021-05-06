@@ -181,9 +181,9 @@ void Game::playGame()
                      std::string placementCoordinate = rawCommand[3];
 
                      // validCoordinate is incomplete. Need to check for 'A21'
-                     if (isValidTileInHand(players[i], tileToPlace) &&
-                         isValidCoordinate(placementCoordinate))
-                     {
+                     // if (isValidTileInHand(players[i], tileToPlace) &&
+                     //     isValidCoordinate(placementCoordinate))
+                     // {
                         // TODO: Need to check that the placement is legal
                         // according to the rules of Qwirkle.
                         //
@@ -210,11 +210,11 @@ void Game::playGame()
                         {
                            throw std::invalid_argument("Invalid Input");
                         }
-                     }
-                     else
-                     {
-                        throw std::invalid_argument("Invalid Input");
-                     }
+                     // }
+                     // else
+                     // {
+                     //    throw std::invalid_argument("Invalid Input");
+                     // }
                   }
                   else
                   {

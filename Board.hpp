@@ -21,6 +21,8 @@ public:
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
+   int dimY;
+   int dimX;
 };
 
 #endif // BOARD_H

@@ -2,15 +2,17 @@
 
 Board::Board()
 {
-   // replace to use dimY and dimX
-   tilesOnBoard.resize(26, std::vector<Tile*>(26, 0));
-   int size = tilesOnBoard.size();
+   this->dimX = 26;
+   this->dimY = 26;
+   tilesOnBoard.resize(dimX, std::vector<Tile*>(dimY, 0));
 
-   for (int i = 0; i < size; i++)
+   int rowSize = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
    {
-      for (int j = 0; j < size; j++)
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
       {
-         tilesOnBoard[i][j] = nullptr;
+         tilesOnBoard[row][col] = nullptr;
       }
    }
 }
