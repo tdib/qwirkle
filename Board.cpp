@@ -2,9 +2,9 @@
 
 Board::Board()
 {
-   this->dimX = 26;
-   this->dimY = 26;
-   tilesOnBoard.resize(dimX, std::vector<Tile*>(dimY, 0));
+   this->dimX = 26; // Cols
+   this->dimY = 26; // Rows
+   tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
 
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
@@ -17,22 +17,21 @@ Board::Board()
    }
 }
 
-Board::Board(int dimY, int dimX, std::string boardState)
+Board::Board(int dimX, int dimY, std::string boardState)
 {
-
 }
 
 Board::~Board()
 {
-   int size = tilesOnBoard.size();
-
-   for (int i = 0; i < size; i++)
+   int rowSize = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
    {
-      for (int j = 0; j < size; j++)
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
       {
-         if (tilesOnBoard[i][j] != nullptr)
+         if (tilesOnBoard[row][col] != nullptr)
          {
-            delete tilesOnBoard[i][j];
+            delete tilesOnBoard[row][col];
          }
       }
    }
@@ -40,10 +39,9 @@ Board::~Board()
 
 void Board::printBoard()
 {
-   // Crappy Board print out for now
    std::cout << "   ";
 
-   for (int i = 0; i < 26; i++)
+   for (int i = 0; i < dimX; i++)
    {
       if (i >= 10)
       {
@@ -58,6 +56,7 @@ void Board::printBoard()
    std::cout << std::endl;
    std::cout << "  ";
 
+   // Static 79 for the 26x26 board
    for (int i = 0; i < 79; i++)
    {
       std::cout << "-";
@@ -65,20 +64,21 @@ void Board::printBoard()
 
    std::cout << std::endl;
 
-   char c = 'A';
-
-   for (int i = 0; i < 26; i++)
+   char c      = 'A';
+   int rowSize = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
    {
       std::cout << c << " |";
-      for (int j = 0; j < 26; j++)
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
       {
-         if (tilesOnBoard[i][j] == nullptr)
+         if (tilesOnBoard[row][col] == nullptr)
          {
             std::cout << "  ";
          }
          else
          {
-            tilesOnBoard[i][j]->printTile();
+            tilesOnBoard[row][col]->printTile();
          }
          std::cout << "|";
       }
@@ -113,11 +113,11 @@ int Board::calculateScore(Tile* placedTile)
 bool Board::isEmptySpot(int x, int y)
 {
    bool isEmpty = false;
-   int size     = tilesOnBoard.size();
-
-   for (int row = 0; row < size; row++)
+   int rowSize  = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
    {
-      for (int col = 0; col < size; col++)
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
       {
          if (x == col && y == row)
          {
@@ -134,10 +134,11 @@ bool Board::isEmptySpot(int x, int y)
 
 void Board::placeTile(Tile* tileToPlace, int x, int y)
 {
-   int size = tilesOnBoard.size();
-   for (int row = 0; row < size; row++)
+   int rowSize = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
    {
-      for (int col = 0; col < size; col++)
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
       {
          if (x == col && y == row)
          {

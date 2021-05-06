@@ -11,7 +11,7 @@ class Board
 {
 public:
    Board();
-   Board(int dimY, int dimX, std::string boardState);
+   Board(int dimX, int dimY, std::string boardState);
    ~Board();
    void printBoard();
    Tile* getTile(std::string tile);
@@ -21,8 +21,8 @@ public:
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
-   int dimY;
    int dimX;
+   int dimY;
 };
 
 #endif // BOARD_H
