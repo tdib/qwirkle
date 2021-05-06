@@ -44,7 +44,7 @@ int main(void)
          }
          else if (input == LOAD_GAME)
          {
-            loopAgain = false;
+            loopAgain            = false;
             std::string fileName = "";
             std::cout << std::endl;
             std::cout << "Enter the filename from which load a game"
@@ -87,9 +87,8 @@ int main(void)
 
 void loadGame(std::string fileName)
 {
-   std::ifstream savedGame(fileName);
+   std::ifstream savedGame(fileName + ".save");
 
-   // 2 players until individual submission
    Game* game = new Game(savedGame);
    game->playGame();
    if (std::cin.eof())
