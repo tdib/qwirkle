@@ -12,9 +12,12 @@ class Board
 public:
    Board();
    Board(std::string boardInfo);
+   ~Board();
    void printBoard();
    Tile* getTile(std::string tile);
    int calculateScore(Tile* placedTile);
+   void placeTile(Tile* tileToPlace, int x, int y);
+   bool isEmptySpot(int x, int y);
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;

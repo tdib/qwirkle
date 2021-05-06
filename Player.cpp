@@ -111,3 +111,16 @@ bool Player::tileInHand(std::string tileToValidate)
 {
    return (hand->findTileIndex(tileToValidate) != -1);
 }
+
+Tile* Player::getTileFromHand(std::string tileToGet)
+{
+   Tile* tempTile = nullptr;
+   int tileIndex  = hand->findTileIndex(tileToGet);
+
+   if (tileIndex != -1)
+   {
+      tempTile = hand->grab(tileIndex);
+   }
+
+   return tempTile;
+}

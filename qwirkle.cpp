@@ -14,73 +14,73 @@ void loadGame(std::string fileName);
 
 int main(void)
 {
-   LinkedList* list = new LinkedList();
-   delete list;
-
-   std::cout << "TODO: Implement Qwirkle!" << std::endl;
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
    std::cout << std::endl;
-   bool validInput = false;
+   bool loopAgain = true;
    std::string input;
    printMenu();
-   while (validInput == false)
+   while (loopAgain == true)
    {
-      std::getline(std::cin, input);
-      if (input == NEW_GAME)
+      try
       {
-         validInput = true;
-         std::cout << std::endl;
-         std::cout << "Starting a New Game" << std::endl;
-         std::cout << std::endl;
+         std::getline(std::cin, input);
+         if (input == NEW_GAME)
+         {
+            loopAgain = false;
+            std::cout << std::endl;
+            std::cout << "Starting a New Game" << std::endl;
+            std::cout << std::endl;
 
-         // Create a game. Game will create the players
-
-         Game* game = new Game(2);
-         game->playGame();
-         delete game; // move this delete to the end later on as we would need
-                      // the game still (if we were doing high scores or
-                      // something for M3)
+            // Create a game. Game will create the players
+            Game* game = new Game(2);
+            game->playGame();
+            if (std::cin.eof())
+            {
+               printQuitMessage();
+            }
+            delete game; // move to the end as we would need the game still
+                         // (if we were doing high scores or something)
+         }
+         else if (input == LOAD_GAME)
+         {
+            loopAgain = false;
+            std::cout << std::endl;
+            std::cout << "Enter the filename from which load a game"
+                      << std::endl;
+            std::cout << "> ";
+            // get file and validate
+            // if valid
+            std::cout << std::endl;
+            std::cout << "Qwirkle game successfully loaded" << std::endl;
+            // spec doesn't say what to do if invalid.
+         }
+         else if (input == CREDITS)
+         {
+            std::cout << std::endl;
+            printCredits();
+            printMenu();
+         }
+         else if (input == QUIT)
+         {
+            printQuitMessage();
+            loopAgain = false;
+         }
+         else if (std::cin.eof())
+         {
+            loopAgain = false;
+            std::cout << std::endl;
+            printQuitMessage();
+         }
+         else
+         {
+            throw std::invalid_argument("Invalid Input");
+         }
       }
-      if (input == LOAD_GAME)
+      catch (std::invalid_argument& e)
       {
-         validInput = true;
-         std::cout << std::endl;
-         std::cout << "Enter the filename from which load a game" << std::endl;
+         std::cout << e.what() << std::endl;
          std::cout << "> ";
-         // get file and validate
-         // if valid
-         std::cout << std::endl;
-         std::cout << "Qwirkle game successfully loaded" << std::endl;
-         // spec doesn't say what to do if invalid.
-      }
-      if (input == CREDITS)
-      {
-         validInput = true;
-         std::cout << std::endl;
-         printCredits();
-      }
-      if (input == QUIT)
-      {
-         validInput = true;
-         std::cout << std::endl;
-         printQuitMessage();
-      }
-      if (std::cin.eof())
-      {
-         validInput = true;
-         printQuitMessage();
-      }
-      if (validInput == false)
-      {
-         std::cout << "Invalid Input" << std::endl;
-         std::cout << "> ";
-      }
-      // temp to make it go back to main menu after showing credits.
-      if (input == "3")
-      {
-         validInput = false;
-         printMenu();
       }
    }
 
@@ -181,7 +181,6 @@ void printStudent(std::string name, std::string id)
 
 void printQuitMessage()
 {
-   std::cout << std::endl;
    std::cout << std::endl;
    std::cout << "Goodbye" << std::endl;
 }

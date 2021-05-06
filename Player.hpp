@@ -30,6 +30,7 @@ public:
    void setBoard(Board* board);
 
    bool tileInHand(std::string tileToValidate);
+   Tile* getTileFromHand(std::string tileToGet);
 
 private:
    Bag* bag;

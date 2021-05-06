@@ -155,7 +155,6 @@ int LinkedList::findTileIndex(std::string tileString)
       if (currentNode->tile->toString() == tileString)
       {
          found = true;
-         std::cout << "FOUND TILE" << std::endl;
       }
       else
       {

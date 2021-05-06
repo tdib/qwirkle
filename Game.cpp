@@ -71,6 +71,10 @@ void Game::initalisePlayers()
                std::cout << e.what() << std::endl;
             }
          }
+         else
+         {
+            std::cout << std::endl;
+         }
       }
 
       players.push_back(new Player());
@@ -91,6 +95,7 @@ void Game::initalisePlayers()
    {
       std::cout << std::endl;
       std::cout << "Let's Play!" << std::endl;
+      std::cout << std::endl;
    }
 }
 
@@ -112,23 +117,26 @@ void Game::playGame()
 
    bool gameRunning = true;
 
-   // Ryan note for later: exception handling is bugged: ctrl+z throws an
-   // exception so research more into them
-
    while (!std::cin.eof() && gameRunning == true)
    {
-      // for (Player* player : players)
       for (int i = 0; i < numPlayers; i++)
       {
          bool validInput = false;
 
-         // Will change this output later on, using for testing atm :)
-         std::cout << "it is player " << players[i]->getName() << "'s turn"
-                   << std::endl;
-
-         // Printing the player's hand
-         std::cout << players[i]->getHand() << std::endl;
-         printState();
+         // Move all to print state?
+         if (gameRunning == true)
+         {
+            std::cout << players[i]->getName() << ", it's your turn"
+                      << std::endl;
+            for (int j = 0; j < numPlayers; j++)
+            {
+               std::cout << "Score for " << players[j]->getName() << ": "
+                         << players[j]->getScore() << std::endl;
+            }
+            printState();
+            std::cout << "Your hand is" << std::endl;
+            std::cout << players[i]->getHand() << std::endl;
+         }
 
          while (validInput == false && gameRunning == true)
          {
@@ -136,6 +144,7 @@ void Game::playGame()
 
             try
             {
+               std::cout << std::endl;
                std::cout << "> ";
                getline(std::cin, rawUserInput);
 
@@ -159,26 +168,44 @@ void Game::playGame()
                      {
                         throw std::invalid_argument("Invalid Input");
                      }
-                     // TODO:
-                     // loop through hand, validate tile exists in hand and
-                     // pick out the tile to place + placement coordinate.
-                     // pass info to placeTile();
 
-                     // IMPORTANT:
-                     // 100% MAKE A METHOD to check if they type in a valid tile
                      std::string tileToPlace         = rawCommand[1];
                      std::string placementCoordinate = rawCommand[3];
 
-                     std::cout << "placing " << tileToPlace;
-                     std::cout << " at " << placementCoordinate << std::endl;
+                     // validCoordinate is incomplete. Need to check for 'A21'
+                     if (isValidTile(players[i], tileToPlace) &&
+                         isValidCoordinate(placementCoordinate))
+                     {
+                        // TODO: Need to check that the placement is legal
+                        // according to the rules of Qwirkle.
+                        //
+                        // Might have to be this way due to a scenario where we
+                        // grab a valid tile for a valid coordinate, but then
+                        // the coordinate happens to already contain a tile. we
+                        // cant put the grabbed tile back into the same hand
+                        // spot :(
+                        int coodX = getColFromCoordinate(placementCoordinate);
+                        int coodY = getRowFromCoordinate(placementCoordinate);
 
-                     // LinkedList* tilesInHand = nullptr;
-                     // tilesInHand             = player->getHand();
-                     validInput = true;
-                     // go through tilesInHand and make sure the user input
-                     // matches a tile in the hand if match:
-                     // player->placeTile(); else: throw
-                     // std::invalid_argument("Invalid Input");
+                        if (board->isEmptySpot(coodX, coodY))
+                        {
+                           std::cout << std::endl;
+                           Tile* toPlace = nullptr;
+                           toPlace = players[i]->getTileFromHand(tileToPlace);
+                           board->placeTile(toPlace, coodX, coodY);
+                           // update player score?
+                           players[i]->drawTile();
+                           validInput = true;
+                        }
+                        else
+                        {
+                           throw std::invalid_argument("Invalid Input");
+                        }
+                     }
+                     else
+                     {
+                        throw std::invalid_argument("Invalid Input");
+                     }
                   }
                   else
                   {
@@ -191,17 +218,13 @@ void Game::playGame()
                   {
                      std::string tileToSwap = rawCommand[1];
 
-                     // check if tile exists in the player's hand
-                     // follow the spec :)
-                     // replaceTile();
                      if (!bag->getTilesInBag()->isEmpty())
                      {
                         if (isValidTile(players[i], tileToSwap))
                         {
-                           std::cout << "replacing tile " << tileToSwap
-                                     << std::endl;
                            if (players[i]->swapTile(tileToSwap))
                            {
+                              std::cout << std::endl;
                               validInput = true;
                            }
                            else
@@ -212,8 +235,7 @@ void Game::playGame()
                      }
                      else
                      {
-                        throw std::invalid_argument(
-                           "Bag is empty. Cannot swap.");
+                        throw std::invalid_argument("Invalid Input");
                      }
                   }
                   else
@@ -236,16 +258,14 @@ void Game::playGame()
                      throw std::invalid_argument("Invalid Input");
                   }
                }
-
                else if (command == QUITGAME)
                {
                   validInput  = true;
                   gameRunning = false;
-                  // quitGame()?
-                  // Do I even need a quit method?
                }
                else if (std::cin.eof())
                {
+                  std::cout << std::endl;
                   validInput  = true;
                   gameRunning = false;
                }
@@ -269,10 +289,10 @@ void Game::playGame()
             if (players[i]->isEmptyHand())
             {
                std::cout << "Game over" << std::endl;
-               for (int j = 0; j < numPlayers; j++)
+               for (int k = 0; k < numPlayers; k++)
                {
-                  std::cout << "Score for " << players[j]->getName() << ": "
-                            << players[j]->getScore() << std::endl;
+                  std::cout << "Score for " << players[k]->getName() << ": "
+                            << players[k]->getScore() << std::endl;
                }
                // TODO: figure out which player has the highest score
                std::cout << "Player ... won!" << std::endl;
@@ -355,10 +375,8 @@ bool Game::isValidName(std::string name)
 
 bool Game::isValidTile(Player* player, std::string tileToValidate)
 {
-   // use findTileIndex
    bool isValid = false;
 
-   // im so sorryu
    if (player->tileInHand(tileToValidate) == true)
    {
       isValid = true;
@@ -369,4 +387,88 @@ bool Game::isValidTile(Player* player, std::string tileToValidate)
    }
 
    return isValid;
+}
+
+bool Game::isValidCoordinate(std::string coordinate)
+{
+   bool isValid = false;
+
+   if (coordinate.size() == 2)
+   {
+      for (char A = 'A'; A <= 'Z'; A++)
+      {
+         if (coordinate[0] == A)
+         {
+            int y = coordinate[1] - '0'; // magiccc :C ty stack
+            if (y >= 0 && y <= 9)        // for A0 - A9
+            {
+               isValid = true;
+            }
+         }
+      }
+   }
+   // how tf do i do this man
+   else if (coordinate.size() == 3)
+   {
+      std::string str = "";
+      for (char A = 'A'; A <= 'Z'; A++)
+      {
+         if (coordinate[0] == A)
+         {
+            if (coordinate[1] != ' ')
+            {
+               str.push_back(coordinate[1]);
+               str.push_back(coordinate[2]);
+               int col = atoi(str.c_str());
+               if (col >= 10 && col <= 25) // for A10 - A25
+               {
+                  isValid = true;
+               }
+            }
+         }
+      }
+   }
+
+   if (!isValid)
+   {
+      throw std::invalid_argument("Invalid Input");
+   }
+   return isValid;
+}
+
+int Game::getColFromCoordinate(std::string coordinate)
+{
+   int x = 0;
+
+   if (coordinate.size() == 2)
+   {
+      x = coordinate[1] - '0'; // magiccc :C ty stack
+   }
+   // how tf do i do this man
+   else if (coordinate.size() == 3)
+   {
+      std::string str = "";
+      str.push_back(coordinate[1]);
+      str.push_back(coordinate[2]);
+      x = atoi(str.c_str());
+   }
+
+   return x;
+}
+
+int Game::getRowFromCoordinate(std::string coordinate)
+{
+   int y = 0;
+
+   int row = 0;
+   for (char A = 'A'; A <= 'Z'; A++)
+   {
+      if (coordinate[0] == A)
+      {
+         y = row;
+      }
+      row++;
+   }
+
+   return y;
 }

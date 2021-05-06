@@ -18,6 +18,22 @@ Board::Board(std::string boardInfo)
 {
 }
 
+Board::~Board()
+{
+   int size = tilesOnBoard.size();
+
+   for (int i = 0; i < size; i++)
+   {
+      for (int j = 0; j < size; j++)
+      {
+         if (tilesOnBoard[i][j] != nullptr)
+         {
+            delete tilesOnBoard[i][j];
+         }
+      }
+   }
+}
+
 void Board::printBoard()
 {
    // Crappy Board print out for now
@@ -58,7 +74,7 @@ void Board::printBoard()
          }
          else
          {
-            // print contents of [i][j] (will be something like G1)
+            tilesOnBoard[i][j]->printTile();
          }
          std::cout << "|";
       }
@@ -66,6 +82,15 @@ void Board::printBoard()
       std::cout << std::endl;
       c++;
    }
+
+   std::cout << "  ";
+
+   for (int i = 0; i < 79; i++)
+   {
+      std::cout << "-";
+   }
+
+   std::cout << std::endl;
 }
 
 Tile* Board::getTile(std::string tile)
@@ -76,4 +101,44 @@ Tile* Board::getTile(std::string tile)
 int Board::calculateScore(Tile* placedTile)
 {
    return -1;
+}
+
+// isEmptySpot and placeTile both use the crappy coordinate.size beacuse i need
+// to convert the coordinate information each time i need to read it >:(
+// maybe we need a convert coordinate thing in game.cpp?
+bool Board::isEmptySpot(int x, int y)
+{
+   bool isEmpty = false;
+   int size     = tilesOnBoard.size();
+
+   for (int row = 0; row < size; row++)
+   {
+      for (int col = 0; col < size; col++)
+      {
+         if (x == col && y == row)
+         {
+            if (tilesOnBoard[row][col] == nullptr)
+            {
+               isEmpty = true;
+            }
+         }
+      }
+   }
+
+   return isEmpty;
+}
+
+void Board::placeTile(Tile* tileToPlace, int x, int y)
+{
+   int size = tilesOnBoard.size();
+   for (int row = 0; row < size; row++)
+   {
+      for (int col = 0; col < size; col++)
+      {
+         if (x == col && y == row)
+         {
+            tilesOnBoard[row][col] = tileToPlace;
+         }
+      }
+   }
 }
