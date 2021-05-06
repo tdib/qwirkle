@@ -45,15 +45,13 @@ int main(void)
          else if (input == LOAD_GAME)
          {
             loopAgain = false;
+            std::string fileName = "";
             std::cout << std::endl;
             std::cout << "Enter the filename from which load a game"
                       << std::endl;
             std::cout << "> ";
-            // get file and validate
-            // if valid
-            std::cout << std::endl;
-            std::cout << "Qwirkle game successfully loaded" << std::endl;
-            // spec doesn't say what to do if invalid.
+            std::cin >> fileName;
+            loadGame(fileName);
          }
          else if (input == CREDITS)
          {
@@ -89,64 +87,16 @@ int main(void)
 
 void loadGame(std::string fileName)
 {
-   std::ifstream savedGame(fileName + ".save");
-   if (savedGame)
+   std::ifstream savedGame(fileName);
+
+   // 2 players until individual submission
+   Game* game = new Game(savedGame);
+   game->playGame();
+   if (std::cin.eof())
    {
-      // player one name
-      std::string playerOneName = "";
-      getline(savedGame, playerOneName);
-      std::cout << playerOneName << std::endl;
-
-      // player one score
-      std::string playerOneScoreStr = "";
-      getline(savedGame, playerOneScoreStr);
-      int playerOneScore = std::stoi(playerOneScoreStr);
-      std::cout << playerOneScore << std::endl;
-
-      // player one hand
-      std::string playerOneHand = "";
-      getline(savedGame, playerOneHand);
-      std::cout << playerOneHand << std::endl;
-
-      // player two name
-      std::string playerTwoName = "";
-      getline(savedGame, playerTwoName);
-      std::cout << playerTwoName << std::endl;
-
-      // player two score
-      std::string playerTwoScoreStr = "";
-      getline(savedGame, playerTwoScoreStr);
-      int playerTwoScore = std::stoi(playerTwoScoreStr);
-      std::cout << playerTwoScore << std::endl;
-
-      // player two hand
-      std::string playerTwoHand = "";
-      getline(savedGame, playerTwoHand);
-      std::cout << playerTwoHand << std::endl;
-
-      // board dimensions
-      std::string dimStr = "";
-      getline(savedGame, dimStr);
-      size_t commaIndex = dimStr.find(",");
-      int dimY          = std::stoi(dimStr.substr(0, commaIndex));
-      int dimX          = std::stoi(dimStr.substr(commaIndex + 1));
-      std::cout << "Height:" << dimY << ", Width:" << dimX << std::endl;
-
-      // board state
-      std::string boardState = "";
-      getline(savedGame, boardState);
-      std::cout << boardState << std::endl;
-
-      // tile bag contents
-      std::string bagContents = "";
-      getline(savedGame, bagContents);
-      std::cout << bagContents << std::endl;
-
-      // current player name
-      std::string currentPlayerName = "";
-      getline(savedGame, currentPlayerName);
-      std::cout << currentPlayerName << std::endl;
+      printQuitMessage();
    }
+   delete game;
 }
 
 void printMenu()

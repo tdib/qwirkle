@@ -20,9 +20,71 @@ Game::Game(int numPlayers)
 }
 
 // Loading a saved game
-Game::Game(std::string* fileName)
+Game::Game(std::ifstream& savedGame)
 {
-   // TODO
+   // needs input validation for file
+   // idk if you check and validate the file as you go or at the start
+   // also, need to
+
+   // player one name
+   std::string playerOneName = "";
+   getline(savedGame, playerOneName);
+   std::cout << playerOneName << std::endl;
+
+   // player one score
+   std::string playerOneScoreStr = "";
+   getline(savedGame, playerOneScoreStr);
+   int playerOneScore = std::stoi(playerOneScoreStr);
+   std::cout << playerOneScore << std::endl;
+
+   // player one hand
+   std::string playerOneHand = "";
+   getline(savedGame, playerOneHand);
+   std::cout << playerOneHand << std::endl;
+
+   // player two name
+   std::string playerTwoName = "";
+   getline(savedGame, playerTwoName);
+   std::cout << playerTwoName << std::endl;
+
+   // player two score
+   std::string playerTwoScoreStr = "";
+   getline(savedGame, playerTwoScoreStr);
+   int playerTwoScore = std::stoi(playerTwoScoreStr);
+   std::cout << playerTwoScore << std::endl;
+
+   // player two hand
+   std::string playerTwoHand = "";
+   getline(savedGame, playerTwoHand);
+   std::cout << playerTwoHand << std::endl;
+
+   // board dimensions
+   std::string dimStr = "";
+   getline(savedGame, dimStr);
+   size_t commaIndex = dimStr.find(",");
+   int dimY          = std::stoi(dimStr.substr(0, commaIndex));
+   int dimX          = std::stoi(dimStr.substr(commaIndex + 1));
+   std::cout << "Height:" << dimY << ", Width:" << dimX << std::endl;
+
+   // board state
+   std::string boardState = "";
+   getline(savedGame, boardState);
+   std::cout << boardState << std::endl;
+
+   // tile bag contents
+   std::string bagContents = "";
+   getline(savedGame, bagContents);
+   std::cout << bagContents << std::endl;
+
+   // current player name
+   std::string currentPlayerName = "";
+   getline(savedGame, currentPlayerName);
+   std::cout << currentPlayerName << std::endl;
+
+   savedGame.close();
+
+   std::cout << std::endl;
+   std::cout << "Qwirkle game successfully loaded" << std::endl;
 }
 
 Game::~Game()
