@@ -30,7 +30,7 @@ public:
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
    bool isValidName(std::string name);
-   bool isValidTile(Player* player, std::string tileToValidate);
+   bool isValidTileInHand(Player* player, std::string tileToValidate);
    bool isValidCoordinate(std::string coordinateToValidate);
    int getColFromCoordinate(std::string coordinate);
    int getRowFromCoordinate(std::string coordinate);
@@ -42,6 +42,7 @@ private:
    Bag* bag;
    std::vector<Player*> players;
    int numPlayers;
+   int startingPlayer;
 };
 
 #endif // ASSIGN2_GAME_H

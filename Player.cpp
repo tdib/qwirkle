@@ -9,7 +9,7 @@ Player::Player()
 {
 }
 
-Player::Player(std::string playerInfo)
+Player::Player(std::string playerName, int playerScore, std::string playerHand)
 {
    /**
     * playeronename

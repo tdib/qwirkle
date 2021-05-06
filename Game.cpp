@@ -4,7 +4,10 @@
 Game::Game(int numPlayers)
 {
    // setting the number of players :)
-   this->numPlayers = numPlayers;
+   this->numPlayers = 3;
+
+   // On a fresh game, set the starting player to players[0]
+   this->startingPlayer = 1;
 
    // initialising board
    this->board = new Board();
@@ -40,8 +43,6 @@ void Game::initalisePlayers()
    // count for that many
 
    // will update later by asking for how many players want to play
-   int numPlayers = 2;
-
    for (int i = 0; i < numPlayers; i++)
    {
       players.push_back(new Player());
@@ -119,11 +120,18 @@ void Game::playGame()
 
    while (!std::cin.eof() && gameRunning == true)
    {
-      for (int i = 0; i < numPlayers; i++)
+      for (int i = startingPlayer; i < numPlayers; i++) // need to update others
       {
+         // Continues from a certain player's turn and resets to allow all other
+         // players to have their turn
+         if (startingPlayer != 0)
+         {
+            startingPlayer = 0;
+         }
+
          bool validInput = false;
 
-         // Move all to print state?
+         // Move all to print state? DO IT
          if (gameRunning == true)
          {
             std::cout << players[i]->getName() << ", it's your turn"
@@ -133,7 +141,7 @@ void Game::playGame()
                std::cout << "Score for " << players[j]->getName() << ": "
                          << players[j]->getScore() << std::endl;
             }
-            printState();
+            printState(); // printGameState();
             std::cout << "Your hand is" << std::endl;
             std::cout << players[i]->getHand() << std::endl;
          }
@@ -173,7 +181,7 @@ void Game::playGame()
                      std::string placementCoordinate = rawCommand[3];
 
                      // validCoordinate is incomplete. Need to check for 'A21'
-                     if (isValidTile(players[i], tileToPlace) &&
+                     if (isValidTileInHand(players[i], tileToPlace) &&
                          isValidCoordinate(placementCoordinate))
                      {
                         // TODO: Need to check that the placement is legal
@@ -184,15 +192,16 @@ void Game::playGame()
                         // the coordinate happens to already contain a tile. we
                         // cant put the grabbed tile back into the same hand
                         // spot :(
-                        int coodX = getColFromCoordinate(placementCoordinate);
-                        int coodY = getRowFromCoordinate(placementCoordinate);
+                        int coordX = getColFromCoordinate(placementCoordinate);
+                        int coordY = getRowFromCoordinate(placementCoordinate);
 
-                        if (board->isEmptySpot(coodX, coodY))
+                        if (board->isEmptySpot(coordX, coordY))
                         {
                            std::cout << std::endl;
                            Tile* toPlace = nullptr;
                            toPlace = players[i]->getTileFromHand(tileToPlace);
-                           board->placeTile(toPlace, coodX, coodY);
+                           board->placeTile(toPlace, coordX, coordY);
+
                            // update player score?
                            players[i]->drawTile();
                            validInput = true;
@@ -220,7 +229,7 @@ void Game::playGame()
 
                      if (!bag->getTilesInBag()->isEmpty())
                      {
-                        if (isValidTile(players[i], tileToSwap))
+                        if (isValidTileInHand(players[i], tileToSwap))
                         {
                            if (players[i]->swapTile(tileToSwap))
                            {
@@ -373,7 +382,7 @@ bool Game::isValidName(std::string name)
    return isValid;
 }
 
-bool Game::isValidTile(Player* player, std::string tileToValidate)
+bool Game::isValidTileInHand(Player* player, std::string tileToValidate)
 {
    bool isValid = false;
 
@@ -395,10 +404,11 @@ bool Game::isValidCoordinate(std::string coordinate)
 
    if (coordinate.size() == 2)
    {
-      for (char A = 'A'; A <= 'Z'; A++)
+      for (char A = 'A'; A <= 'Z'; A++) // to row
       {
          if (coordinate[0] == A)
          {
+            // try using the atoi thing to convert coordinate[1]
             int y = coordinate[1] - '0'; // magiccc :C ty stack
             if (y >= 0 && y <= 9)        // for A0 - A9
             {
@@ -411,19 +421,16 @@ bool Game::isValidCoordinate(std::string coordinate)
    else if (coordinate.size() == 3)
    {
       std::string str = "";
-      for (char A = 'A'; A <= 'Z'; A++)
+      for (char A = 'A'; A <= 'Z'; A++) // to row
       {
          if (coordinate[0] == A)
          {
-            if (coordinate[1] != ' ')
+            str.push_back(coordinate[1]);
+            str.push_back(coordinate[2]);
+            int col = atoi(str.c_str());
+            if (col >= 10 && col <= 25) // for A10 - A25
             {
-               str.push_back(coordinate[1]);
-               str.push_back(coordinate[2]);
-               int col = atoi(str.c_str());
-               if (col >= 10 && col <= 25) // for A10 - A25
-               {
-                  isValid = true;
-               }
+               isValid = true;
             }
          }
       }

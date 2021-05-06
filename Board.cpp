@@ -2,6 +2,7 @@
 
 Board::Board()
 {
+   // replace to use dimY and dimX
    tilesOnBoard.resize(26, std::vector<Tile*>(26, 0));
    int size = tilesOnBoard.size();
 

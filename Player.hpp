@@ -12,7 +12,7 @@ class Player
 {
 public:
    Player();
-   Player(std::string playerInfo);
+   Player(std::string playerName, int playerScore, std::string playerHand);
    ~Player();
    bool drawTile();
    bool placeTile(Tile* tile, std::string coordinate);
