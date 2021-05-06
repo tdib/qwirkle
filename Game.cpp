@@ -206,19 +206,9 @@ void Game::playGame()
 
          bool validInput = false;
 
-         // Move all to print state? DO IT
          if (gameRunning == true)
          {
-            std::cout << players[i]->getName() << ", it's your turn"
-                      << std::endl;
-            for (int j = 0; j < numPlayers; j++)
-            {
-               std::cout << "Score for " << players[j]->getName() << ": "
-                         << players[j]->getScore() << std::endl;
-            }
-            printState(); // printGameState();
-            std::cout << "Your hand is" << std::endl;
-            std::cout << players[i]->getHand() << std::endl;
+            printGameState(players[i]);
          }
 
          while (validInput == false && gameRunning == true)
@@ -243,48 +233,36 @@ void Game::playGame()
                   command = rawCommand[0];
                }
 
-               if (command == PLACE)
+               if (command == PLACE && rawCommand.size() == 4 &&
+                   rawCommand[2] == "AT")
                {
-                  if (rawCommand.size() == 4)
+                  std::string tileToPlace         = rawCommand[1];
+                  std::string placementCoordinate = rawCommand[3];
+
+                  // validCoordinate is incomplete. Need to check for 'A21'
+                  if (isValidTileInHand(players[i], tileToPlace) &&
+                      isValidCoordinate(placementCoordinate))
                   {
-                     if (rawCommand[2] != "AT")
+                     // TODO: Need to check that the placement is legal
+                     // according to the rules of Qwirkle.
+                     // Might have to be this way due to a scenario where we
+                     // grab a valid tile for a valid coordinate, but then
+                     // the coordinate happens to already contain a tile. we
+                     // cant put the grabbed tile back into the same hand
+                     // spot :(
+                     int coordX = getColFromCoordinate(placementCoordinate);
+                     int coordY = getRowFromCoordinate(placementCoordinate);
+
+                     if (board->isEmptySpot(coordX, coordY))
                      {
-                        throw std::invalid_argument("Invalid Input");
-                     }
+                        std::cout << std::endl;
+                        Tile* toPlace = nullptr;
+                        toPlace = players[i]->getTileFromHand(tileToPlace);
+                        board->placeTile(toPlace, coordX, coordY);
 
-                     std::string tileToPlace         = rawCommand[1];
-                     std::string placementCoordinate = rawCommand[3];
-
-                     // validCoordinate is incomplete. Need to check for 'A21'
-                     if (isValidTileInHand(players[i], tileToPlace) &&
-                         isValidCoordinate(placementCoordinate))
-                     {
-                        // TODO: Need to check that the placement is legal
-                        // according to the rules of Qwirkle.
-                        //
-                        // Might have to be this way due to a scenario where we
-                        // grab a valid tile for a valid coordinate, but then
-                        // the coordinate happens to already contain a tile. we
-                        // cant put the grabbed tile back into the same hand
-                        // spot :(
-                        int coordX = getColFromCoordinate(placementCoordinate);
-                        int coordY = getRowFromCoordinate(placementCoordinate);
-
-                        if (board->isEmptySpot(coordX, coordY))
-                        {
-                           std::cout << std::endl;
-                           Tile* toPlace = nullptr;
-                           toPlace = players[i]->getTileFromHand(tileToPlace);
-                           board->placeTile(toPlace, coordX, coordY);
-
-                           // update player score?
-                           players[i]->drawTile();
-                           validInput = true;
-                        }
-                        else
-                        {
-                           throw std::invalid_argument("Invalid Input");
-                        }
+                        // update player score?
+                        players[i]->drawTile();
+                        validInput = true;
                      }
                      else
                      {
@@ -296,25 +274,22 @@ void Game::playGame()
                      throw std::invalid_argument("Invalid Input");
                   }
                }
-               else if (command == REPLACE)
+               else if (command == REPLACE && rawCommand.size() == 2)
                {
-                  if (rawCommand.size() == 2)
-                  {
-                     std::string tileToSwap = rawCommand[1];
+                  std::string tileToSwap = rawCommand[1];
 
-                     if (!bag->getTilesInBag()->isEmpty())
+                  if (!bag->getTilesInBag()->isEmpty())
+                  {
+                     if (isValidTileInHand(players[i], tileToSwap))
                      {
-                        if (isValidTileInHand(players[i], tileToSwap))
+                        if (players[i]->swapTile(tileToSwap))
                         {
-                           if (players[i]->swapTile(tileToSwap))
-                           {
-                              std::cout << std::endl;
-                              validInput = true;
-                           }
-                           else
-                           {
-                              throw std::invalid_argument("Invalid Input");
-                           }
+                           std::cout << std::endl;
+                           validInput = true;
+                        }
+                        else
+                        {
+                           throw std::invalid_argument("Invalid Input");
                         }
                      }
                      else
@@ -378,10 +353,11 @@ void Game::playGame()
                   std::cout << "Score for " << players[k]->getName() << ": "
                             << players[k]->getScore() << std::endl;
                }
-               // TODO: figure out which player has the highest score
+               // TODO: figure out which player has the highest score (easy with
+               // 2 players, tad bit harder with more)
                std::cout << "Player ... won!" << std::endl;
 
-               // Does the player who ran out first get extra points?
+               // Does the player who ran out of tiles first get extra points?
                gameRunning = false;
             }
          }
@@ -389,16 +365,17 @@ void Game::playGame()
    }
 }
 
-void Game::loadTiles(std::string* tilesInfo)
+void Game::printGameState(Player* player)
 {
-   // TODO (for loading tiles in from a saved file)
-}
-
-void Game::printState()
-{
+   std::cout << player->getName() << ", it's your turn" << std::endl;
+   for (int j = 0; j < numPlayers; j++)
+   {
+      std::cout << "Score for " << players[j]->getName() << ": "
+                << players[j]->getScore() << std::endl;
+   }
    board->printBoard();
-
-   // TODO. Full implementation with Board.cpp, etc
+   std::cout << "Your hand is" << std::endl;
+   std::cout << player->getHand() << std::endl;
 }
 
 bool Game::saveGame(std::string saveFileName)
@@ -406,12 +383,6 @@ bool Game::saveGame(std::string saveFileName)
    // TODO
    // bool false if the file is open or something?
    return false;
-}
-
-void Game::quit()
-{
-   // TODO
-   // crash :)
 }
 
 std::vector<std::string> Game::splitString(
@@ -465,10 +436,6 @@ bool Game::isValidTileInHand(Player* player, std::string tileToValidate)
    {
       isValid = true;
    }
-   else
-   {
-      throw std::invalid_argument("Invalid Input");
-   }
 
    return isValid;
 }
@@ -511,10 +478,6 @@ bool Game::isValidCoordinate(std::string coordinate)
       }
    }
 
-   if (!isValid)
-   {
-      throw std::invalid_argument("Invalid Input");
-   }
    return isValid;
 }
 

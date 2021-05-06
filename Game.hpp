@@ -23,10 +23,8 @@ public:
    // Public or else qwirkle.cpp can't use them
    void playGame();
    void initalisePlayers();
-   void loadTiles(std::string* tilesInfo);
-   void printState();
+   void printGameState(Player* player);
    bool saveGame(std::string saveFileName);
-   void quit();
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
    bool isValidName(std::string name);
