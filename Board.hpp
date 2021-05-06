@@ -11,7 +11,7 @@ class Board
 {
 public:
    Board();
-   Board(std::string boardInfo);
+   Board(int dimY, int dimX, std::string boardState);
    ~Board();
    void printBoard();
    Tile* getTile(std::string tile);

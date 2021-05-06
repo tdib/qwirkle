@@ -17,8 +17,9 @@ Board::Board()
    }
 }
 
-Board::Board(std::string boardInfo)
+Board::Board(int dimY, int dimX, std::string boardState)
 {
+
 }
 
 Board::~Board()
