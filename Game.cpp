@@ -71,7 +71,7 @@ Game::Game(std::ifstream& savedGame)
    getline(savedGame, boardState);
    std::cout << boardState << std::endl;
 
-   // tile bag contents
+   // tile BAG contents
    std::string bagContents = "";
    getline(savedGame, bagContents);
    std::cout << bagContents << std::endl;
@@ -85,6 +85,17 @@ Game::Game(std::ifstream& savedGame)
 
    std::cout << std::endl;
    std::cout << "Qwirkle game successfully loaded" << std::endl;
+
+   // board
+
+   // initialise board with loaded info
+   // this->board = new Board(..., ..., ...);
+
+   // initialise bag with loaded info
+   // this->bag = new Bag(...);
+
+   // initialise players with loaded info
+   // (idk how to write an example of this)
 }
 
 Game::~Game()
