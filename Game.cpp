@@ -4,10 +4,10 @@
 Game::Game(int numPlayers)
 {
    // setting the number of players :)
-   this->numPlayers = 3;
+   this->numPlayers = 2;
 
    // On a fresh game, set the starting player to players[0]
-   this->startingPlayer = 1;
+   this->startingPlayer = 0;
 
    // initialising board
    this->board = new Board();
