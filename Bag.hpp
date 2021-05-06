@@ -23,7 +23,6 @@ public:
 
 private:
    LinkedList* tilesInBag;
-   std::vector<int> ints;
 };
 
 #endif // BAG_H
