@@ -10,7 +10,7 @@ void printMenu();
 void printCredits();
 void printStudent(std::string name, std::string id);
 void printQuitMessage();
-void loadGame(std::string fileName);
+bool loadGame(Game* game, std::string fileName);
 
 int main(void)
 {
@@ -22,6 +22,7 @@ int main(void)
    printMenu();
    while (loopAgain == true)
    {
+      std::cout << "> ";
       try
       {
          std::getline(std::cin, input);
@@ -47,11 +48,40 @@ int main(void)
             loopAgain            = false;
             std::string fileName = "";
             std::cout << std::endl;
-            std::cout << "Enter the filename from which load a game"
+            std::cout << "Enter the filename from which to load a game"
                       << std::endl;
-            std::cout << "> ";
-            std::cin >> fileName;
-            loadGame(fileName);
+
+            Game* game             = nullptr;
+            bool loopFileNameAgain = true;
+            while (loopFileNameAgain == true)
+            {
+               std::cout << "> ";
+               try
+               {
+                  std::getline(std::cin, fileName);
+                  if (std::cin.eof())
+                  {
+                     loopFileNameAgain = false;
+                     std::cout << std::endl;
+                     printQuitMessage();
+                  }
+                  else if (loadGame(game, fileName))
+                  {
+                     game->playGame();
+                     loopFileNameAgain = false;
+                  }
+                  else
+                  {
+                     throw std::invalid_argument("Invalid Input");
+                  }
+               }
+               catch (std::invalid_argument& e)
+               {
+                  std::cout << e.what() << std::endl;
+               }
+            }
+
+            delete game;
          }
          else if (input == CREDITS)
          {
@@ -77,25 +107,26 @@ int main(void)
       }
       catch (std::invalid_argument& e)
       {
+         loopAgain = true;
          std::cout << e.what() << std::endl;
-         std::cout << "> ";
       }
    }
 
    return EXIT_SUCCESS;
 }
 
-void loadGame(std::string fileName)
+bool loadGame(Game* game, std::string fileName)
 {
+   bool isValidFile = false;
+   // Need to validate file here (check the spec)
    std::ifstream savedGame(fileName + ".save");
 
-   Game* game = new Game(savedGame);
-   game->playGame();
-   if (std::cin.eof())
+   if (savedGame)
    {
-      printQuitMessage();
+      game        = new Game(savedGame);
+      isValidFile = true;
    }
-   delete game;
+   return isValidFile;
 }
 
 void printMenu()
@@ -107,7 +138,6 @@ void printMenu()
    std::cout << "3. Credits (Show student information)" << std::endl;
    std::cout << "4. Quit" << std::endl;
    std::cout << std::endl;
-   std::cout << "> ";
 }
 
 void printCredits()
