@@ -107,7 +107,6 @@ int main(void)
       }
       catch (std::invalid_argument& e)
       {
-         loopAgain = true;
          std::cout << e.what() << std::endl;
       }
    }
@@ -123,7 +122,7 @@ bool loadGame(Game* game, std::string fileName)
 
    if (savedGame)
    {
-      game        = new Game(savedGame);
+      game        = new Game(2, savedGame);
       isValidFile = true;
    }
    return isValidFile;

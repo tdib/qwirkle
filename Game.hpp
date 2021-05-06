@@ -17,7 +17,7 @@ class Game
 {
 public:
    Game(int numPlayers);
-   Game(std::ifstream& savedGame);
+   Game(int numPlayers, std::ifstream& savedGame);
    ~Game();
 
    // Public or else qwirkle.cpp can't use them

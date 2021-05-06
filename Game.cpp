@@ -4,7 +4,7 @@
 Game::Game(int numPlayers)
 {
    // setting the number of players :)
-   this->numPlayers = 2;
+   this->numPlayers = numPlayers;
 
    // On a fresh game, set the starting player to players[0]
    this->startingPlayer = 0;
@@ -20,8 +20,10 @@ Game::Game(int numPlayers)
 }
 
 // Loading a saved game
-Game::Game(std::ifstream& savedGame)
+Game::Game(int numPlayers, std::ifstream& savedGame)
 {
+   this->numPlayers = numPlayers;
+   // this->startingPlayer = ?;
    // needs input validation for file
    // idk if you check and validate the file as you go or at the start
    // also, need to
@@ -477,24 +479,24 @@ bool Game::isValidCoordinate(std::string coordinate)
 
    if (coordinate.size() == 2)
    {
-      for (char A = 'A'; A <= 'Z'; A++) // to row
+      std::string str = "";
+      for (char A = 'A'; A <= 'Z'; A++)
       {
          if (coordinate[0] == A)
          {
-            // try using the atoi thing to convert coordinate[1]
-            int y = coordinate[1] - '0'; // magiccc :C ty stack
-            if (y >= 0 && y <= 9)        // for A0 - A9
+            str.push_back(coordinate[1]);
+            int col = atoi(str.c_str());
+            if (col >= 0 && col <= 9) // for A0 - A9
             {
                isValid = true;
             }
          }
       }
    }
-   // how tf do i do this man
    else if (coordinate.size() == 3)
    {
       std::string str = "";
-      for (char A = 'A'; A <= 'Z'; A++) // to row
+      for (char A = 'A'; A <= 'Z'; A++)
       {
          if (coordinate[0] == A)
          {
@@ -519,12 +521,12 @@ bool Game::isValidCoordinate(std::string coordinate)
 int Game::getColFromCoordinate(std::string coordinate)
 {
    int x = 0;
-
    if (coordinate.size() == 2)
    {
-      x = coordinate[1] - '0'; // magiccc :C ty stack
+      std::string str = "";
+      str.push_back(coordinate[1]);
+      x = atoi(str.c_str());
    }
-   // how tf do i do this man
    else if (coordinate.size() == 3)
    {
       std::string str = "";
@@ -532,14 +534,13 @@ int Game::getColFromCoordinate(std::string coordinate)
       str.push_back(coordinate[2]);
       x = atoi(str.c_str());
    }
-
+   // No need for validation checking as it has already been checked :)
    return x;
 }
 
 int Game::getRowFromCoordinate(std::string coordinate)
 {
-   int y = 0;
-
+   int y   = 0;
    int row = 0;
    for (char A = 'A'; A <= 'Z'; A++)
    {
@@ -549,6 +550,6 @@ int Game::getRowFromCoordinate(std::string coordinate)
       }
       row++;
    }
-
+   // No need for validation checking as it has already been checked :)
    return y;
 }
