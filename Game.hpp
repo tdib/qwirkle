@@ -23,7 +23,7 @@ public:
    void playGame();
    void initalisePlayers();
    void printGameState(Player* player);
-   bool saveGame(std::string saveFileName);
+   bool saveGame(Player* player, std::string saveFileName);
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
    bool isValidName(std::string name);

@@ -18,6 +18,9 @@ public:
    int calculateScore(Tile* placedTile);
    void placeTile(Tile* tileToPlace, int x, int y);
    bool isEmptySpot(int x, int y);
+   std::string saveBoard();
+   int getDimX();
+   int getDimY();
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;

@@ -221,13 +221,20 @@ void Game::playGame()
                std::cout << "> ";
                getline(std::cin, rawUserInput);
 
-               // uppercase before putting the words into the vector
+               // Splitting up rawUserInput based on delimited (spaces)
+               // This specific splitString() is for case-sensitive save files
+               std::vector<std::string> rawSaveCommand =
+                  splitString(rawUserInput, ' ');
+
+               // Converting rawUserInput into all uppercase
                std::transform(rawUserInput.begin(), rawUserInput.end(),
                   rawUserInput.begin(), ::toupper);
+
+               // Splitting up rawUserInput based on delimiter (spaces)
                std::vector<std::string> rawCommand =
                   splitString(rawUserInput, ' ');
-               std::string command = "";
 
+               std::string command = "";
                if (rawCommand.size() > 0)
                {
                   command = rawCommand[0];
@@ -306,11 +313,15 @@ void Game::playGame()
                {
                   if (rawCommand.size() == 2)
                   {
-                     std::string saveFileName = rawCommand[1];
-                     std::cout << "Game successfully saved" << std::endl;
-                     validInput = true;
-                     // Need to now run a saveGame function :)
-                     // saveGame(saveFileName);
+                     std::string saveFileName = rawSaveCommand[1];
+                     if (saveGame(players[i], saveFileName))
+                     {
+                        std::cout << "Game successfully saved" << std::endl;
+                     }
+                     else
+                     {
+                        throw std::invalid_argument("Invalid Input");
+                     }
                   }
                   else
                   {
@@ -378,11 +389,29 @@ void Game::printGameState(Player* player)
    std::cout << player->getHand() << std::endl;
 }
 
-bool Game::saveGame(std::string saveFileName)
+bool Game::saveGame(Player* player, std::string saveFileName)
 {
-   // TODO
-   // bool false if the file is open or something?
-   return false;
+   bool canSave = false;
+
+   std::ofstream saveFile(saveFileName + ".save");
+   // WHAT OFSTREAM FUNCTIONS DO WE USE TO CHECK THAT A FILE IS GOOD >:(
+   if (!saveFile.fail())
+   {
+      for (int i = 0; i < numPlayers; i++)
+      {
+         saveFile << players[i]->getName() << std::endl;
+         saveFile << players[i]->getScore() << std::endl;
+         saveFile << players[i]->getHand() << std::endl;
+      }
+      saveFile << board->getDimX() << "," << board->getDimY() << std::endl;
+      saveFile << board->saveBoard() << std::endl;
+      saveFile << bag->saveBag() << std::endl;
+      saveFile << player->getName() << std::endl;
+      canSave = true;
+   }
+
+   saveFile.close();
+   return canSave;
 }
 
 std::vector<std::string> Game::splitString(

@@ -20,6 +20,7 @@ public:
    void scrambleTiles(std::vector<Tile*> tilesToScramble);
    void initialiseTiles();
    LinkedList* getTilesInBag();
+   std::string saveBag();
 
 private:
    LinkedList* tilesInBag;

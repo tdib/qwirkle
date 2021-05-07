@@ -68,3 +68,8 @@ LinkedList* Bag::getTilesInBag()
 {
    return tilesInBag;
 }
+
+std::string Bag::saveBag()
+{
+   return tilesInBag->getContents();
+}

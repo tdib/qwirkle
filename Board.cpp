@@ -147,3 +147,51 @@ void Board::placeTile(Tile* tileToPlace, int x, int y)
       }
    }
 }
+
+std::string Board::saveBoard()
+{
+   std::string boardState = "";
+   int rowSize            = tilesOnBoard.size();
+   bool matchingTile      = false;
+   for (int row = 0; row < rowSize; row++)
+   {
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
+      {
+         if (tilesOnBoard[row][col] != nullptr)
+         {
+            // Converting row into alphbetical
+            char c = 'A';
+            for (int i = 0; i < rowSize; i++)
+            {
+               if (i == row)
+               {
+                  matchingTile = true;
+                  boardState.append(tilesOnBoard[row][col]->toString() + "@" +
+                                    c + std::to_string(col) + ", ");
+               }
+               c++;
+            }
+         }
+      }
+   }
+
+   // Sorry guys :C
+   if (matchingTile)
+   {
+      int size = boardState.size();
+      boardState.erase(size - 1);
+      boardState.erase(size - 2);
+   }
+   return boardState;
+}
+
+int Board::getDimX()
+{
+   return dimX;
+}
+
+int Board::getDimY()
+{
+   return dimY;
+}
