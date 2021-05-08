@@ -16,7 +16,6 @@ Bag::Bag(std::string bagContents)
    {
       std::string currTile = "";
       std::getline(bagContentStream, currTile, ',');
-      std::cout << currTile << std::endl;
       Colour tileColour     = currTile[0];
       std::string toConvert = "";
       toConvert.push_back(currTile[1]);
@@ -31,8 +30,6 @@ Bag::Bag(std::string bagContents)
          {
             if (tileShape == shape && tileColour == colour)
             {
-               std::cout << "Adding " << tileColour << tileShape << " to bag."
-                         << std::endl;
                this->tilesInBag->push(new Tile(tileShape, tileColour));
             }
          }

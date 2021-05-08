@@ -74,6 +74,11 @@ int main(void)
                      Game* game = new Game(2, savedGame);
                      game->playGame();
                      loopFileNameAgain = false;
+
+                     if (std::cin.eof())
+                     {
+                        printQuitMessage();
+                     }
                   }
                   else
                   {

@@ -44,18 +44,14 @@ void Player::setHand(std::string newHand)
 
       Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
       Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
-      // check if tile is valid
-      std::cout << tileColour << std::endl;
-      std::cout << tileShape << std::endl;
 
+      // check if tile is valid
       for (Colour colour : colours)
       {
          for (Shape shape : shapes)
          {
             if (tileShape == shape && tileColour == colour)
             {
-               std::cout << "Adding " << tileColour << tileShape << " to hand."
-                         << std::endl;
                this->hand->push(new Tile(tileShape, tileColour));
             }
          }
