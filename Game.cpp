@@ -123,14 +123,14 @@ void Game::initalisePlayers()
       players.push_back(new Player());
    }
 
-   for (int j = 0; j < numPlayers; j++)
+   for (int i = 0; i < numPlayers; i++)
    {
       std::string playerName = " ";
       bool validName         = false;
 
       while (validName == false && !std::cin.eof())
       {
-         std::cout << "Enter a name for player " << j + 1
+         std::cout << "Enter a name for player " << i + 1
                    << " (uppercase characters only)" << std::endl;
          std::cout << "> ";
 
@@ -156,14 +156,14 @@ void Game::initalisePlayers()
       players.push_back(new Player());
       std::transform(
          playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
-      players[j]->setName(playerName);
-      players[j]->setBoard(this->board);
-      players[j]->setBag(this->bag);
+      players[i]->setName(playerName);
+      players[i]->setBoard(this->board);
+      players[i]->setBag(this->bag);
 
       // Works perfectly
-      for (int i = 0; i < 6; i++)
+      for (int j = 0; j < 6; j++)
       {
-         players[j]->drawTile();
+         players[i]->drawTile();
       }
    }
 
@@ -359,10 +359,10 @@ void Game::playGame()
             if (players[i]->isEmptyHand())
             {
                std::cout << "Game over" << std::endl;
-               for (int k = 0; k < numPlayers; k++)
+               for (int j = 0; j < numPlayers; j++)
                {
-                  std::cout << "Score for " << players[k]->getName() << ": "
-                            << players[k]->getScore() << std::endl;
+                  std::cout << "Score for " << players[j]->getName() << ": "
+                            << players[j]->getScore() << std::endl;
                }
                // TODO: figure out which player has the highest score (easy with
                // 2 players, tad bit harder with more)
@@ -379,10 +379,10 @@ void Game::playGame()
 void Game::printGameState(Player* player)
 {
    std::cout << player->getName() << ", it's your turn" << std::endl;
-   for (int j = 0; j < numPlayers; j++)
+   for (int i = 0; i < numPlayers; i++)
    {
-      std::cout << "Score for " << players[j]->getName() << ": "
-                << players[j]->getScore() << std::endl;
+      std::cout << "Score for " << players[i]->getName() << ": "
+                << players[i]->getScore() << std::endl;
    }
    board->printBoard();
    std::cout << "Your hand is" << std::endl;
