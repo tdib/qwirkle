@@ -408,7 +408,8 @@ bool Game::saveGame(Player* player, std::string saveFileName)
          saveFile << players[i]->getScore() << std::endl;
          saveFile << players[i]->getHand() << std::endl;
       }
-      saveFile << board->getDimCols() << "," << board->getDimRows() << std::endl;
+      saveFile << board->getDimCols() << "," << board->getDimRows()
+               << std::endl;
       saveFile << board->saveBoard() << std::endl;
       saveFile << bag->saveBag() << std::endl;
       saveFile << player->getName() << std::endl;
