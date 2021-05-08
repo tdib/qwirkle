@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <random>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -13,7 +14,7 @@ class Bag
 {
 public:
    Bag();
-   Bag(std::string bagInfo);
+   Bag(std::string bagContents);
    ~Bag();
    Tile* popTile();
    void pushTile(Tile* tile);

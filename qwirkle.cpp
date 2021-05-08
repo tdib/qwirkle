@@ -10,7 +10,8 @@ void printMenu();
 void printCredits();
 void printStudent(std::string name, std::string id);
 void printQuitMessage();
-bool loadGame(Game* game, std::string fileName);
+// bool loadGame(Game* game, std::string fileName);
+bool loadGame(std::string fileName);
 
 int main(void)
 {
@@ -51,7 +52,6 @@ int main(void)
             std::cout << "Enter the filename from which to load a game"
                       << std::endl;
 
-            Game* game             = nullptr;
             bool loopFileNameAgain = true;
             while (loopFileNameAgain == true)
             {
@@ -65,8 +65,13 @@ int main(void)
                      std::cout << std::endl;
                      printQuitMessage();
                   }
-                  else if (loadGame(game, fileName))
+                  else if (loadGame(fileName))
                   {
+                     // loadGame() function now only checks if the filename is
+                     // valid might change to actually call playGame() as well
+                     // but that would leave this else if essentially blank
+                     std::ifstream savedGame(fileName + ".save");
+                     Game* game = new Game(2, savedGame);
                      game->playGame();
                      loopFileNameAgain = false;
                   }
@@ -80,8 +85,6 @@ int main(void)
                   std::cout << e.what() << std::endl;
                }
             }
-
-            delete game;
          }
          else if (input == CREDITS)
          {
@@ -113,15 +116,17 @@ int main(void)
    return EXIT_SUCCESS;
 }
 
-bool loadGame(Game* game, std::string fileName)
+bool loadGame(std::string fileName)
 {
    bool isValidFile = false;
    // Need to validate file here (check the spec)
+   // try catch?
    std::ifstream savedGame(fileName + ".save");
 
-   if (savedGame)
+   if (savedGame.good())
    {
-      game        = new Game(2, savedGame);
+      // hard coded 2 players will need to be changed in individual enhancements
+      // Game* game = new Game(2, savedGame);
       isValidFile = true;
    }
    return isValidFile;

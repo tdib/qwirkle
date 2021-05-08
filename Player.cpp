@@ -11,14 +11,12 @@ Player::Player()
 
 Player::Player(std::string playerName, int playerScore, std::string playerHand)
 {
-   /**
-    * playeronename
-    * playeronescore
-    * playeronehand
-    */
-
-   std::string newName = "";
-   // this->setName(std::getline(playerInfo, newName));
+   this->bag   = nullptr;
+   this->board = nullptr;
+   this->hand  = new LinkedList();
+   this->name  = playerName;
+   this->score = playerScore;
+   this->setHand(playerHand);
 }
 
 Player::~Player()
@@ -29,6 +27,43 @@ Player::~Player()
    }
 
    delete hand;
+}
+
+void Player::setHand(std::string newHand)
+{
+   // create stringstream and iterate through, adding each tile to hand
+   std::stringstream handTiles(newHand);
+   while (handTiles.good())
+   {
+      std::string currTile = "";
+      std::getline(handTiles, currTile, ',');
+      Colour tileColour     = currTile[0];
+      std::string toConvert = "";
+      toConvert.push_back(currTile[1]);
+      Shape tileShape = atoi(toConvert.c_str());
+
+      Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+      Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
+      // check if tile is valid
+      std::cout << tileColour << std::endl;
+      std::cout << tileShape << std::endl;
+
+      for (Colour colour : colours)
+      {
+         for (Shape shape : shapes)
+         {
+            if (tileShape == shape && tileColour == colour)
+            {
+               std::cout << "Adding " << tileColour << tileShape << " to hand."
+                         << std::endl;
+               this->hand->push(new Tile(tileShape, tileColour));
+            }
+         }
+      }
+   }
+   // iterate through each tile in the string
+   // validate tile
+   // push tile to back of hand linkedlist
 }
 
 void Player::setBag(Bag* bag)

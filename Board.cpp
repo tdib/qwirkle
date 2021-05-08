@@ -4,7 +4,7 @@ Board::Board()
 {
    this->dimX = 26; // Cols
    this->dimY = 26; // Rows
-   tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
+   this->tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
 
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
@@ -19,6 +19,120 @@ Board::Board()
 
 Board::Board(int dimX, int dimY, std::string boardState)
 {
+   this->dimX = dimX; // Cols
+   this->dimY = dimY; // Rows
+   this->tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
+   std::stringstream boardTiles(boardState);
+
+   // iterate through boardstate
+   while (boardTiles.good())
+   {
+      Tile* tileToPlace          = nullptr;
+      std::string tileToPlaceStr = "";
+      std::getline(boardTiles, tileToPlaceStr, '@');
+      // DUPLICATED CODE - MAKE METHOD FOR THIS?
+      Colour tileColour = tileToPlaceStr[0];
+      Shape tileShape   = tileToPlaceStr[1];
+      Colour colours[]  = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+      Shape shapes[]    = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
+      // check if tile is valid
+      for (Colour colour : colours)
+      {
+         for (Shape shape : shapes)
+         {
+            if (tileShape == shape && tileColour == colour)
+            {
+               tileToPlace = new Tile(tileShape, tileColour);
+            }
+         }
+      }
+
+      std::string coordToPlace = "";
+      // currently delimiting with a single comma, should be ", " (with a space)
+      std::getline(boardTiles, coordToPlace, ',');
+      // find the tile on board
+      // CODE YOINKED FROM GAME.CPP
+      // bool isValid = false;
+
+      if (coordToPlace.size() == 2)
+      {
+         std::string str = "";
+         for (char A = 'A'; A <= 'Z'; A++)
+         {
+            if (coordToPlace[0] == A)
+            {
+               str.push_back(coordToPlace[1]);
+               int col = atoi(str.c_str());
+               if (col >= 0 && col <= 9) // for A0 - A9
+               {
+                  // isValid = true;
+               }
+            }
+         }
+      }
+      else if (coordToPlace.size() == 3)
+      {
+         std::string str = "";
+         for (char A = 'A'; A <= 'Z'; A++)
+         {
+            if (coordToPlace[0] == A)
+            {
+               str.push_back(coordToPlace[1]);
+               str.push_back(coordToPlace[2]);
+               int col = atoi(str.c_str());
+               if (col >= 10 && col <= 25) // for A10 - A25
+               {
+                  // isValid = true;
+               }
+            }
+         }
+      }
+
+      // place tileToPlace there
+      int x = 0;
+      if (coordToPlace.size() == 2)
+      {
+         std::string str = "";
+         str.push_back(coordToPlace[1]);
+         x = atoi(str.c_str());
+      }
+      else if (coordToPlace.size() == 3)
+      {
+         std::string str = "";
+         str.push_back(coordToPlace[1]);
+         str.push_back(coordToPlace[2]);
+         x = atoi(str.c_str());
+      }
+
+      int y   = 0;
+      int row = 0;
+      for (char A = 'A'; A <= 'Z'; A++)
+      {
+         if (coordToPlace[0] == A)
+         {
+            y = row;
+         }
+         row++;
+      }
+
+      // END YOINK
+
+      placeTile(tileToPlace, x, y);
+   }
+   // place each tile at its given location
+
+   int rowSize = tilesOnBoard.size();
+   for (int row = 0; row < rowSize; row++)
+   {
+      int colSize = tilesOnBoard[row].size();
+      for (int col = 0; col < colSize; col++)
+      {
+         // check if boardState contains piece of this iteration
+         // tilesOnBoard[row][col] = that piece
+         // else
+         // tilesOnBoard[row][col] = nullptr
+      }
+   }
 }
 
 Board::~Board()

@@ -4,8 +4,10 @@
 #include "Bag.hpp"
 #include "Board.hpp"
 #include "Tile.hpp"
+#include "TileCodes.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 class Player
@@ -23,7 +25,7 @@ public:
    void setName(std::string newName);
    int getScore();
    std::string getHand();
-
+   void setHand(std::string newHand);
    bool isEmptyHand();
 
    void setBag(Bag* bag);

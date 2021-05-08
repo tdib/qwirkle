@@ -44,6 +44,9 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    getline(savedGame, playerOneHand);
    std::cout << playerOneHand << std::endl;
 
+   this->players.push_back(
+      new Player(playerOneName, playerOneScore, playerOneHand));
+
    // player two name
    std::string playerTwoName = "";
    getline(savedGame, playerTwoName);
@@ -60,12 +63,15 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    getline(savedGame, playerTwoHand);
    std::cout << playerTwoHand << std::endl;
 
+   this->players.push_back(
+      new Player(playerTwoName, playerTwoScore, playerTwoHand));
+
    // board dimensions
    std::string dimStr = "";
    getline(savedGame, dimStr);
    size_t commaIndex = dimStr.find(",");
-   int dimY          = std::stoi(dimStr.substr(0, commaIndex));
    int dimX          = std::stoi(dimStr.substr(commaIndex + 1));
+   int dimY          = std::stoi(dimStr.substr(0, commaIndex));
    std::cout << "Height:" << dimY << ", Width:" << dimX << std::endl;
 
    // board state
@@ -73,31 +79,43 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    getline(savedGame, boardState);
    std::cout << boardState << std::endl;
 
+   this->board = new Board(dimX, dimY, boardState);
+
    // tile BAG contents
    std::string bagContents = "";
    getline(savedGame, bagContents);
    std::cout << bagContents << std::endl;
+
+   this->bag = new Bag(bagContents);
+
+   for (int i = 0; i < numPlayers; i++)
+   {
+      players[i]->setBag(this->bag);
+      players[i]->setBoard(this->board);
+   }
 
    // current player name
    std::string currentPlayerName = "";
    getline(savedGame, currentPlayerName);
    std::cout << currentPlayerName << std::endl;
 
+   int startingPlayer = 0;
+
+   for (int i = 0; i < numPlayers; i++)
+   {
+      if (currentPlayerName == players[i]->getName())
+      {
+         startingPlayer = i;
+      }
+   }
+
+   this->startingPlayer = startingPlayer;
+
    savedGame.close();
 
    std::cout << std::endl;
    std::cout << "Qwirkle game successfully loaded" << std::endl;
-
-   // board
-
-   // initialise board with loaded info
-   // this->board = new Board(..., ..., ...);
-
-   // initialise bag with loaded info
-   // this->bag = new Bag(...);
-
-   // initialise players with loaded info
-   // (idk how to write an example of this)
+   std::cout << std::endl;
 }
 
 Game::~Game()

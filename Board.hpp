@@ -2,8 +2,10 @@
 #define BOARD_H
 
 #include "Tile.hpp"
+#include "TileCodes.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 

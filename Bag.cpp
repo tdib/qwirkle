@@ -6,10 +6,38 @@ Bag::Bag()
    initialiseTiles();
 }
 
-Bag::Bag(std::string bagInfo)
+Bag::Bag(std::string bagContents)
     : tilesInBag(new LinkedList())
 {
+   // P2,B5,C6,C2,C1,B3,B7
    // TODO: Parse bagInfo and generate tiles
+   std::stringstream bagContentStream(bagContents);
+   while (bagContentStream.good())
+   {
+      std::string currTile = "";
+      std::getline(bagContentStream, currTile, ',');
+      std::cout << currTile << std::endl;
+      Colour tileColour     = currTile[0];
+      std::string toConvert = "";
+      toConvert.push_back(currTile[1]);
+      Shape tileShape = atoi(toConvert.c_str());
+
+      Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+      Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
+
+      for (Colour colour : colours)
+      {
+         for (Shape shape : shapes)
+         {
+            if (tileShape == shape && tileColour == colour)
+            {
+               std::cout << "Adding " << tileColour << tileShape << " to bag."
+                         << std::endl;
+               this->tilesInBag->push(new Tile(tileShape, tileColour));
+            }
+         }
+      }
+   }
 }
 
 Bag::~Bag()
@@ -24,6 +52,7 @@ Bag::~Bag()
 
 void Bag::initialiseTiles()
 {
+   // moving these back to tilecodes
    Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
    Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
 

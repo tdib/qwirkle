@@ -24,7 +24,6 @@ LinkedList::~LinkedList()
 void LinkedList::push(Tile* tile)
 {
    Node* node = new Node(tile, nullptr);
-
    if (tail == nullptr)
    {
       head = node;
