@@ -64,13 +64,13 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    std::string dimStr = "";
    getline(savedGame, dimStr);
    size_t commaIndex = dimStr.find(",");
-   int dimX          = std::stoi(dimStr.substr(commaIndex + 1));
-   int dimY          = std::stoi(dimStr.substr(0, commaIndex));
+   int dimCols       = std::stoi(dimStr.substr(commaIndex + 1));
+   int dimRows       = std::stoi(dimStr.substr(0, commaIndex));
 
    // board state
    std::string boardState = "";
    getline(savedGame, boardState);
-   this->board = new Board(dimX, dimY, boardState);
+   this->board = new Board(dimCols, dimRows, boardState);
 
    // tile BAG contents
    std::string bagContents = "";
@@ -408,7 +408,7 @@ bool Game::saveGame(Player* player, std::string saveFileName)
          saveFile << players[i]->getScore() << std::endl;
          saveFile << players[i]->getHand() << std::endl;
       }
-      saveFile << board->getDimX() << "," << board->getDimY() << std::endl;
+      saveFile << board->getDimCol() << "," << board->getDimRow() << std::endl;
       saveFile << board->saveBoard() << std::endl;
       saveFile << bag->saveBag() << std::endl;
       saveFile << player->getName() << std::endl;

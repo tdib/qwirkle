@@ -21,13 +21,13 @@ public:
    void placeTile(Tile* tileToPlace, int x, int y);
    bool isEmptySpot(int x, int y);
    std::string saveBoard();
-   int getDimX();
-   int getDimY();
+   int getDimCols();
+   int getDimRows();
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
-   int dimX;
-   int dimY;
+   int dimCols;
+   int dimRows;
 };
 
 #endif // BOARD_H

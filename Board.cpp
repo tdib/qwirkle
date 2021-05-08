@@ -2,9 +2,9 @@
 
 Board::Board()
 {
-   this->dimX = 26; // Cols
-   this->dimY = 26; // Rows
-   this->tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
+   this->dimCols = 26; // X
+   this->dimRows = 26; // Y
+   this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
 
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
@@ -17,11 +17,11 @@ Board::Board()
    }
 }
 
-Board::Board(int dimX, int dimY, std::string boardState)
+Board::Board(int dimCols, int dimRows, std::string boardState)
 {
-   this->dimX = dimX; // Cols
-   this->dimY = dimY; // Rows
-   this->tilesOnBoard.resize(dimY, std::vector<Tile*>(dimX, 0));
+   this->dimCols = dimCols; // Cols
+   this->dimRows = dimRows; // Rows
+   this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
    std::stringstream boardTiles(boardState);
 
    // iterate through boardstate
@@ -155,7 +155,7 @@ void Board::printBoard()
 {
    std::cout << "   ";
 
-   for (int i = 0; i < dimX; i++)
+   for (int i = 0; i < dimCols; i++)
    {
       if (i >= 10)
       {
@@ -300,12 +300,12 @@ std::string Board::saveBoard()
    return boardState;
 }
 
-int Board::getDimX()
+int Board::getDimCols()
 {
-   return dimX;
+   return dimCols;
 }
 
-int Board::getDimY()
+int Board::getDimRows()
 {
-   return dimY;
+   return dimRows;
 }
