@@ -27,20 +27,14 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
    // iterate through boardstate
    while (boardTiles.good())
    {
-      std::cout << "1" << std::endl;
       Tile* tileToPlace          = nullptr;
       std::string tileToPlaceStr = "";
       std::getline(boardTiles, tileToPlaceStr, '@');
       // DUPLICATED CODE - MAKE METHOD FOR THIS?
-      Colour tileColour = tileToPlaceStr[0];
-      // Shape tileShape   = tileToPlaceStr[1];
-
+      Colour tileColour     = tileToPlaceStr[0];
       std::string toConvert = "";
       toConvert.push_back(tileToPlaceStr[1]);
       Shape tileShape = atoi(toConvert.c_str());
-
-      std::cout << "tileColour: " << tileColour << std::endl;
-      std::cout << "tileShape: " << tileShape << std::endl;
 
       Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
       Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
@@ -51,10 +45,7 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
          {
             if (tileShape == shape && tileColour == colour)
             {
-               std::cout << "2: valid tile" << std::endl;
                tileToPlace = new Tile(tileShape, tileColour);
-               std::cout << tileShape << std::endl;
-               std::cout << tileColour << std::endl;
             }
          }
       }
@@ -128,8 +119,6 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
       }
 
       // END YOINK
-      std::cout << "x: " << x << std::endl;
-      std::cout << "y: " << y << std::endl;
       placeTile(tileToPlace, x, y);
    }
    // place each tile at its given location
