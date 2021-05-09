@@ -71,7 +71,8 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    std::string boardState = "";
    getline(savedGame, boardState);
    // Removes excess spaces
-   boardState.erase(remove(boardState.begin(), boardState.end(), ' '));
+   boardState.erase(remove_if(boardState.begin(), boardState.end(), isspace),
+      boardState.end());
    this->board = new Board(dimCols, dimRows, boardState);
 
    // tile BAG contents
