@@ -155,3 +155,8 @@ Tile* Player::getTileFromHand(std::string tileToGet)
 
    return tempTile;
 }
+
+void Player::addToHand(Tile* tile)
+{
+   hand->push(tile);
+}

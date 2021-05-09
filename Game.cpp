@@ -268,19 +268,19 @@ void Game::playGame()
                      int coordX = getColFromCoordinate(placementCoordinate);
                      int coordY = getRowFromCoordinate(placementCoordinate);
 
-                     if (board->isEmptySpot(coordX, coordY))
-                     {
-                        std::cout << std::endl;
-                        Tile* toPlace = nullptr;
-                        toPlace = players[i]->getTileFromHand(tileToPlace);
-                        board->placeTile(toPlace, coordX, coordY);
+                     std::cout << std::endl;
+                     Tile* toPlace = players[i]->getTileFromHand(tileToPlace);
 
+                     if (board->placeTile(toPlace, coordX, coordY))
+                     {
                         // update player score?
                         players[i]->drawTile();
                         validInput = true;
                      }
                      else
                      {
+                        // return piece to hand
+                        players[i]->addToHand(toPlace);
                         throw std::invalid_argument("Invalid Input");
                      }
                   }

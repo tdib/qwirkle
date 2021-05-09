@@ -248,20 +248,165 @@ bool Board::isEmptySpot(int x, int y)
    return isEmpty;
 }
 
-void Board::placeTile(Tile* tileToPlace, int x, int y)
+bool Board::canPlaceHorizontal(Tile* tileToPlace, int x, int y)
 {
-   int rowSize = tilesOnBoard.size();
-   for (int row = 0; row < rowSize; row++)
+   bool valid          = true;
+   Colour targetColour = tileToPlace->toString().at(0);
+   char targetShape    = tileToPlace->toString().at(1);
+
+   // check left
+   int leftX = x - 1;
+   while (leftX >= 0 && tilesOnBoard[y][leftX] != nullptr)
    {
-      int colSize = tilesOnBoard[row].size();
-      for (int col = 0; col < colSize; col++)
+      leftX--;
+   }
+   leftX++;
+   // check right
+   int rightX = x + 1;
+   while (rightX < dimCols && tilesOnBoard[y][rightX] != nullptr)
+   {
+      rightX++;
+   }
+   rightX--;
+
+   // check tiles in range
+   for (int currX = leftX; currX <= rightX; currX++)
+   {
+      // don't check target coordinate
+      if (currX != x)
       {
-         if (x == col && y == row)
+         Tile* currentTile      = tilesOnBoard[y][currX];
+         Colour currentColour   = currentTile->toString().at(0);
+         char currentShape      = currentTile->toString().at(1);
+         bool isMatchingColours = currentColour == targetColour;
+         bool isMatchingShapes  = currentShape == targetShape;
+         if (isMatchingColours && isMatchingShapes)
          {
-            tilesOnBoard[row][col] = tileToPlace;
+            // can't repeat the same tile
+            valid = false;
+         }
+         else if (!isMatchingColours && !isMatchingShapes)
+         {
+            // can't place the tile next to a tile with no matches
+            valid = false;
          }
       }
    }
+
+   return valid;
+}
+
+bool Board::canPlaceVertical(Tile* tileToPlace, int x, int y)
+{
+   bool valid          = true;
+   Colour targetColour = tileToPlace->toString().at(0);
+   char targetShape    = tileToPlace->toString().at(1);
+
+   // check up
+   int upY = y - 1;
+   while (upY >= 0 && tilesOnBoard[upY][x] != nullptr)
+   {
+      upY--;
+   }
+   upY++;
+   // check down
+   int downY = y + 1;
+   while (downY < dimRows && tilesOnBoard[downY][x] != nullptr)
+   {
+      downY++;
+   }
+   downY--;
+
+   // check tiles in range
+   for (int currY = upY; currY <= downY; currY++)
+   {
+      // don't check target coordinate
+      if (currY != y)
+      {
+         Tile* currentTile      = tilesOnBoard[currY][x];
+         Colour currentColour   = currentTile->toString().at(0);
+         char currentShape      = currentTile->toString().at(1);
+         bool isMatchingColours = currentColour == targetColour;
+         bool isMatchingShapes  = currentShape == targetShape;
+         if (isMatchingColours && isMatchingShapes)
+         {
+            // can't repeat the same tile
+            valid = false;
+         }
+         else if (!isMatchingColours && !isMatchingShapes)
+         {
+            // can't place the tile next to a tile with no matches
+            valid = false;
+         }
+      }
+   }
+
+   return valid;
+}
+
+bool Board::hasAdjacent(int x, int y)
+{
+   bool success = false;
+
+   // left
+   if (x > 0 && tilesOnBoard[y][x - 1] != nullptr)
+   {
+      success = true;
+   }
+   // right
+   if (x < dimCols - 1 && tilesOnBoard[y][x + 1] != nullptr)
+   {
+      success = true;
+   }
+   // up
+   if (y > 0 && tilesOnBoard[y - 1][x] != nullptr)
+   {
+      success = true;
+   }
+   // down
+   if (y < dimRows - 1 && tilesOnBoard[y + 1][x] != nullptr)
+   {
+      success = true;
+   }
+
+   return success;
+}
+
+bool Board::isFirstTile()
+{
+   bool firstTile = true;
+   for (int y = 0; y < dimRows; y++)
+   {
+      for (int x = 0; x < dimCols; x++)
+      {
+         if (tilesOnBoard[y][x] != nullptr)
+         {
+            firstTile = false;
+         }
+      }
+   }
+   return firstTile;
+}
+
+bool Board::placeTile(Tile* tileToPlace, int x, int y)
+{
+   bool success = false;
+   if (y >= 0 && y < dimRows && x >= 0 && x < dimCols)
+   {
+      // empty check
+      if (tilesOnBoard[y][x] == nullptr)
+      {
+         if ((hasAdjacent(x, y) && canPlaceHorizontal(tileToPlace, x, y) &&
+                canPlaceVertical(tileToPlace, x, y)) ||
+             isFirstTile())
+         {
+            tilesOnBoard[y][x] = tileToPlace;
+            success            = true;
+         }
+      }
+   }
+
+   return success;
 }
 
 std::string Board::saveBoard()

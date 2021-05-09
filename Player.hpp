@@ -33,6 +33,7 @@ public:
 
    bool tileInHand(std::string tileToValidate);
    Tile* getTileFromHand(std::string tileToGet);
+   void addToHand(Tile* tile);
 
 private:
    Bag* bag;
