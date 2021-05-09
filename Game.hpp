@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Tile.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
