@@ -73,6 +73,7 @@ int main(void)
                      std::ifstream savedGame(fileName + ".save");
                      Game* game = new Game(2, savedGame);
                      game->playGame();
+                     delete game;
                      loopFileNameAgain = false;
 
                      if (std::cin.eof())

@@ -22,14 +22,7 @@ public:
 
    // Public or else qwirkle.cpp can't use them
    void playGame();
-   void initalisePlayers();
-   void printGameState(Player* player);
-   bool saveGame(Player* player, std::string saveFileName);
-   std::vector<std::string> splitString(
-      std::string rawUserInput, char delimiter);
-   bool isValidName(std::string name);
-   bool isValidTileInHand(Player* player, std::string tileToValidate);
-   bool isValidCoordinate(std::string coordinateToValidate);
+
    // Do some of these need to be private?
    int getColFromCoordinate(std::string coordinate);
    int getRowFromCoordinate(std::string coordinate);
@@ -40,6 +33,14 @@ private:
    std::vector<Player*> players;
    int numPlayers;
    int startingPlayer;
+   void initalisePlayers();
+   void printGameState(Player* player);
+   bool saveGame(Player* player, std::string saveFileName);
+   std::vector<std::string> splitString(
+      std::string rawUserInput, char delimiter);
+   bool isValidName(std::string name);
+   bool isValidTileInHand(Player* player, std::string tileToValidate);
+   bool isValidCoordinate(std::string coordinateToValidate);
 };
 
 #endif // ASSIGN2_GAME_H

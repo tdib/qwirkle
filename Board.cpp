@@ -2,8 +2,9 @@
 
 Board::Board()
 {
-   this->dimCols = 26; // X
-   this->dimRows = 26; // Y
+   this->loadingFromSave = false;
+   this->dimCols         = 26; // X
+   this->dimRows         = 26; // Y
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
 
    int rowSize = tilesOnBoard.size();
@@ -19,8 +20,9 @@ Board::Board()
 
 Board::Board(int dimCols, int dimRows, std::string boardState)
 {
-   this->dimCols = dimCols; // Cols
-   this->dimRows = dimRows; // Rows
+   this->loadingFromSave = true;
+   this->dimCols         = dimCols; // Cols
+   this->dimRows         = dimRows; // Rows
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
    std::stringstream boardTiles(boardState);
 
@@ -123,18 +125,7 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
    }
    // place each tile at its given location
 
-   int rowSize = tilesOnBoard.size();
-   for (int row = 0; row < rowSize; row++)
-   {
-      int colSize = tilesOnBoard[row].size();
-      for (int col = 0; col < colSize; col++)
-      {
-         // check if boardState contains piece of this iteration
-         // tilesOnBoard[row][col] = that piece
-         // else
-         // tilesOnBoard[row][col] = nullptr
-      }
-   }
+   loadingFromSave = false;
 }
 
 Board::~Board()
@@ -218,9 +209,74 @@ Tile* Board::getTile(std::string tile)
    return nullptr;
 }
 
-int Board::calculateScore(Tile* placedTile)
+int Board::calculateScoreHorizontal(int coordX, int coordY)
 {
-   return -1;
+   int score = 0;
+
+   // check left
+   int leftX = coordX - 1;
+   while (leftX >= 0 && tilesOnBoard[coordY][leftX] != nullptr)
+   {
+      leftX--;
+   }
+   leftX++;
+
+   // check right
+   int rightX = coordX + 1;
+   while (rightX < dimCols && tilesOnBoard[coordY][rightX] != nullptr)
+   {
+      rightX++;
+   }
+   rightX--;
+
+   score = (rightX - leftX) + 1;
+
+   if (score == 6)
+   {
+      score += 6;
+   }
+
+   if (score == 1)
+   {
+      score = 0;
+   }
+
+   return score;
+}
+
+int Board::calculateScoreVertical(int coordX, int coordY)
+{
+   int score = 0;
+
+   // check up
+   int upY = coordY - 1;
+   while (upY >= 0 && tilesOnBoard[upY][coordX] != nullptr)
+   {
+      upY--;
+   }
+   upY++;
+
+   // check down
+   int downY = coordY + 1;
+   while (downY < dimRows && tilesOnBoard[downY][coordX] != nullptr)
+   {
+      downY++;
+   }
+   downY--;
+
+   score = (downY - upY) + 1;
+
+   if (score == 6)
+   {
+      score += 6;
+   }
+
+   if (score == 1)
+   {
+      score = 0;
+   }
+
+   return score;
 }
 
 // isEmptySpot and placeTile both use the crappy coordinate.size beacuse i need
@@ -396,9 +452,17 @@ bool Board::placeTile(Tile* tileToPlace, int x, int y)
       // empty check
       if (tilesOnBoard[y][x] == nullptr)
       {
-         if ((hasAdjacent(x, y) && canPlaceHorizontal(tileToPlace, x, y) &&
-                canPlaceVertical(tileToPlace, x, y)) ||
-             isFirstTile())
+         if (!loadingFromSave)
+         {
+            if ((hasAdjacent(x, y) && canPlaceHorizontal(tileToPlace, x, y) &&
+                   canPlaceVertical(tileToPlace, x, y)) ||
+                isFirstTile())
+            {
+               tilesOnBoard[y][x] = tileToPlace;
+               success            = true;
+            }
+         }
+         else
          {
             tilesOnBoard[y][x] = tileToPlace;
             success            = true;

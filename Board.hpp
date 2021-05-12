@@ -17,12 +17,14 @@ public:
    ~Board();
    void printBoard();
    Tile* getTile(std::string tile);
-   int calculateScore(Tile* placedTile);
+   int calculateScoreHorizontal(int coordX, int coordY);
+   int calculateScoreVertical(int coordX, int coordY);
    bool placeTile(Tile* tileToPlace, int x, int y);
    bool isEmptySpot(int x, int y);
    std::string saveBoard();
    int getDimCols();
    int getDimRows();
+   bool isFirstTile();
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
@@ -31,7 +33,7 @@ private:
    bool canPlaceHorizontal(Tile* tileToPlace, int x, int y);
    bool canPlaceVertical(Tile* tileToPlace, int x, int y);
    bool hasAdjacent(int x, int y);
-   bool isFirstTile();
+   bool loadingFromSave;
 };
 
 #endif // BOARD_H

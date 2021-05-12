@@ -271,11 +271,41 @@ void Game::playGame()
                      std::cout << std::endl;
                      Tile* toPlace = players[i]->getTileFromHand(tileToPlace);
 
+                     bool isFirstTile = board->isFirstTile();
+
                      if (board->placeTile(toPlace, coordX, coordY))
                      {
-                        // update player score?
-                        players[i]->drawTile();
                         validInput = true;
+
+                        if (isFirstTile)
+                        {
+                           players[i]->addScore(1);
+                        }
+                        else
+                        {
+                           // update player score?
+                           int verticalScore =
+                              board->calculateScoreVertical(coordX, coordY);
+                           int horizontalScore =
+                              board->calculateScoreHorizontal(coordX, coordY);
+
+                           players[i]->addScore(verticalScore);
+                           players[i]->addScore(horizontalScore);
+
+                           if (verticalScore == 12 && horizontalScore == 12)
+                           {
+                              std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
+                              std::cout << std::endl;
+                           }
+                           else if (verticalScore == 12 ||
+                                    horizontalScore == 12)
+                           {
+                              std::cout << "QWIRKLE!!!" << std::endl;
+                              std::cout << std::endl;
+                           }
+                        }
+
+                        players[i]->drawTile();
                      }
                      else
                      {
@@ -366,18 +396,41 @@ void Game::playGame()
             // points?)
             if (players[i]->isEmptyHand())
             {
+               // Player who places their last tile first gets 6 extra points
+               players[i]->addScore(6);
+               gameRunning = false;
+               bool isDraw = true;
+
                std::cout << "Game over" << std::endl;
+               Player* winner = players[0];
+
                for (int j = 0; j < numPlayers; j++)
                {
+                  // Check if player[j]'s score is greater than the winner's
+                  if (players[j]->getScore() > winner->getScore())
+                  {
+                     isDraw = false;
+                     winner = players[j];
+                  }
+                  // else check for an equal score (draw condition)
+                  else if (players[j]->getScore() != winner->getScore())
+                  {
+                     isDraw = false;
+                  }
+
                   std::cout << "Score for " << players[j]->getName() << ": "
                             << players[j]->getScore() << std::endl;
                }
                // TODO: figure out which player has the highest score (easy with
                // 2 players, tad bit harder with more)
-               std::cout << "Player ... won!" << std::endl;
-
-               // Does the player who ran out of tiles first get extra points?
-               gameRunning = false;
+               if (isDraw)
+               {
+                  std::cout << "It's a draw!" << std::endl;
+               }
+               else
+               {
+                  std::cout << winner->getName() << " won!" << std::endl;
+               }
             }
          }
       }
@@ -415,7 +468,7 @@ bool Game::saveGame(Player* player, std::string saveFileName)
                << std::endl;
       saveFile << board->saveBoard() << std::endl;
       saveFile << bag->saveBag() << std::endl;
-      saveFile << player->getName() << std::endl;
+      saveFile << player->getName();
       canSave = true;
    }
 

@@ -111,6 +111,7 @@ bool Player::swapTile(std::string tileToSwap)
 
 void Player::addScore(int score)
 {
+   this->score += score;
 }
 
 std::string Player::getName()
