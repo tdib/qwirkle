@@ -81,7 +81,7 @@ void Bag::pushTile(Tile* tile)
 
 void Bag::scrambleTiles(std::vector<Tile*> tilesToScramble)
 {
-   // auto rng = std::default_random_engine {}; // Static (for testing)
+   // auto rng = std::default_random_engine {1}; // Static (for testing)
    std::random_device rng; // Random (for real gameplay)
    std::shuffle(std::begin(tilesToScramble), std::end(tilesToScramble), rng);
    for (Tile* tile : tilesToScramble)
