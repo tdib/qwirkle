@@ -370,6 +370,7 @@ void Game::playGame()
                {
                   validInput  = true;
                   gameRunning = false;
+                  printQuitMessage();
                }
                else if (std::cin.eof())
                {
@@ -400,6 +401,9 @@ void Game::playGame()
                players[i]->addScore(6);
                gameRunning = false;
                bool isDraw = true;
+
+               // format nicely
+               board->printBoard();
 
                std::cout << "Game over" << std::endl;
                Player* winner = players[0];
@@ -606,4 +610,10 @@ int Game::getRowFromCoordinate(std::string coordinate)
    }
    // No need for validation checking as it has already been checked :)
    return y;
+}
+
+void Game::printQuitMessage()
+{
+   std::cout << std::endl;
+   std::cout << "Goodbye" << std::endl;
 }

@@ -41,6 +41,7 @@ private:
    bool isValidName(std::string name);
    bool isValidTileInHand(Player* player, std::string tileToValidate);
    bool isValidCoordinate(std::string coordinateToValidate);
+   void printQuitMessage();
 };
 
 #endif // ASSIGN2_GAME_H

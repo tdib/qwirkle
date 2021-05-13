@@ -87,8 +87,8 @@ int main(void)
                   }
                }
                catch (std::invalid_argument& e)
-               {
-                  std::cout << e.what() << std::endl;
+               { // change throw here
+                  std::cout << "Invalid Input" << std::endl;
                }
             }
          }
