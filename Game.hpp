@@ -19,11 +19,7 @@ public:
    Game(int numPlayers);
    Game(int numPlayers, std::ifstream& savedGame);
    ~Game();
-
-   // Public or else qwirkle.cpp can't use them
    void playGame();
-
-   // Do some of these need to be private?
    int getColFromCoordinate(std::string coordinate);
    int getRowFromCoordinate(std::string coordinate);
 
@@ -36,6 +32,7 @@ private:
    void initalisePlayers();
    void printGameState(Player* player);
    bool saveGame(Player* player, std::string saveFileName);
+   // Splits the rawUserInput based on the delimiter. Returns a vector of input
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
    bool isValidName(std::string name);

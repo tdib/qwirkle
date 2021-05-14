@@ -14,8 +14,8 @@ class Tile
 {
 public:
    Tile(Shape shape, Colour colour);
-   void printTile();
    std::string toString();
+   void printTile();
 
 private:
    Shape shape;

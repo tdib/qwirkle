@@ -16,23 +16,21 @@ public:
    Player();
    Player(std::string playerName, int playerScore, std::string playerHand);
    ~Player();
-   bool drawTile();
-   bool placeTile(Tile* tile, std::string coordinate);
-   bool swapTile(std::string tileToSwap);
-   void addScore(int score);
-
-   std::string getName();
-   void setName(std::string newName);
-   int getScore();
-   std::string getHand();
-   void setHand(std::string newHand);
-   bool isEmptyHand();
-
    void setBag(Bag* bag);
    void setBoard(Board* board);
-
-   bool tileInHand(std::string tileToValidate);
+   void setName(std::string newName);
+   int getScore();
+   std::string getName();
+   std::string getHand();
+   void setHand(std::string newHand);
+   void addScore(int score);
+   bool isEmptyHand();
+   bool drawTile();
    Tile* getTileFromHand(std::string tileToGet);
+   bool swapTile(std::string tileToSwap);
+   bool tileInHand(std::string tileToValidate);
+   // Used to return a tile to the hand (if a valid tile is selected but can't
+   // be placed)
    void addToHand(Tile* tile);
 
 private:

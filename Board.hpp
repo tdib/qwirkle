@@ -16,15 +16,13 @@ public:
    Board(int dimX, int dimY, std::string boardState);
    ~Board();
    void printBoard();
-   Tile* getTile(std::string tile);
+   bool placeTile(Tile* tileToPlace, int x, int y);
+   bool isFirstTile();
    int calculateScoreHorizontal(int coordX, int coordY);
    int calculateScoreVertical(int coordX, int coordY);
-   bool placeTile(Tile* tileToPlace, int x, int y);
-   bool isEmptySpot(int x, int y);
-   std::string saveBoard();
    int getDimCols();
    int getDimRows();
-   bool isFirstTile();
+   std::string saveBoard();
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;

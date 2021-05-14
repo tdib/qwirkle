@@ -9,8 +9,6 @@ Bag::Bag()
 Bag::Bag(std::string bagContents)
     : tilesInBag(new LinkedList())
 {
-   // P2,B5,C6,C2,C1,B3,B7
-   // TODO: Parse bagInfo and generate tiles
    std::stringstream bagContentStream(bagContents);
    while (bagContentStream.good())
    {
@@ -49,7 +47,6 @@ Bag::~Bag()
 
 void Bag::initialiseTiles()
 {
-   // moving these back to tilecodes
    Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
    Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
 
@@ -81,8 +78,8 @@ void Bag::pushTile(Tile* tile)
 
 void Bag::scrambleTiles(std::vector<Tile*> tilesToScramble)
 {
-   // auto rng = std::default_random_engine {1}; // Static (for testing)
-   std::random_device rng; // Random (for real gameplay)
+   auto rng = std::default_random_engine {1}; // Static (for testing)
+   // std::random_device rng; // Random (for real gameplay)
    std::shuffle(std::begin(tilesToScramble), std::end(tilesToScramble), rng);
    for (Tile* tile : tilesToScramble)
    {

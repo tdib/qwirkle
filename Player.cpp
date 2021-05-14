@@ -10,12 +10,12 @@ Player::Player()
 }
 
 Player::Player(std::string playerName, int playerScore, std::string playerHand)
+    : bag(nullptr)
+    , board(nullptr)
+    , hand(new LinkedList())
+    , name(playerName)
+    , score(playerScore)
 {
-   this->bag   = nullptr;
-   this->board = nullptr;
-   this->hand  = new LinkedList();
-   this->name  = playerName;
-   this->score = playerScore;
    this->setHand(playerHand);
 }
 
@@ -57,9 +57,6 @@ void Player::setHand(std::string newHand)
          }
       }
    }
-   // iterate through each tile in the string
-   // validate tile
-   // push tile to back of hand linkedlist
 }
 
 void Player::setBag(Bag* bag)
@@ -85,11 +82,6 @@ bool Player::drawTile()
    }
 
    return canDraw;
-}
-
-bool Player::placeTile(Tile* tile, std::string coordinate)
-{
-   return false;
 }
 
 bool Player::swapTile(std::string tileToSwap)

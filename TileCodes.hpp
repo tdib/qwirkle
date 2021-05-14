@@ -8,7 +8,6 @@
 #define SQUARE  4
 #define STAR_6  5
 #define CLOVER  6
-// Shape shapes[] = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
 
 // Colours
 #define RED    'R'
@@ -17,6 +16,7 @@
 #define GREEN  'G'
 #define BLUE   'B'
 #define PURPLE 'P'
-// Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
+
+#define MAX_TILES 6
 
 #endif // ASSIGN1_TILECODES_H

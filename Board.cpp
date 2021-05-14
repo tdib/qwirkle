@@ -3,8 +3,10 @@
 Board::Board()
 {
    this->loadingFromSave = false;
-   this->dimCols         = 26; // X
-   this->dimRows         = 26; // Y
+   // X (Cols)
+   this->dimCols = 26;
+   // Y (Rows)
+   this->dimRows = 26;
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
 
    int rowSize = tilesOnBoard.size();
@@ -21,8 +23,10 @@ Board::Board()
 Board::Board(int dimCols, int dimRows, std::string boardState)
 {
    this->loadingFromSave = true;
-   this->dimCols         = dimCols; // Cols
-   this->dimRows         = dimRows; // Rows
+   // X (Cols)
+   this->dimCols = dimCols;
+   // Y (Rows)
+   this->dimRows = dimRows;
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
    std::stringstream boardTiles(boardState);
 
@@ -53,47 +57,9 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
       }
 
       std::string coordToPlace = "";
-      // currently delimiting with a single comma, should be ", " (with a space)
       std::getline(boardTiles, coordToPlace, ',');
-      // find the tile on board
-      // CODE YOINKED FROM GAME.CPP
-      // bool isValid = false;
 
-      if (coordToPlace.size() == 2)
-      {
-         std::string str = "";
-         for (char A = 'A'; A <= 'Z'; A++)
-         {
-            if (coordToPlace[0] == A)
-            {
-               str.push_back(coordToPlace[1]);
-               int col = atoi(str.c_str());
-               if (col >= 0 && col <= 9) // for A0 - A9
-               {
-                  // isValid = true;
-               }
-            }
-         }
-      }
-      else if (coordToPlace.size() == 3)
-      {
-         std::string str = "";
-         for (char A = 'A'; A <= 'Z'; A++)
-         {
-            if (coordToPlace[0] == A)
-            {
-               str.push_back(coordToPlace[1]);
-               str.push_back(coordToPlace[2]);
-               int col = atoi(str.c_str());
-               if (col >= 10 && col <= 25) // for A10 - A25
-               {
-                  // isValid = true;
-               }
-            }
-         }
-      }
-
-      // place tileToPlace there
+      // Determine the x and y coordinate of the tile to place
       int x = 0;
       if (coordToPlace.size() == 2)
       {
@@ -120,10 +86,9 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
          row++;
       }
 
-      // END YOINK
+      // place tileToPlace there
       placeTile(tileToPlace, x, y);
    }
-   // place each tile at its given location
 
    loadingFromSave = false;
 }
@@ -171,6 +136,7 @@ void Board::printBoard()
 
    std::cout << std::endl;
 
+   // Used to output the respective row character on the board
    char c      = 'A';
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
@@ -191,22 +157,20 @@ void Board::printBoard()
       }
 
       std::cout << std::endl;
+
+      // Increment the row character
       c++;
    }
 
    std::cout << "  ";
 
+   // Static 79 for the 26x26 board
    for (int i = 0; i < 79; i++)
    {
       std::cout << "-";
    }
 
    std::cout << std::endl;
-}
-
-Tile* Board::getTile(std::string tile)
-{
-   return nullptr;
 }
 
 int Board::calculateScoreHorizontal(int coordX, int coordY)
@@ -277,31 +241,6 @@ int Board::calculateScoreVertical(int coordX, int coordY)
    }
 
    return score;
-}
-
-// isEmptySpot and placeTile both use the crappy coordinate.size beacuse i need
-// to convert the coordinate information each time i need to read it >:(
-// maybe we need a convert coordinate thing in game.cpp?
-bool Board::isEmptySpot(int x, int y)
-{
-   bool isEmpty = false;
-   int rowSize  = tilesOnBoard.size();
-   for (int row = 0; row < rowSize; row++)
-   {
-      int colSize = tilesOnBoard[row].size();
-      for (int col = 0; col < colSize; col++)
-      {
-         if (x == col && y == row)
-         {
-            if (tilesOnBoard[row][col] == nullptr)
-            {
-               isEmpty = true;
-            }
-         }
-      }
-   }
-
-   return isEmpty;
 }
 
 bool Board::canPlaceHorizontal(Tile* tileToPlace, int x, int y)
@@ -501,7 +440,7 @@ std::string Board::saveBoard()
       }
    }
 
-   // Sorry guys :C
+   // Removes the extra ", " from the end of the board state in save files
    if (matchingTile)
    {
       int size = boardState.size();

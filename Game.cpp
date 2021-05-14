@@ -75,24 +75,21 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
       boardState.end());
    this->board = new Board(dimCols, dimRows, boardState);
 
-   // tile BAG contents
+   // tile bag contents
    std::string bagContents = "";
    getline(savedGame, bagContents);
    this->bag = new Bag(bagContents);
-
-   for (int i = 0; i < numPlayers; i++)
-   {
-      players[i]->setBag(this->bag);
-      players[i]->setBoard(this->board);
-   }
 
    // current player name
    std::string currentPlayerName = "";
    getline(savedGame, currentPlayerName);
 
+   // For each player, set their bag and board and determine the starting player
    int startingPlayer = 0;
    for (int i = 0; i < numPlayers; i++)
    {
+      players[i]->setBag(this->bag);
+      players[i]->setBoard(this->board);
       if (currentPlayerName == players[i]->getName())
       {
          startingPlayer = i;
@@ -105,12 +102,10 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
 
    std::cout << std::endl;
    std::cout << "Qwirkle game successfully loaded" << std::endl;
-   std::cout << std::endl;
 }
 
 Game::~Game()
 {
-   // TODO
    for (Player* player : players)
    {
       delete player;
@@ -122,15 +117,14 @@ Game::~Game()
 
 void Game::initalisePlayers()
 {
-   // M3: in the future, you'd ask for how many players and the vector would
-   // count for that many
-
-   // will update later by asking for how many players want to play
+   // numPlayers is hardcoded as 2 in qwirkle.cpp (for group submission)
    for (int i = 0; i < numPlayers; i++)
    {
       players.push_back(new Player());
    }
 
+   // Gets and sets the name for each player, sets their bag and board and draws
+   // their initial 6 tiles
    for (int i = 0; i < numPlayers; i++)
    {
       std::string playerName = " ";
@@ -148,7 +142,14 @@ void Game::initalisePlayers()
          {
             try
             {
-               validName = isValidName(playerName);
+               if (isValidName(playerName))
+               {
+                  validName = true;
+               }
+               else
+               {
+                  throw std::invalid_argument("Invalid Input");
+               }
             }
             catch (std::invalid_argument& e)
             {
@@ -168,8 +169,7 @@ void Game::initalisePlayers()
       players[i]->setBoard(this->board);
       players[i]->setBag(this->bag);
 
-      // Works perfectly
-      for (int j = 0; j < 6; j++)
+      for (int j = 0; j < MAX_TILES; j++)
       {
          players[i]->drawTile();
       }
@@ -179,34 +179,18 @@ void Game::initalisePlayers()
    {
       std::cout << std::endl;
       std::cout << "Let's Play!" << std::endl;
-      std::cout << std::endl;
    }
 }
 
 void Game::playGame()
 {
-   /**
-    *
-    * Should take input from the user
-    * Depending on input, do the thing
-    * CHECK IF INPUT STARTS WITH PLACE/REPLACE/ETC
-    *
-    * if place -> go to placeTile()
-    * check that it exists in the hand
-    *
-    * if replace -> go to swapTile()
-    * check that it exists in the hand
-    *
-    */
-
    bool gameRunning = true;
-
    while (!std::cin.eof() && gameRunning == true)
    {
-      for (int i = startingPlayer; i < numPlayers; i++) // need to update others
+      for (int i = startingPlayer; i < numPlayers; i++)
       {
          // Continues from a certain player's turn and resets to allow all other
-         // players to have their turn
+         // players to have their turn after
          if (startingPlayer != 0)
          {
             startingPlayer = 0;
@@ -234,7 +218,7 @@ void Game::playGame()
                std::vector<std::string> rawSaveCommand =
                   splitString(rawUserInput, ' ');
 
-               // Converting rawUserInput into all uppercase
+               // Converting the rawUserInput into all uppercase
                std::transform(rawUserInput.begin(), rawUserInput.end(),
                   rawUserInput.begin(), ::toupper);
 
@@ -254,21 +238,12 @@ void Game::playGame()
                   std::string tileToPlace         = rawCommand[1];
                   std::string placementCoordinate = rawCommand[3];
 
-                  // validCoordinate is incomplete. Need to check for 'A21'
                   if (isValidTileInHand(players[i], tileToPlace) &&
                       isValidCoordinate(placementCoordinate))
                   {
-                     // TODO: Need to check that the placement is legal
-                     // according to the rules of Qwirkle.
-                     // Might have to be this way due to a scenario where we
-                     // grab a valid tile for a valid coordinate, but then
-                     // the coordinate happens to already contain a tile. we
-                     // cant put the grabbed tile back into the same hand
-                     // spot :(
                      int coordX = getColFromCoordinate(placementCoordinate);
                      int coordY = getRowFromCoordinate(placementCoordinate);
 
-                     std::cout << std::endl;
                      Tile* toPlace = players[i]->getTileFromHand(tileToPlace);
 
                      bool isFirstTile = board->isFirstTile();
@@ -283,7 +258,6 @@ void Game::playGame()
                         }
                         else
                         {
-                           // update player score?
                            int verticalScore =
                               board->calculateScoreVertical(coordX, coordY);
                            int horizontalScore =
@@ -292,16 +266,15 @@ void Game::playGame()
                            players[i]->addScore(verticalScore);
                            players[i]->addScore(horizontalScore);
 
+                           // If qwirkle or double qwirkle
                            if (verticalScore == 12 && horizontalScore == 12)
                            {
                               std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
-                              std::cout << std::endl;
                            }
                            else if (verticalScore == 12 ||
                                     horizontalScore == 12)
                            {
                               std::cout << "QWIRKLE!!!" << std::endl;
-                              std::cout << std::endl;
                            }
                         }
 
@@ -325,17 +298,9 @@ void Game::playGame()
 
                   if (!bag->getTilesInBag()->isEmpty())
                   {
-                     if (isValidTileInHand(players[i], tileToSwap))
+                     if (players[i]->swapTile(tileToSwap))
                      {
-                        if (players[i]->swapTile(tileToSwap))
-                        {
-                           std::cout << std::endl;
-                           validInput = true;
-                        }
-                        else
-                        {
-                           throw std::invalid_argument("Invalid Input");
-                        }
+                        validInput = true;
                      }
                      else
                      {
@@ -387,14 +352,9 @@ void Game::playGame()
             {
                std::cout << e.what() << std::endl;
             }
-            catch (std::exception& e)
-            {
-               std::cout << e.what() << std::endl;
-            }
 
-            // checking if the current player's hand and the bag is empty
-            // if both are true, game is over (and we award them 6 extra
-            // points?)
+            // checking if the current player's hand is empty. if both are true,
+            // then the game is over!
             if (players[i]->isEmptyHand())
             {
                // Player who places their last tile first gets 6 extra points
@@ -402,10 +362,11 @@ void Game::playGame()
                gameRunning = false;
                bool isDraw = true;
 
-               // format nicely
                board->printBoard();
 
-               std::cout << "Game over" << std::endl;
+               std::cout << "Game over!!" << std::endl;
+
+               // Set the winner initially to the first player
                Player* winner = players[0];
 
                for (int j = 0; j < numPlayers; j++)
@@ -425,8 +386,8 @@ void Game::playGame()
                   std::cout << "Score for " << players[j]->getName() << ": "
                             << players[j]->getScore() << std::endl;
                }
-               // TODO: figure out which player has the highest score (easy with
-               // 2 players, tad bit harder with more)
+
+               // Different output if draw or normal win
                if (isDraw)
                {
                   std::cout << "It's a draw!" << std::endl;
@@ -443,6 +404,7 @@ void Game::playGame()
 
 void Game::printGameState(Player* player)
 {
+   std::cout << std::endl;
    std::cout << player->getName() << ", it's your turn" << std::endl;
    for (int i = 0; i < numPlayers; i++)
    {
@@ -457,10 +419,9 @@ void Game::printGameState(Player* player)
 bool Game::saveGame(Player* player, std::string saveFileName)
 {
    bool canSave = false;
-
    std::ofstream saveFile(saveFileName + ".save");
-   // WHAT OFSTREAM FUNCTIONS DO WE USE TO CHECK THAT A FILE IS GOOD >:(
-   if (!saveFile.fail())
+
+   if (saveFile.good())
    {
       for (int i = 0; i < numPlayers; i++)
       {
@@ -503,7 +464,6 @@ bool Game::isValidName(std::string name)
       if (!isupper(name[i]))
       {
          isValid = false;
-         throw std::invalid_argument("Invalid Input");
       }
    }
 
@@ -515,7 +475,6 @@ bool Game::isValidName(std::string name)
          if (players[i]->getName() == name)
          {
             isValid = false;
-            throw std::invalid_argument("Invalid Input");
          }
       }
    }
@@ -548,7 +507,8 @@ bool Game::isValidCoordinate(std::string coordinate)
          {
             str.push_back(coordinate[1]);
             int col = atoi(str.c_str());
-            if (col >= 0 && col <= 9) // for A0 - A9
+            // for A0 - A9
+            if (col >= 0 && col <= 9)
             {
                isValid = true;
             }
@@ -565,7 +525,8 @@ bool Game::isValidCoordinate(std::string coordinate)
             str.push_back(coordinate[1]);
             str.push_back(coordinate[2]);
             int col = atoi(str.c_str());
-            if (col >= 10 && col <= 25) // for A10 - A25
+            // for A10 - A25
+            if (col >= 10 && col <= 25)
             {
                isValid = true;
             }
@@ -578,6 +539,8 @@ bool Game::isValidCoordinate(std::string coordinate)
 
 int Game::getColFromCoordinate(std::string coordinate)
 {
+   // Converts string coordinate to respective x coordinate (in integer form)
+   // No need for validation checking as it has already been checked
    int x = 0;
    if (coordinate.size() == 2)
    {
@@ -592,12 +555,14 @@ int Game::getColFromCoordinate(std::string coordinate)
       str.push_back(coordinate[2]);
       x = atoi(str.c_str());
    }
-   // No need for validation checking as it has already been checked :)
+
    return x;
 }
 
 int Game::getRowFromCoordinate(std::string coordinate)
 {
+   // Converts string coordinate to respective y coordinate (in integer form)
+   // No need for validation checking as it has already been checked
    int y   = 0;
    int row = 0;
    for (char A = 'A'; A <= 'Z'; A++)
@@ -608,7 +573,7 @@ int Game::getRowFromCoordinate(std::string coordinate)
       }
       row++;
    }
-   // No need for validation checking as it has already been checked :)
+
    return y;
 }
 

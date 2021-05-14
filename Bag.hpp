@@ -16,15 +16,16 @@ public:
    Bag();
    Bag(std::string bagContents);
    ~Bag();
+   std::string saveBag();
    Tile* popTile();
    void pushTile(Tile* tile);
-   void scrambleTiles(std::vector<Tile*> tilesToScramble);
-   void initialiseTiles();
    LinkedList* getTilesInBag();
-   std::string saveBag();
 
 private:
    LinkedList* tilesInBag;
+   // Randomizes the order of tiles
+   void scrambleTiles(std::vector<Tile*> tilesToScramble);
+   void initialiseTiles();
 };
 
 #endif // BAG_H
