@@ -265,7 +265,7 @@ bool Board::canPlaceHorizontal(Tile* tileToPlace, int x, int y)
    rightX--;
 
    // check tiles in range
-   for (int currX = leftX; currX <= rightX; currX++)
+   for (int currX = leftX; (currX <= rightX) && valid; currX++)
    {
       // don't check target coordinate
       if (currX != x)
@@ -284,6 +284,28 @@ bool Board::canPlaceHorizontal(Tile* tileToPlace, int x, int y)
          {
             // can't place the tile next to a tile with no matches
             valid = false;
+         }
+         // check other tiles
+         for (int otherX = leftX; (otherX <= rightX) && valid; otherX++)
+         {
+            Tile* otherTile = tilesOnBoard[y][otherX];
+            if (currX != otherX && otherX != x)
+            {
+               Colour otherColour     = otherTile->toString().at(0);
+               char otherShape        = otherTile->toString().at(1);
+               bool isMatchingColours = currentColour == otherColour;
+               bool isMatchingShapes  = currentShape == otherShape;
+               if (isMatchingColours && isMatchingShapes)
+               {
+                  // can't repeat the same tile
+                  valid = false;
+               }
+               else if (!isMatchingColours && !isMatchingShapes)
+               {
+                  // can't bridge with no matches
+                  valid = false;
+               }
+            }
          }
       }
    }
@@ -313,7 +335,7 @@ bool Board::canPlaceVertical(Tile* tileToPlace, int x, int y)
    downY--;
 
    // check tiles in range
-   for (int currY = upY; currY <= downY; currY++)
+   for (int currY = upY; (currY <= downY) && valid; currY++)
    {
       // don't check target coordinate
       if (currY != y)
@@ -332,6 +354,28 @@ bool Board::canPlaceVertical(Tile* tileToPlace, int x, int y)
          {
             // can't place the tile next to a tile with no matches
             valid = false;
+         }
+         // check other tiles
+         for (int otherY = upY; (otherY <= downY) && valid; otherY++)
+         {
+            Tile* otherTile = tilesOnBoard[otherY][x];
+            if (currY != otherY && otherY != y)
+            {
+               Colour otherColour     = otherTile->toString().at(0);
+               char otherShape        = otherTile->toString().at(1);
+               bool isMatchingColours = currentColour == otherColour;
+               bool isMatchingShapes  = currentShape == otherShape;
+               if (isMatchingColours && isMatchingShapes)
+               {
+                  // can't repeat the same tile
+                  valid = false;
+               }
+               else if (!isMatchingColours && !isMatchingShapes)
+               {
+                  // can't bridge with no matches
+                  valid = false;
+               }
+            }
          }
       }
    }
