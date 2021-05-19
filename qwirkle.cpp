@@ -6,11 +6,16 @@
 #include <stdexcept>
 #include <string>
 
+#define MIN_PLAYERS 2
+#define MAX_PLAYERS 4
+
 void printMenu();
 void printCredits();
 void printStudent(std::string name, std::string id);
 void printQuitMessage();
 bool isValidFile(std::string fileName);
+bool isNumeric(std::string str);
+int getNumPlayers();
 
 int main(void)
 {
@@ -33,8 +38,9 @@ int main(void)
             std::cout << "Starting a New Game" << std::endl;
             std::cout << std::endl;
 
-            // Create a game. Takes in the number of players (2)
-            Game* game = new Game(2);
+            // Create a game. Takes in the number of players
+            // which is calculated by getNumPlayers()
+            Game* game = new Game(getNumPlayers());
             game->playGame();
             if (std::cin.eof())
             {
@@ -162,4 +168,56 @@ void printQuitMessage()
 {
    std::cout << std::endl;
    std::cout << "Goodbye" << std::endl;
+}
+
+bool isNumeric(std::string str)
+{
+   bool isNumeric = true;
+   for (char c : str)
+   {
+      if (!isdigit(c))
+      {
+         isNumeric = false;
+      }
+   }
+   return isNumeric;
+}
+
+int getNumPlayers()
+{
+   // prompt user for how many players are playing
+   std::string numPlayersStr = "";
+   int numPlayers            = 0;
+   bool isValidNumber        = false;
+   std::cout << "How many players are playing?" << std::endl;
+   do
+   {
+      std::cout << "> ";
+      std::getline(std::cin, numPlayersStr);
+      try
+      {
+         // if user input consists of only integers
+         if (isNumeric(numPlayersStr) && numPlayersStr.length() > 0)
+         {
+            // convert string to integer and validate the number of players
+            numPlayers = std::stoi(numPlayersStr);
+            isValidNumber =
+               (numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS);
+            if (!isValidNumber)
+            {
+               throw std::invalid_argument("BAD NUMBER");
+            }
+         }
+         else
+         {
+            throw std::invalid_argument("Invalid Input");
+         }
+      }
+      catch (const std::invalid_argument& e)
+      {
+         std::cerr << e.what() << '\n';
+      }
+   } while (!isNumeric(numPlayersStr) || !isValidNumber);
+
+   return numPlayers;
 }
