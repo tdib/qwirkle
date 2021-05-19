@@ -148,7 +148,9 @@ void Game::initalisePlayers()
                }
                else
                {
-                  throw std::invalid_argument("Invalid Input");
+                  throw std::invalid_argument(
+                     "Please type a valid name with uppercase characters only "
+                     "and no spaces.");
                }
             }
             catch (std::invalid_argument& e)
@@ -282,14 +284,20 @@ void Game::playGame()
                      }
                      else
                      {
-                        // return piece to hand
+                        // return piece to hand (tile is in hand but invalid
+                        // placement)
                         players[i]->addToHand(toPlace);
-                        throw std::invalid_argument("Invalid Input");
+                        throw std::invalid_argument(
+                           "That was not a valid placement for that tile. "
+                           "Please try "
+                           "again.");
                      }
                   }
                   else
                   {
-                     throw std::invalid_argument("Invalid Input");
+                     // tile placement was wrong or not possible
+                     throw std::invalid_argument(
+                        "You do not have this tile. Please try again.");
                   }
                }
                else if (command == REPLACE && rawCommand.size() == 2)
@@ -304,12 +312,13 @@ void Game::playGame()
                      }
                      else
                      {
-                        throw std::invalid_argument("Invalid Input");
+                        throw std::invalid_argument(
+                           "You do not have this tile. Please try again.");
                      }
                   }
                   else
                   {
-                     throw std::invalid_argument("Invalid Input");
+                     throw std::invalid_argument("The bag is empty!");
                   }
                }
                else if (command == SAVE)
@@ -323,12 +332,13 @@ void Game::playGame()
                      }
                      else
                      {
-                        throw std::invalid_argument("Invalid Input");
+                        throw std::invalid_argument(
+                           "The game could not be saved. Please try again.");
                      }
                   }
                   else
                   {
-                     throw std::invalid_argument("Invalid Input");
+                     throw std::invalid_argument("Usage: save <filename>");
                   }
                }
                else if (command == QUITGAME)
@@ -345,7 +355,9 @@ void Game::playGame()
                }
                else
                {
-                  throw std::invalid_argument("Invalid Input");
+                  throw std::invalid_argument(
+                     "The command you typed was incorrect. Please use the "
+                     "'help' command for more information.");
                }
             }
             catch (std::invalid_argument& e)

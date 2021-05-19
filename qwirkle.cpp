@@ -84,12 +84,13 @@ int main(void)
                   }
                   else
                   {
-                     throw std::invalid_argument("Invalid Input");
+                     throw std::invalid_argument(
+                        "Please enter a relative path to a file");
                   }
                }
                catch (std::invalid_argument& e)
                {
-                  std::cout << "Invalid Input" << std::endl;
+                  std::cerr << e.what() << '\n';
                }
             }
          }
@@ -112,7 +113,8 @@ int main(void)
          }
          else
          {
-            throw std::invalid_argument("Invalid Input");
+            throw std::invalid_argument(
+               "Please select a valid option (1-4 inclusive).");
          }
       }
       catch (std::invalid_argument& e)
@@ -205,12 +207,13 @@ int getNumPlayers()
                (numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS);
             if (!isValidNumber)
             {
-               throw std::invalid_argument("BAD NUMBER");
+               throw std::invalid_argument(
+                  "Please choose a number between 2-4 (inclusive).");
             }
          }
          else
          {
-            throw std::invalid_argument("Invalid Input");
+            throw std::invalid_argument("Please enter an integer value.");
          }
       }
       catch (const std::invalid_argument& e)
