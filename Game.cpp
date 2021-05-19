@@ -405,13 +405,14 @@ void Game::playGame()
 void Game::printGameState(Player* player)
 {
    std::cout << std::endl;
+   board->printBoard();
    std::cout << player->getName() << ", it's your turn" << std::endl;
    for (int i = 0; i < numPlayers; i++)
    {
       std::cout << "Score for " << players[i]->getName() << ": "
                 << players[i]->getScore() << std::endl;
    }
-   board->printBoard();
+   std::cout << std::endl;
    std::cout << "Your hand is" << std::endl;
    std::cout << player->getHand() << std::endl;
 }
