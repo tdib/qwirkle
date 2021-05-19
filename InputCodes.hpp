@@ -6,6 +6,7 @@
 #define QUITGAME "QUIT"
 #define AT       "AT"
 #define SAVE     "SAVE"
+#define HELP     "HELP"
 
 #define NEW_GAME  "1"
 #define LOAD_GAME "2"

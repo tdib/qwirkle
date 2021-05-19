@@ -341,6 +341,22 @@ void Game::playGame()
                      throw std::invalid_argument("Usage: save <filename>");
                   }
                }
+               else if (command == HELP)
+               {
+                  std::cout
+                     << "You may use the following (case insensitive) commands."
+                     << std::endl;
+                  std::cout << "-----------------------------------------------"
+                            << std::endl;
+                  std::cout << "Placing a tile:     place <tile> at <location>"
+                            << std::endl;
+                  std::cout << "Replacing a tile:   replace <tile>"
+                            << std::endl;
+                  std::cout << "Saving the game:    save <filename or relative "
+                               "filepath>"
+                            << std::endl;
+                  std::cout << "Quitting the game:  quit" << std::endl;
+               }
                else if (command == QUITGAME)
                {
                   validInput  = true;
