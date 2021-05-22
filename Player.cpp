@@ -6,6 +6,7 @@ Player::Player()
     , hand(new LinkedList())
     , name("")
     , score(0)
+    , AIStatus(false)
 {
 }
 
@@ -15,6 +16,7 @@ Player::Player(std::string playerName, int playerScore, std::string playerHand)
     , hand(new LinkedList())
     , name(playerName)
     , score(playerScore)
+    , AIStatus(false)
 {
    this->setHand(playerHand);
 }
@@ -99,6 +101,16 @@ bool Player::swapTile(std::string tileToSwap)
    }
 
    return matchingTile;
+}
+
+void Player::setAIStatus(bool AIStatus)
+{
+   this->AIStatus = AIStatus;
+}
+
+bool Player::getAIStatus()
+{
+   return this->AIStatus;
 }
 
 void Player::addScore(int score)

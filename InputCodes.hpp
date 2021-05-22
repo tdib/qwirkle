@@ -13,4 +13,6 @@
 #define CREDITS   "3"
 #define QUIT      "4"
 
+#define AI "AI"
+
 #endif // INPUTCODES_H

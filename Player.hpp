@@ -32,6 +32,8 @@ public:
    // Used to return a tile to the hand (if a valid tile is selected but can't
    // be placed)
    void addToHand(Tile* tile);
+   void setAIStatus(bool AIStatus);
+   bool getAIStatus();
 
 private:
    Bag* bag;
@@ -39,6 +41,7 @@ private:
    LinkedList* hand;
    std::string name;
    int score;
+   bool AIStatus;
 };
 
 #endif // PLAYER_H

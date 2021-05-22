@@ -26,7 +26,8 @@ public:
 private:
    Board* board;
    Bag* bag;
-   std::vector<Player*> players;
+   // std::vector<Player*> players;
+   Player** players;
    int numPlayers;
    int startingPlayer;
    void initalisePlayers();
@@ -35,7 +36,7 @@ private:
    // Splits the rawUserInput based on the delimiter. Returns a vector of input
    std::vector<std::string> splitString(
       std::string rawUserInput, char delimiter);
-   bool isValidName(std::string name);
+   bool isValidName(std::string name, int currNameIndex);
    bool isValidTileInHand(Player* player, std::string tileToValidate);
    bool isValidCoordinate(std::string coordinateToValidate);
    void printQuitMessage();
@@ -44,7 +45,7 @@ private:
    void saveGameCommand(std::vector<std::string> rawCommand,
       std::vector<std::string> rawSaveCommand, int currPlayer);
    void helpCommand();
-   void Game::finaliseGame(int currPlayer);
+   void finaliseGame(int currPlayer);
 };
 
 #endif // ASSIGN2_GAME_H

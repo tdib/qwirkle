@@ -41,8 +41,10 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    std::string playerOneHand = "";
    getline(savedGame, playerOneHand);
 
-   this->players.push_back(
-      new Player(playerOneName, playerOneScore, playerOneHand));
+   std::cout << playerOneName << playerOneHand << playerOneScore << std::endl;
+
+   // this->players.push_back(
+   // new Player(playerOneName, playerOneScore, playerOneHand));
 
    // player two name
    std::string playerTwoName = "";
@@ -57,8 +59,9 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    std::string playerTwoHand = "";
    getline(savedGame, playerTwoHand);
 
-   this->players.push_back(
-      new Player(playerTwoName, playerTwoScore, playerTwoHand));
+   // this->players.push_back(
+   // new Player(playerTwoName, playerTwoScore, playerTwoHand));
+   std::cout << playerTwoName << playerTwoHand << playerTwoScore << std::endl;
 
    // board dimensions
    std::string dimStr = "";
@@ -106,9 +109,13 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
 
 Game::~Game()
 {
-   for (Player* player : players)
+   // for (Player* player : players)
+   // {
+   //    delete player;
+   // }
+   for (int i = 0; i < numPlayers; i++)
    {
-      delete player;
+      delete players[i];
    }
 
    delete board;
@@ -117,6 +124,7 @@ Game::~Game()
 
 void Game::initalisePlayers()
 {
+   players = new Player*[numPlayers];
    // Gets and sets the name for each player, sets their bag and board and draws
    // their initial 6 tiles
    for (int i = 0; i < numPlayers; i++)
@@ -136,8 +144,9 @@ void Game::initalisePlayers()
          {
             try
             {
-               if (isValidName(playerName))
+               if (isValidName(playerName, i))
                {
+                  std::cout << "FDKLSJLKFDJS" << std::endl;
                   validName = true;
                }
                else
@@ -158,7 +167,10 @@ void Game::initalisePlayers()
          }
       }
 
-      players.push_back(new Player());
+      std::cout << "CREATING NEW PLAYER (FIRST)" << std::endl;
+      players[i] = new Player();
+      std::cout << "CREATING NEW PLAYER (SECOND)" << std::endl;
+      // players.push_back(new Player());
       std::transform(
          playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       players[i]->setName(playerName);
@@ -341,23 +353,34 @@ std::vector<std::string> Game::splitString(
    return userCommand;
 }
 
-bool Game::isValidName(std::string name)
+bool Game::isValidName(std::string name, int currNameIndex)
 {
    int length   = name.length();
    bool isValid = true;
 
-   for (int i = 0; i < length; i++)
+   if (length == 0)
    {
-      if (!isupper(name[i]))
+      isValid = false;
+   }
+
+   // check every character in the name for a lowercase
+   for (int i = 0; i < length && isValid; i++)
+   {
+      if (!isupper(name[i]) && name[i] != ' ')
       {
          isValid = false;
       }
    }
 
-   int size = players.size();
-   if (size > 1)
+   // for (int i = 0; i < numPlayers; i++)
+   // {
+   //    std::cout << players[i]->getName() << std::endl;
+   // }
+
+   // int size = players.size();
+   if (currNameIndex > 1 && isValid)
    {
-      for (int i = 0; i < size; i++)
+      for (int i = 0; i < currNameIndex; i++)
       {
          if (players[i]->getName() == name)
          {
@@ -558,7 +581,7 @@ bool Game::replaceTileCommand(
    {
       throw std::invalid_argument("The bag is empty!");
    }
-   return true;
+   return validInput;
 }
 
 void Game::saveGameCommand(std::vector<std::string> rawCommand,
