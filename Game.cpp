@@ -117,12 +117,6 @@ Game::~Game()
 
 void Game::initalisePlayers()
 {
-   // numPlayers is hardcoded as 2 in qwirkle.cpp (for group submission)
-   for (int i = 0; i < numPlayers; i++)
-   {
-      players.push_back(new Player());
-   }
-
    // Gets and sets the name for each player, sets their bag and board and draws
    // their initial 6 tiles
    for (int i = 0; i < numPlayers; i++)
@@ -215,7 +209,7 @@ void Game::playGame()
                std::cout << "> ";
                getline(std::cin, rawUserInput);
 
-               // Splitting up rawUserInput based on delimited (spaces)
+               // Splitting up rawUserInput based on delimiter (spaces)
                // This specific splitString() is for case-sensitive save files
                std::vector<std::string> rawSaveCommand =
                   splitString(rawUserInput, ' ');
@@ -234,141 +228,42 @@ void Game::playGame()
                   command = rawCommand[0];
                }
 
+               // placing a tile
                if (command == PLACE && rawCommand.size() == 4 &&
                    rawCommand[2] == "AT")
                {
-                  std::string tileToPlace         = rawCommand[1];
-                  std::string placementCoordinate = rawCommand[3];
-
-                  if (isValidTileInHand(players[i], tileToPlace) &&
-                      isValidCoordinate(placementCoordinate))
-                  {
-                     int coordX = getColFromCoordinate(placementCoordinate);
-                     int coordY = getRowFromCoordinate(placementCoordinate);
-
-                     Tile* toPlace = players[i]->getTileFromHand(tileToPlace);
-
-                     bool isFirstTile = board->isFirstTile();
-
-                     if (board->placeTile(toPlace, coordX, coordY))
-                     {
-                        validInput = true;
-
-                        if (isFirstTile)
-                        {
-                           players[i]->addScore(1);
-                        }
-                        else
-                        {
-                           int verticalScore =
-                              board->calculateScoreVertical(coordX, coordY);
-                           int horizontalScore =
-                              board->calculateScoreHorizontal(coordX, coordY);
-
-                           players[i]->addScore(verticalScore);
-                           players[i]->addScore(horizontalScore);
-
-                           // If qwirkle or double qwirkle
-                           if (verticalScore == 12 && horizontalScore == 12)
-                           {
-                              std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
-                           }
-                           else if (verticalScore == 12 ||
-                                    horizontalScore == 12)
-                           {
-                              std::cout << "QWIRKLE!!!" << std::endl;
-                           }
-                        }
-
-                        players[i]->drawTile();
-                     }
-                     else
-                     {
-                        // return piece to hand (tile is in hand but invalid
-                        // placement)
-                        players[i]->addToHand(toPlace);
-                        throw std::invalid_argument(
-                           "That was not a valid placement for that tile. "
-                           "Please try "
-                           "again.");
-                     }
-                  }
-                  else
-                  {
-                     // tile placement was wrong or not possible
-                     throw std::invalid_argument(
-                        "You do not have this tile. Please try again.");
-                  }
+                  validInput = placeTileCommand(rawCommand, i);
                }
+               // replacing a tile
                else if (command == REPLACE && rawCommand.size() == 2)
                {
-                  std::string tileToSwap = rawCommand[1];
-
-                  if (!bag->getTilesInBag()->isEmpty())
-                  {
-                     if (players[i]->swapTile(tileToSwap))
-                     {
-                        validInput = true;
-                     }
-                     else
-                     {
-                        throw std::invalid_argument(
-                           "You do not have this tile. Please try again.");
-                     }
-                  }
-                  else
-                  {
-                     throw std::invalid_argument("The bag is empty!");
-                  }
+                  validInput = replaceTileCommand(rawCommand, i);
                }
+               // saving the game
                else if (command == SAVE)
                {
-                  if (rawCommand.size() == 2)
-                  {
-                     std::string saveFileName = rawSaveCommand[1];
-                     if (saveGame(players[i], saveFileName))
-                     {
-                        std::cout << "Game successfully saved" << std::endl;
-                     }
-                     else
-                     {
-                        throw std::invalid_argument(
-                           "The game could not be saved. Please try again.");
-                     }
-                  }
-                  else
-                  {
-                     throw std::invalid_argument("Usage: save <filename>");
-                  }
+                  saveGameCommand(rawCommand, rawSaveCommand, i);
                }
+               // providing help text
                else if (command == HELP)
                {
-                  std::cout
-                     << "You may use the following (case insensitive) commands."
-                     << std::endl;
-                  std::cout << "-----------------------------------------------"
-                            << std::endl;
-                  std::cout << "Placing a tile:     place <tile> at <location>"
-                            << std::endl;
-                  std::cout << "Replacing a tile:   replace <tile>"
-                            << std::endl;
-                  std::cout << "Saving the game:    save <filename or relative "
-                               "filepath>"
-                            << std::endl;
-                  std::cout << "Quitting the game:  quit" << std::endl;
+                  helpCommand();
                }
+               // quitting the game
                else if (command == QUITGAME)
                {
                   validInput  = true;
                   gameRunning = false;
                   printQuitMessage();
                }
+               // eof character
                else if (std::cin.eof())
                {
                   std::cout << std::endl;
                   validInput  = true;
                   gameRunning = false;
                }
+               // incorrectly formatted command
                else
                {
                   throw std::invalid_argument(
@@ -385,45 +280,8 @@ void Game::playGame()
             // then the game is over!
             if (players[i]->isEmptyHand())
             {
-               // Player who places their last tile first gets 6 extra points
-               players[i]->addScore(6);
+               finaliseGame(i);
                gameRunning = false;
-               bool isDraw = true;
-
-               board->printBoard();
-
-               std::cout << "Game over!!" << std::endl;
-
-               // Set the winner initially to the first player
-               Player* winner = players[0];
-
-               for (int j = 0; j < numPlayers; j++)
-               {
-                  // Check if player[j]'s score is greater than the winner's
-                  if (players[j]->getScore() > winner->getScore())
-                  {
-                     isDraw = false;
-                     winner = players[j];
-                  }
-                  // else check for an equal score (draw condition)
-                  else if (players[j]->getScore() != winner->getScore())
-                  {
-                     isDraw = false;
-                  }
-
-                  std::cout << "Score for " << players[j]->getName() << ": "
-                            << players[j]->getScore() << std::endl;
-               }
-
-               // Different output if draw or normal win
-               if (isDraw)
-               {
-                  std::cout << "It's a draw!" << std::endl;
-               }
-               else
-               {
-                  std::cout << winner->getName() << " won!" << std::endl;
-               }
             }
          }
       }
@@ -527,16 +385,16 @@ bool Game::isValidCoordinate(std::string coordinate)
 {
    bool isValid = false;
 
+   // validate tiles from a0-z9
    if (coordinate.size() == 2)
    {
       std::string str = "";
-      for (char A = 'A'; A <= 'Z'; A++)
+      for (char row = 'A'; row <= 'Z'; row++)
       {
-         if (coordinate[0] == A)
+         if (coordinate[0] == row)
          {
             str.push_back(coordinate[1]);
             int col = atoi(str.c_str());
-            // for A0 - A9
             if (col >= 0 && col <= 9)
             {
                isValid = true;
@@ -544,17 +402,17 @@ bool Game::isValidCoordinate(std::string coordinate)
          }
       }
    }
+   // validate tiles from a10-z25
    else if (coordinate.size() == 3)
    {
       std::string str = "";
-      for (char A = 'A'; A <= 'Z'; A++)
+      for (char row = 'A'; row <= 'Z'; row++)
       {
-         if (coordinate[0] == A)
+         if (coordinate[0] == row)
          {
             str.push_back(coordinate[1]);
             str.push_back(coordinate[2]);
             int col = atoi(str.c_str());
-            // for A10 - A25
             if (col >= 10 && col <= 25)
             {
                isValid = true;
@@ -610,4 +468,172 @@ void Game::printQuitMessage()
 {
    std::cout << std::endl;
    std::cout << "Goodbye" << std::endl;
+}
+
+bool Game::placeTileCommand(std::vector<std::string> rawCommand, int currPlayer)
+{
+   bool validInput                 = false;
+   std::string tileToPlace         = rawCommand[1];
+   std::string placementCoordinate = rawCommand[3];
+
+   if (isValidTileInHand(players[currPlayer], tileToPlace) &&
+       isValidCoordinate(placementCoordinate))
+   {
+      int coordX = getColFromCoordinate(placementCoordinate);
+      int coordY = getRowFromCoordinate(placementCoordinate);
+
+      Tile* toPlace = players[currPlayer]->getTileFromHand(tileToPlace);
+
+      bool isFirstTile = board->isFirstTile();
+
+      if (board->placeTile(toPlace, coordX, coordY))
+      {
+         validInput = true;
+
+         if (isFirstTile)
+         {
+            players[currPlayer]->addScore(1);
+         }
+         else
+         {
+            int verticalScore = board->calculateScoreVertical(coordX, coordY);
+            int horizontalScore =
+               board->calculateScoreHorizontal(coordX, coordY);
+
+            players[currPlayer]->addScore(verticalScore);
+            players[currPlayer]->addScore(horizontalScore);
+
+            // If qwirkle or double qwirkle
+            if (verticalScore == 12 && horizontalScore == 12)
+            {
+               std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
+            }
+            else if (verticalScore == 12 || horizontalScore == 12)
+            {
+               std::cout << "QWIRKLE!!!" << std::endl;
+            }
+         }
+
+         players[currPlayer]->drawTile();
+      }
+      else
+      {
+         // return piece to hand (tile is in hand but invalid
+         // placement)
+         players[currPlayer]->addToHand(toPlace);
+         throw std::invalid_argument(
+            "That was not a valid placement for that tile. "
+            "Please try "
+            "again.");
+      }
+   }
+   else
+   {
+      // tile placement was wrong or not possible
+      throw std::invalid_argument(
+         "You do not have this tile. Please try again.");
+   }
+   return validInput;
+}
+
+bool Game::replaceTileCommand(
+   std::vector<std::string> rawCommand, int currPlayer)
+{
+   bool validInput        = false;
+   std::string tileToSwap = rawCommand[1];
+
+   if (!bag->getTilesInBag()->isEmpty())
+   {
+      if (players[currPlayer]->swapTile(tileToSwap))
+      {
+         validInput = true;
+      }
+      else
+      {
+         throw std::invalid_argument(
+            "You do not have this tile. Please try again.");
+      }
+   }
+   else
+   {
+      throw std::invalid_argument("The bag is empty!");
+   }
+   return true;
+}
+
+void Game::saveGameCommand(std::vector<std::string> rawCommand,
+   std::vector<std::string> rawSaveCommand, int currPlayer)
+{
+   if (rawCommand.size() == 2)
+   {
+      std::string saveFileName = rawSaveCommand[1];
+      if (saveGame(players[currPlayer], saveFileName))
+      {
+         std::cout << "Game successfully saved" << std::endl;
+      }
+      else
+      {
+         throw std::invalid_argument(
+            "The game could not be saved. Please try again.");
+      }
+   }
+   else
+   {
+      throw std::invalid_argument("Usage: save <filename>");
+   }
+}
+
+void Game::helpCommand()
+{
+   std::cout << "You may use the following (case insensitive) commands."
+             << std::endl;
+   std::cout << "-----------------------------------------------" << std::endl;
+   std::cout << "Placing a tile:     place <tile> at <location>" << std::endl;
+   std::cout << "Replacing a tile:   replace <tile>" << std::endl;
+   std::cout << "Saving the game:    save <filename or relative "
+                "filepath>"
+             << std::endl;
+   std::cout << "Quitting the game:  quit" << std::endl;
+}
+
+void Game::finaliseGame(int currPlayer)
+{
+   // Player who places their last tile first gets 6 extra points
+   players[currPlayer]->addScore(6);
+   bool isDraw = true;
+
+   board->printBoard();
+
+   std::cout << "Game over!!" << std::endl;
+
+   // Set the winner initially to the first player
+   Player* winner = players[0];
+
+   for (int j = 0; j < numPlayers; j++)
+   {
+      // Check if player[j]'s score is greater than the winner's
+      if (players[j]->getScore() > winner->getScore())
+      {
+         isDraw = false;
+         winner = players[j];
+      }
+      // else check for an equal score (draw condition)
+      else if (players[j]->getScore() != winner->getScore())
+      {
+         isDraw = false;
+      }
+
+      std::cout << "Score for " << players[j]->getName() << ": "
+                << players[j]->getScore() << std::endl;
+   }
+
+   // Different output if draw or normal win
+   if (isDraw)
+   {
+      std::cout << "It's a draw!" << std::endl;
+   }
+   else
+   {
+      std::cout << winner->getName() << " won!" << std::endl;
+   }
 }

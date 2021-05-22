@@ -39,6 +39,12 @@ private:
    bool isValidTileInHand(Player* player, std::string tileToValidate);
    bool isValidCoordinate(std::string coordinateToValidate);
    void printQuitMessage();
+   bool placeTileCommand(std::vector<std::string> rawCommand, int currPlayer);
+   bool replaceTileCommand(std::vector<std::string> rawCommand, int currPlayer);
+   void saveGameCommand(std::vector<std::string> rawCommand,
+      std::vector<std::string> rawSaveCommand, int currPlayer);
+   void helpCommand();
+   void Game::finaliseGame(int currPlayer);
 };
 
 #endif // ASSIGN2_GAME_H
