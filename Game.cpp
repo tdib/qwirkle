@@ -23,10 +23,6 @@ Game::Game(int numPlayers)
 Game::Game(int numPlayers, std::ifstream& savedGame)
 {
    this->numPlayers = numPlayers;
-   // this->startingPlayer = ?;
-   // needs input validation for file
-   // idk if you check and validate the file as you go or at the start
-   // also, need to
 
    // player one name
    std::string playerOneName = "";
@@ -143,12 +139,11 @@ void Game::initalisePlayers()
                if (isValidName(playerName, i))
                {
                   validName = true;
-                  // checkForAIName(playerName);
                }
                else
                {
-                  throw std::invalid_argument(
-                     "Please type a valid name with uppercase characters only");
+                  throw std::invalid_argument("Please type a valid name with "
+                                              "uppercase characters only\n");
                }
             }
             catch (std::invalid_argument& e)
@@ -250,6 +245,33 @@ void Game::printGameState(Player* player)
    std::cout << player->getHandStr() << std::endl;
 }
 
+bool Game::customSaveGame(Player* player, std::string saveFileName)
+{
+   bool canSave = false;
+   std::ofstream saveFile(saveFileName + ".save");
+
+   if (saveFile.good())
+   {
+      saveFile << "#myFormat" << std::endl;
+      saveFile << numPlayers << std::endl;
+      for (int i = 0; i < numPlayers; i++)
+      {
+         saveFile << players[i]->getName() << std::endl;
+         saveFile << players[i]->getScore() << std::endl;
+         saveFile << players[i]->getHandStr() << std::endl;
+         saveFile << players[i]->getAIStatus() << std::endl;
+      }
+      saveFile << board->getDimCols() << "," << board->getDimRows()
+               << std::endl;
+      saveFile << board->saveBoard() << std::endl;
+      saveFile << bag->saveBag() << std::endl;
+      saveFile << player->getName();
+      canSave = true;
+   }
+
+   saveFile.close();
+   return canSave;
+}
 bool Game::saveGame(Player* player, std::string saveFileName)
 {
    bool canSave = false;
@@ -307,7 +329,7 @@ bool Game::isValidName(std::string name, int currNameIndex)
       }
    }
 
-   if (currNameIndex > 1 && isValid)
+   if (currNameIndex > 0 && isValid)
    {
       for (int i = 0; i < currNameIndex; i++)
       {
@@ -528,6 +550,7 @@ void Game::helpCommand()
    std::cout << "-----------------------------------------------" << std::endl;
    std::cout << "Placing a tile:     place <tile> at <location>" << std::endl;
    std::cout << "Replacing a tile:   replace <tile>" << std::endl;
+   std::cout << "Getting a hint:     hint" << std::endl;
    std::cout << "Saving the game:    save <filename or relative "
                 "filepath>"
              << std::endl;
@@ -538,7 +561,7 @@ void Game::finaliseGame(int currPlayer)
 {
    // Player who places their last tile first gets 6 extra points
    players[currPlayer]->addScore(6);
-   bool isDraw = true;
+   bool isDraw = false;
 
    board->printBoard();
 
@@ -547,32 +570,31 @@ void Game::finaliseGame(int currPlayer)
    // Set the winner initially to the first player
    Player* winner = players[0];
 
-   for (int j = 0; j < numPlayers; j++)
+   // find player with the highest score (or draw)
+   for (int i = 0; i < numPlayers; i++)
    {
-      // Check if player[j]'s score is greater than the winner's
-      if (players[j]->getScore() > winner->getScore())
+      if (players[i]->getScore() > winner->getScore())
       {
          isDraw = false;
-         winner = players[j];
+         winner = players[i];
       }
-      // else check for an equal score (draw condition)
-      else if (players[j]->getScore() != winner->getScore())
+      // winner is initially player index 0, so do not compare this case
+      else if (i != 0 && players[i]->getScore() == winner->getScore())
       {
-         isDraw = false;
+         isDraw = true;
       }
-
-      std::cout << "Score for " << players[j]->getName() << ": "
-                << players[j]->getScore() << std::endl;
+      std::cout << "Score for " << players[i]->getName() << ": "
+                << players[i]->getScore() << std::endl;
    }
 
-   // Different output if draw or normal win
-   if (isDraw)
+   if (!isDraw)
    {
-      std::cout << "It's a draw!" << std::endl;
+      std::cout << winner->getName() << " won with a score of "
+                << winner->getScore() << "!" << std::endl;
    }
    else
    {
-      std::cout << winner->getName() << " won!" << std::endl;
+      std::cout << "It's a draw!" << std::endl;
    }
 }
 
@@ -624,6 +646,10 @@ bool Game::parseUserInput(bool& gameRunning, int currentPlayerIndex)
       {
          helpCommand();
       }
+      else if (command == HINT)
+      {
+         printWorstMove(players[currentPlayerIndex]);
+      }
       // quitting the game
       else if (command == QUITGAME)
       {
@@ -637,6 +663,10 @@ bool Game::parseUserInput(bool& gameRunning, int currentPlayerIndex)
          std::cout << std::endl;
          validInput  = true;
          gameRunning = false;
+      }
+      else if (command.empty())
+      {
+         throw std::invalid_argument("Please enter a command.");
       }
       // incorrectly formatted command
       else
@@ -683,70 +713,143 @@ bool Game::playBestMove(Player* player)
    int highestRowPosition   = 0;
    int highestTileIndex     = 0;
 
-   // every space on the board (across and then down)
-   for (int col = 0; col < board->getDimCols() && !hasPlayedMove; col++)
+   if (board->isFirstTile())
    {
-      for (int row = 0; row < board->getDimRows() && !hasPlayedMove; row++)
+      board->placeTile(player->getHand()->getTileAtIndex(0), 0, 0);
+   }
+   else
+   {
+      // every space on the board (across and then down)
+      for (int col = 0; col < board->getDimCols() && !hasPlayedMove; col++)
       {
-         // every tile in current player's hand
-         for (int i = 0; i < player->getHand()->getSize() && !hasPlayedMove;
-              i++)
+         for (int row = 0; row < board->getDimRows() && !hasPlayedMove; row++)
          {
-            // get the tile at the index of the iteration
-            Tile* iterationTile = player->getHand()->getTileAtIndex(i);
-
-            // if tile can be placed at the current location on the board
-            if (board->getTilesOnBoard()[row][col] == nullptr &&
-                board->hasAdjacent(col, row) &&
-                board->canPlaceHorizontal(iterationTile, col, row) &&
-                board->canPlaceVertical(iterationTile, col, row))
+            // every tile in current player's hand
+            for (int i = 0; i < player->getHand()->getSize() && !hasPlayedMove;
+                 i++)
             {
-               // calculate score of move and check if it is higher than highest
-               int score = board->calculateScore(col, row);
-               std::cout << iterationTile->toString() << " AT "
-                         << static_cast<char>(row + 65) << col << " FOR "
-                         << score << " POINTS" << std::endl;
-               if (score > highestScorePossible)
+               // get the tile at the index of the iteration
+               Tile* iterationTile = player->getHand()->getTileAtIndex(i);
+
+               // if tile can be placed at the current location on the board
+               if (board->getTilesOnBoard()[row][col] == nullptr &&
+                   board->hasAdjacent(col, row) &&
+                   board->canPlaceHorizontal(iterationTile, col, row) &&
+                   board->canPlaceVertical(iterationTile, col, row))
                {
-                  // if it is the best move yet, set the variables to store
-                  // this location and tile
-                  highestTile        = iterationTile;
-                  highestColPosition = col;
-                  highestRowPosition = row;
-                  highestTileIndex   = i;
+                  // calculate score of move and check if it is higher than
+                  // highest
+                  int score = board->calculateScore(col, row);
+                  std::cout << iterationTile->toString() << " AT "
+                            << static_cast<char>(row + 65) << col << " FOR "
+                            << score << " POINTS" << std::endl;
+                  if (score > highestScorePossible)
+                  {
+                     // if it is the best move yet, set the variables to store
+                     // this location and tile
+                     highestTile        = iterationTile;
+                     highestColPosition = col;
+                     highestRowPosition = row;
+                     highestTileIndex   = i;
+                  }
                }
             }
          }
       }
+
+      // once the scanning is complete, place the highest scoring tile
+      if (board->placeTile(highestTile, highestColPosition, highestRowPosition))
+      {
+         player->getHand()->grab(highestTileIndex);
+         int score =
+            board->calculateScore(highestColPosition, highestRowPosition);
+         player->addScore(score);
+         player->drawTile();
+         hasPlayedMove = true;
+         std::cout << "PLACING TILE " << highestTile->toString() << " AT "
+                   << static_cast<char>(highestRowPosition + 65)
+                   << highestColPosition << std::endl;
+      }
+      else
+      {
+         // replace first tile in hand
+         if (!bag->getTilesInBag()->isEmpty())
+         {
+            player->swapTile(player->getHand()->getTileAtIndex(0)->toString());
+         }
+      }
    }
 
-   if (board->placeTile(highestTile, highestColPosition, highestRowPosition))
+   return hasPlayedMove;
+}
+
+void Game::printWorstMove(Player* player)
+{
+   // declare variables to store values of the best move
+   int lowestScorePossible = INT8_MAX;
+   Tile* lowestTile        = nullptr;
+   int lowestColPosition   = 0;
+   int lowestRowPosition   = 0;
+   bool isPossibleMove     = false;
+
+   if (board->isFirstTile())
    {
-      player->getHand()->grab(highestTileIndex);
-      int score = board->calculateScore(highestColPosition, highestRowPosition);
-      player->addScore(score);
-      player->drawTile();
-      hasPlayedMove = true;
-      std::cout << "PLACING TILE " << highestTile->toString() << " AT "
-                << static_cast<char>(highestRowPosition + 65)
-                << highestColPosition << std::endl;
+      std::cout << "There are no tiles on the board, you may place any tile "
+                   "anywhere you like!"
+                << std::endl;
    }
    else
    {
-      std::cout << " BLKAJSDKLASJDL KSAJDLKAS JLDKJ ASLKDJ ASLKDJ ALSK JDLAKS"
-                << std::endl
-                << std::endl
-                << std::endl
-                << std::endl
-                << std::endl
-                << std::endl
-                << std::endl;
-      player->addToHand(highestTile);
+      // every space on the board (across and then down)
+      for (int col = 0; col < board->getDimCols(); col++)
+      {
+         for (int row = 0; row < board->getDimRows(); row++)
+         {
+            // every tile in current player's hand
+            for (int i = 0; i < player->getHand()->getSize(); i++)
+            {
+               // get the tile at the index of the iteration
+               Tile* iterationTile = player->getHand()->getTileAtIndex(i);
+
+               // if tile can be placed at the current location on the board
+               if (board->getTilesOnBoard()[row][col] == nullptr &&
+                   board->hasAdjacent(col, row) &&
+                   board->canPlaceHorizontal(iterationTile, col, row) &&
+                   board->canPlaceVertical(iterationTile, col, row))
+               {
+                  isPossibleMove = true;
+                  // calculate score of move and check if it is higher than
+                  // highest
+                  int score = board->calculateScore(col, row);
+                  if (score < lowestScorePossible)
+                  {
+                     // if it is the best move yet, set the variables to store
+                     // this location and tile
+                     lowestTile        = iterationTile;
+                     lowestColPosition = col;
+                     lowestRowPosition = row;
+                  }
+               }
+            }
+         }
+      }
+
+      if (isPossibleMove)
+      {
+         std::cout << "Psst! You could play tile " << lowestTile->toString()
+                   << " at " << static_cast<char>(lowestRowPosition + 65)
+                   << lowestColPosition << "!" << std::endl;
+      }
+      else
+      {
+         std::cout << "Hmmm, it looks like you don't have any possible moves "
+                      "right now. Try replacing a tile."
+                   << std::endl;
+      }
    }
-   // check score
-   // if score is the highest so far
-   // set highest tile
-   // if no tile is found
-   // replace first tile
-   return hasPlayedMove;
+}
+
+void Game::setAIMode(bool AIMode)
+{
+   this->AIMode = AIMode;
 }

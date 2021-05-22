@@ -7,6 +7,7 @@
 #define AT       "AT"
 #define SAVE     "SAVE"
 #define HELP     "HELP"
+#define HINT     "HINT"
 
 #define NEW_GAME  "1"
 #define LOAD_GAME "2"

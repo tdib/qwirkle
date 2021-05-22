@@ -22,11 +22,11 @@ public:
    void playGame();
    int getColFromCoordinate(std::string coordinate);
    int getRowFromCoordinate(std::string coordinate);
+   void setAIMode(bool AIMode);
 
 private:
    Board* board;
    Bag* bag;
-   // std::vector<Player*> players;
    Player** players;
    int numPlayers;
    int startingPlayer;
@@ -50,8 +50,14 @@ private:
    // INDIVIDUAL
    // check if the player name ends in " AI", indicating they are an AI player
    bool isAIName(std::string playerName);
+   // used for AI players to execute their turn
    bool playBestMove(Player* player);
+   // used for providing a hint to a player, will print the lowest scored move
+   void printWorstMove(Player* player);
    bool parseUserInput(bool& gameRunning, int currentPlayerIndex);
+   bool customSaveGame(Player* player, std::string saveFileName);
+
+   bool AIMode;
 };
 
 #endif // ASSIGN2_GAME_H

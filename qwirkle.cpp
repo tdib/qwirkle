@@ -17,7 +17,7 @@ bool isValidFile(std::string fileName);
 bool isNumeric(std::string str);
 int getNumPlayers();
 
-int main(void)
+int main(int argc, char* argv[])
 {
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
@@ -41,6 +41,16 @@ int main(void)
             // Create a game. Takes in the number of players
             // which is calculated by getNumPlayers()
             Game* game = new Game(getNumPlayers());
+            for (int i = 0; i < argc; i++)
+            {
+               // convert c-style string to lowercase std::string
+               std::string arg(argv[i]);
+               std::transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
+               if (arg == "-ai")
+               {
+                  game->setAIMode(true);
+               }
+            }
             game->playGame();
             if (std::cin.eof())
             {
