@@ -20,44 +20,73 @@ Game::Game(int numPlayers)
 }
 
 // Loading a saved game
-Game::Game(int numPlayers, std::ifstream& savedGame)
+Game::Game(std::ifstream& savedGame)
 {
-   this->numPlayers = numPlayers;
+   std::string firstLine = "";
+   getline(savedGame, firstLine);
+   if (firstLine == "#myFormat")
+   {
+      std::string numPlayersStr = "";
+      getline(savedGame, numPlayersStr);
+      this->numPlayers = std::stoi(numPlayersStr);
 
-   // player one name
-   std::string playerOneName = "";
-   getline(savedGame, playerOneName);
+      players = new Player*[numPlayers];
 
-   // player one score
-   std::string playerOneScoreStr = "";
-   getline(savedGame, playerOneScoreStr);
-   int playerOneScore = std::stoi(playerOneScoreStr);
+      for (int i = 0; i < numPlayers; i++)
+      {
+         // player i name
+         std::string playerName = "";
+         getline(savedGame, playerName);
 
-   // player one hand
-   std::string playerOneHand = "";
-   getline(savedGame, playerOneHand);
+         // player i score
+         std::string playerScoreStr = "";
+         getline(savedGame, playerScoreStr);
+         int playerScore = std::stoi(playerScoreStr);
 
-   std::cout << playerOneName << playerOneHand << playerOneScore << std::endl;
+         // player i hand
+         std::string playerHand = "";
+         getline(savedGame, playerHand);
 
-   // this->players.push_back(
-   // new Player(playerOneName, playerOneScore, playerOneHand));
+         std::string AIStatusStr = "";
+         getline(savedGame, AIStatusStr);
+         bool AIStatus = AIStatusStr == "1";
 
-   // player two name
-   std::string playerTwoName = "";
-   getline(savedGame, playerTwoName);
+         players[i] = new Player(playerName, playerScore, playerHand, AIStatus);
+      }
+   }
+   else
+   {
+      // player one name (first line has already been buffered)
+      std::string playerOneName = firstLine;
 
-   // player two score
-   std::string playerTwoScoreStr = "";
-   getline(savedGame, playerTwoScoreStr);
-   int playerTwoScore = std::stoi(playerTwoScoreStr);
+      // player one score
+      std::string playerOneScoreStr = "";
+      getline(savedGame, playerOneScoreStr);
+      int playerOneScore = std::stoi(playerOneScoreStr);
 
-   // player two hand
-   std::string playerTwoHand = "";
-   getline(savedGame, playerTwoHand);
+      // player one hand
+      std::string playerOneHand = "";
+      getline(savedGame, playerOneHand);
 
-   // this->players.push_back(
-   // new Player(playerTwoName, playerTwoScore, playerTwoHand));
-   std::cout << playerTwoName << playerTwoHand << playerTwoScore << std::endl;
+      std::cout << playerOneName << playerOneHand << playerOneScore
+                << std::endl;
+
+      // player two name
+      std::string playerTwoName = "";
+      getline(savedGame, playerTwoName);
+
+      // player two score
+      std::string playerTwoScoreStr = "";
+      getline(savedGame, playerTwoScoreStr);
+      int playerTwoScore = std::stoi(playerTwoScoreStr);
+
+      // player two hand
+      std::string playerTwoHand = "";
+      getline(savedGame, playerTwoHand);
+
+      std::cout << playerTwoName << playerTwoHand << playerTwoScore
+                << std::endl;
+   }
 
    // board dimensions
    std::string dimStr = "";
@@ -83,7 +112,8 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
    std::string currentPlayerName = "";
    getline(savedGame, currentPlayerName);
 
-   // For each player, set their bag and board and determine the starting player
+   // For each player, set their bag and board and determine the starting
+   // player
    int startingPlayer = 0;
    for (int i = 0; i < numPlayers; i++)
    {
@@ -109,14 +139,15 @@ Game::~Game()
    {
       delete players[i];
    }
+   delete[] players;
 
-   delete board;
    delete bag;
+   delete board;
 }
 
 void Game::initalisePlayers()
 {
-   players = new Player*[numPlayers];
+   this->players = new Player*[numPlayers];
    // Gets and sets the name for each player, sets their bag and board and draws
    // their initial 6 tiles
    for (int i = 0; i < numPlayers; i++)
@@ -527,7 +558,7 @@ void Game::saveGameCommand(std::vector<std::string> rawCommand,
    if (rawCommand.size() == 2)
    {
       std::string saveFileName = rawSaveCommand[1];
-      if (saveGame(players[currPlayer], saveFileName))
+      if (customSaveGame(players[currPlayer], saveFileName))
       {
          std::cout << "Game successfully saved" << std::endl;
       }

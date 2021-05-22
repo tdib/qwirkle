@@ -36,7 +36,6 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
       Tile* tileToPlace          = nullptr;
       std::string tileToPlaceStr = "";
       std::getline(boardTiles, tileToPlaceStr, '@');
-      // DUPLICATED CODE - MAKE METHOD FOR THIS?
       Colour tileColour     = tileToPlaceStr[0];
       std::string toConvert = "";
       toConvert.push_back(tileToPlaceStr[1]);

@@ -17,7 +17,7 @@ class Game
 {
 public:
    Game(int numPlayers);
-   Game(int numPlayers, std::ifstream& savedGame);
+   Game(std::ifstream& savedGame);
    ~Game();
    void playGame();
    int getColFromCoordinate(std::string coordinate);

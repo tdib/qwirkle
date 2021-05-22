@@ -10,15 +10,16 @@ Player::Player()
 {
 }
 
-Player::Player(std::string playerName, int playerScore, std::string playerHand)
+Player::Player(std::string playerName, int playerScore, std::string playerHand,
+   bool AIStatus)
     : bag(nullptr)
     , board(nullptr)
     , hand(new LinkedList())
     , name(playerName)
     , score(playerScore)
-    , AIStatus(false)
 {
    this->setHand(playerHand);
+   this->setAIStatus(AIStatus);
 }
 
 Player::~Player()

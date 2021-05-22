@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
                // convert c-style string to lowercase std::string
                std::string arg(argv[i]);
                std::transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
-               if (arg == "-ai")
+               if (arg == "--ai")
                {
                   game->setAIMode(true);
                }
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
                   else if (isValidFile(fileName))
                   {
                      std::ifstream savedGame(fileName + ".save");
-                     Game* game = new Game(2, savedGame);
+                     Game* game = new Game(savedGame);
                      game->playGame();
                      delete game;
                      loopFileNameAgain = false;

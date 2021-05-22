@@ -14,7 +14,8 @@ class Player
 {
 public:
    Player();
-   Player(std::string playerName, int playerScore, std::string playerHand);
+   Player(std::string playerName, int playerScore, std::string playerHand,
+      bool AIStatus);
    ~Player();
    void setBag(Bag* bag);
    void setBoard(Board* board);
