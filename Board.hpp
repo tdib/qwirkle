@@ -24,13 +24,19 @@ public:
    int getDimRows();
    std::string saveBoard();
 
+   // ORIGINALLY IN PRIVATE - MOVED HERE FOR INDIVIDUAL
+   bool canPlaceHorizontal(Tile* tileToPlace, int x, int y);
+   bool canPlaceVertical(Tile* tileToPlace, int x, int y);
+   bool hasAdjacent(int x, int y);
+   std::vector<std::vector<Tile*>> getTilesOnBoard();
+
+   // INDIVIDUAL
+   int calculateScore(int col, int row);
+
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;
    int dimCols;
    int dimRows;
-   bool canPlaceHorizontal(Tile* tileToPlace, int x, int y);
-   bool canPlaceVertical(Tile* tileToPlace, int x, int y);
-   bool hasAdjacent(int x, int y);
    bool loadingFromSave;
 };
 

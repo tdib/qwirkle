@@ -46,6 +46,12 @@ private:
       std::vector<std::string> rawSaveCommand, int currPlayer);
    void helpCommand();
    void finaliseGame(int currPlayer);
+
+   // INDIVIDUAL
+   // check if the player name ends in " AI", indicating they are an AI player
+   bool isAIName(std::string playerName);
+   bool playBestMove(Player* player);
+   bool parseUserInput(bool& gameRunning, int currentPlayerIndex);
 };
 
 #endif // ASSIGN2_GAME_H

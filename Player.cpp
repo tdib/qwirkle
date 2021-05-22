@@ -133,7 +133,7 @@ int Player::getScore()
    return this->score;
 }
 
-std::string Player::getHand()
+std::string Player::getHandStr()
 {
    return hand->getContents();
 }
@@ -164,4 +164,9 @@ Tile* Player::getTileFromHand(std::string tileToGet)
 void Player::addToHand(Tile* tile)
 {
    hand->push(tile);
+}
+
+LinkedList* Player::getHand()
+{
+   return hand;
 }

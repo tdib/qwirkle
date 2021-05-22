@@ -503,3 +503,26 @@ int Board::getDimRows()
 {
    return dimRows;
 }
+
+int Board::calculateScore(int col, int row)
+{
+   int verticalScore   = calculateScoreVertical(col, row);
+   int horizontalScore = calculateScoreHorizontal(col, row);
+
+   // If qwirkle or double qwirkle
+   if (verticalScore == 12 && horizontalScore == 12)
+   {
+      std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
+   }
+   else if (verticalScore == 12 || horizontalScore == 12)
+   {
+      std::cout << "QWIRKLE!!!" << std::endl;
+   }
+
+   return verticalScore + horizontalScore;
+}
+
+std::vector<std::vector<Tile*>> Board::getTilesOnBoard()
+{
+   return tilesOnBoard;
+}

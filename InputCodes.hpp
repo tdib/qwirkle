@@ -13,6 +13,6 @@
 #define CREDITS   "3"
 #define QUIT      "4"
 
-#define AI "AI"
+#define AI_NAMETAG " AI"
 
 #endif // INPUTCODES_H

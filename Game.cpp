@@ -109,10 +109,6 @@ Game::Game(int numPlayers, std::ifstream& savedGame)
 
 Game::~Game()
 {
-   // for (Player* player : players)
-   // {
-   //    delete player;
-   // }
    for (int i = 0; i < numPlayers; i++)
    {
       delete players[i];
@@ -129,7 +125,7 @@ void Game::initalisePlayers()
    // their initial 6 tiles
    for (int i = 0; i < numPlayers; i++)
    {
-      std::string playerName = " ";
+      std::string playerName = "";
       bool validName         = false;
 
       while (validName == false && !std::cin.eof())
@@ -146,14 +142,13 @@ void Game::initalisePlayers()
             {
                if (isValidName(playerName, i))
                {
-                  std::cout << "FDKLSJLKFDJS" << std::endl;
                   validName = true;
+                  // checkForAIName(playerName);
                }
                else
                {
                   throw std::invalid_argument(
-                     "Please type a valid name with uppercase characters only "
-                     "and no spaces.");
+                     "Please type a valid name with uppercase characters only");
                }
             }
             catch (std::invalid_argument& e)
@@ -167,12 +162,18 @@ void Game::initalisePlayers()
          }
       }
 
-      std::cout << "CREATING NEW PLAYER (FIRST)" << std::endl;
       players[i] = new Player();
-      std::cout << "CREATING NEW PLAYER (SECOND)" << std::endl;
       // players.push_back(new Player());
-      std::transform(
-         playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
+      if (isAIName(playerName))
+      {
+         players[i]->setAIStatus(true);
+         // remove the AI tag (" AI") and replace it with " (AI)"
+         playerName = playerName.substr(
+            0, playerName.length() - std::string(AI_NAMETAG).length());
+         playerName = playerName + " (AI)";
+      }
+      // std::transform(
+      // playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       players[i]->setName(playerName);
       players[i]->setBoard(this->board);
       players[i]->setBag(this->bag);
@@ -213,81 +214,15 @@ void Game::playGame()
 
          while (validInput == false && gameRunning == true)
          {
-            std::string rawUserInput = "";
-
-            try
+            if (players[i]->getAIStatus() == false)
             {
-               std::cout << std::endl;
-               std::cout << "> ";
-               getline(std::cin, rawUserInput);
-
-               // Splitting up rawUserInput based on delimiter (spaces)
-               // This specific splitString() is for case-sensitive save files
-               std::vector<std::string> rawSaveCommand =
-                  splitString(rawUserInput, ' ');
-
-               // Converting the rawUserInput into all uppercase
-               std::transform(rawUserInput.begin(), rawUserInput.end(),
-                  rawUserInput.begin(), ::toupper);
-
-               // Splitting up rawUserInput based on delimiter (spaces)
-               std::vector<std::string> rawCommand =
-                  splitString(rawUserInput, ' ');
-
-               std::string command = "";
-               if (rawCommand.size() > 0)
-               {
-                  command = rawCommand[0];
-               }
-
-               // placing a tile
-               if (command == PLACE && rawCommand.size() == 4 &&
-                   rawCommand[2] == "AT")
-               {
-                  validInput = placeTileCommand(rawCommand, i);
-               }
-               // replacing a tile
-               else if (command == REPLACE && rawCommand.size() == 2)
-               {
-                  validInput = replaceTileCommand(rawCommand, i);
-               }
-               // saving the game
-               else if (command == SAVE)
-               {
-                  saveGameCommand(rawCommand, rawSaveCommand, i);
-               }
-               // providing help text
-               else if (command == HELP)
-               {
-                  helpCommand();
-               }
-               // quitting the game
-               else if (command == QUITGAME)
-               {
-                  validInput  = true;
-                  gameRunning = false;
-                  printQuitMessage();
-               }
-               // eof character
-               else if (std::cin.eof())
-               {
-                  std::cout << std::endl;
-                  validInput  = true;
-                  gameRunning = false;
-               }
-               // incorrectly formatted command
-               else
-               {
-                  throw std::invalid_argument(
-                     "The command you typed was incorrect. Please use the "
-                     "'help' command for more information.");
-               }
+               validInput = parseUserInput(gameRunning, i);
             }
-            catch (std::invalid_argument& e)
+            else
             {
-               std::cout << e.what() << std::endl;
+               playBestMove(players[i]);
+               validInput = true;
             }
-
             // checking if the current player's hand is empty. if both are true,
             // then the game is over!
             if (players[i]->isEmptyHand())
@@ -312,7 +247,7 @@ void Game::printGameState(Player* player)
    }
    std::cout << std::endl;
    std::cout << "Your hand is" << std::endl;
-   std::cout << player->getHand() << std::endl;
+   std::cout << player->getHandStr() << std::endl;
 }
 
 bool Game::saveGame(Player* player, std::string saveFileName)
@@ -326,7 +261,7 @@ bool Game::saveGame(Player* player, std::string saveFileName)
       {
          saveFile << players[i]->getName() << std::endl;
          saveFile << players[i]->getScore() << std::endl;
-         saveFile << players[i]->getHand() << std::endl;
+         saveFile << players[i]->getHandStr() << std::endl;
       }
       saveFile << board->getDimCols() << "," << board->getDimRows()
                << std::endl;
@@ -372,12 +307,6 @@ bool Game::isValidName(std::string name, int currNameIndex)
       }
    }
 
-   // for (int i = 0; i < numPlayers; i++)
-   // {
-   //    std::cout << players[i]->getName() << std::endl;
-   // }
-
-   // int size = players.size();
    if (currNameIndex > 1 && isValid)
    {
       for (int i = 0; i < currNameIndex; i++)
@@ -519,22 +448,8 @@ bool Game::placeTileCommand(std::vector<std::string> rawCommand, int currPlayer)
          }
          else
          {
-            int verticalScore = board->calculateScoreVertical(coordX, coordY);
-            int horizontalScore =
-               board->calculateScoreHorizontal(coordX, coordY);
-
-            players[currPlayer]->addScore(verticalScore);
-            players[currPlayer]->addScore(horizontalScore);
-
-            // If qwirkle or double qwirkle
-            if (verticalScore == 12 && horizontalScore == 12)
-            {
-               std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
-            }
-            else if (verticalScore == 12 || horizontalScore == 12)
-            {
-               std::cout << "QWIRKLE!!!" << std::endl;
-            }
+            int score = board->calculateScore(coordX, coordY);
+            players[currPlayer]->addScore(score);
          }
 
          players[currPlayer]->drawTile();
@@ -659,4 +574,179 @@ void Game::finaliseGame(int currPlayer)
    {
       std::cout << winner->getName() << " won!" << std::endl;
    }
+}
+
+bool Game::parseUserInput(bool& gameRunning, int currentPlayerIndex)
+{
+   std::string rawUserInput = "";
+   bool validInput          = false;
+
+   try
+   {
+      std::cout << std::endl;
+      std::cout << "> ";
+      getline(std::cin, rawUserInput);
+
+      // Splitting up rawUserInput based on delimiter (spaces)
+      // This specific splitString() is for case-sensitive save files
+      std::vector<std::string> rawSaveCommand = splitString(rawUserInput, ' ');
+
+      // Converting the rawUserInput into all uppercase
+      std::transform(rawUserInput.begin(), rawUserInput.end(),
+         rawUserInput.begin(), ::toupper);
+
+      // Splitting up rawUserInput based on delimiter (spaces)
+      std::vector<std::string> rawCommand = splitString(rawUserInput, ' ');
+
+      std::string command = "";
+      if (rawCommand.size() > 0)
+      {
+         command = rawCommand[0];
+      }
+
+      // placing a tile
+      if (command == PLACE && rawCommand.size() == 4 && rawCommand[2] == "AT")
+      {
+         validInput = placeTileCommand(rawCommand, currentPlayerIndex);
+      }
+      // replacing a tile
+      else if (command == REPLACE && rawCommand.size() == 2)
+      {
+         validInput = replaceTileCommand(rawCommand, currentPlayerIndex);
+      }
+      // saving the game
+      else if (command == SAVE)
+      {
+         saveGameCommand(rawCommand, rawSaveCommand, currentPlayerIndex);
+      }
+      // providing help text
+      else if (command == HELP)
+      {
+         helpCommand();
+      }
+      // quitting the game
+      else if (command == QUITGAME)
+      {
+         validInput  = true;
+         gameRunning = false;
+         printQuitMessage();
+      }
+      // eof character
+      else if (std::cin.eof())
+      {
+         std::cout << std::endl;
+         validInput  = true;
+         gameRunning = false;
+      }
+      // incorrectly formatted command
+      else
+      {
+         throw std::invalid_argument(
+            "The command you typed was incorrect. Please use the "
+            "'help' command for more information.");
+      }
+   }
+   catch (std::invalid_argument& e)
+   {
+      std::cout << e.what() << std::endl;
+   }
+
+   return validInput;
+}
+
+bool Game::isAIName(std::string playerName)
+{
+   bool isAIName        = false;
+   int playerNameLength = playerName.length();
+   int aiTagLength      = std::string(AI_NAMETAG).length();
+   // if the length of the player name is greater than the ai tag (" AI")
+   if (playerNameLength > aiTagLength)
+   {
+      // if the player name ends with " AI"
+      if (playerName.substr(playerNameLength - aiTagLength, aiTagLength)
+             .compare(AI_NAMETAG) == 0)
+      {
+         isAIName = true;
+      }
+   }
+
+   return isAIName;
+}
+
+bool Game::playBestMove(Player* player)
+{
+   bool hasPlayedMove = false;
+   // declare variables to store values of the best move
+   int highestScorePossible = 0;
+   Tile* highestTile        = nullptr;
+   int highestColPosition   = 0;
+   int highestRowPosition   = 0;
+   int highestTileIndex     = 0;
+
+   // every space on the board (across and then down)
+   for (int col = 0; col < board->getDimCols() && !hasPlayedMove; col++)
+   {
+      for (int row = 0; row < board->getDimRows() && !hasPlayedMove; row++)
+      {
+         // every tile in current player's hand
+         for (int i = 0; i < player->getHand()->getSize() && !hasPlayedMove;
+              i++)
+         {
+            // get the tile at the index of the iteration
+            Tile* iterationTile = player->getHand()->getTileAtIndex(i);
+
+            // if tile can be placed at the current location on the board
+            if (board->getTilesOnBoard()[row][col] == nullptr &&
+                board->hasAdjacent(col, row) &&
+                board->canPlaceHorizontal(iterationTile, col, row) &&
+                board->canPlaceVertical(iterationTile, col, row))
+            {
+               // calculate score of move and check if it is higher than highest
+               int score = board->calculateScore(col, row);
+               std::cout << iterationTile->toString() << " AT "
+                         << static_cast<char>(row + 65) << col << " FOR "
+                         << score << " POINTS" << std::endl;
+               if (score > highestScorePossible)
+               {
+                  // if it is the best move yet, set the variables to store
+                  // this location and tile
+                  highestTile        = iterationTile;
+                  highestColPosition = col;
+                  highestRowPosition = row;
+                  highestTileIndex   = i;
+               }
+            }
+         }
+      }
+   }
+
+   if (board->placeTile(highestTile, highestColPosition, highestRowPosition))
+   {
+      player->getHand()->grab(highestTileIndex);
+      int score = board->calculateScore(highestColPosition, highestRowPosition);
+      player->addScore(score);
+      player->drawTile();
+      hasPlayedMove = true;
+      std::cout << "PLACING TILE " << highestTile->toString() << " AT "
+                << static_cast<char>(highestRowPosition + 65)
+                << highestColPosition << std::endl;
+   }
+   else
+   {
+      std::cout << " BLKAJSDKLASJDL KSAJDLKAS JLDKJ ASLKDJ ASLKDJ ALSK JDLAKS"
+                << std::endl
+                << std::endl
+                << std::endl
+                << std::endl
+                << std::endl
+                << std::endl
+                << std::endl;
+      player->addToHand(highestTile);
+   }
+   // check score
+   // if score is the highest so far
+   // set highest tile
+   // if no tile is found
+   // replace first tile
+   return hasPlayedMove;
 }

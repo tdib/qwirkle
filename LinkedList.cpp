@@ -169,3 +169,45 @@ int LinkedList::findTileIndex(std::string tileString)
 
    return tileIndex;
 }
+
+int LinkedList::getSize()
+{
+   int nodeCount  = 0;
+   Node* tempNode = nullptr;
+
+   if (head != nullptr)
+   {
+      tempNode = head;
+      nodeCount++;
+      while (tempNode->next != nullptr)
+      {
+         tempNode = tempNode->next;
+         nodeCount++;
+      }
+   }
+
+   return nodeCount;
+}
+
+Tile* LinkedList::getTileAtIndex(int tileIndex)
+{
+   Tile* tempTile  = nullptr;
+   Node* tempNode  = nullptr;
+   int nodeCounter = 0;
+
+   if (head != nullptr)
+   {
+      tempNode = head;
+      while (tempNode != nullptr)
+      {
+         if (nodeCounter == tileIndex)
+         {
+            tempTile = tempNode->tile;
+         }
+         tempNode = tempNode->next;
+         nodeCounter++;
+      }
+   }
+
+   return tempTile;
+}

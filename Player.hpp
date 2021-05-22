@@ -21,7 +21,7 @@ public:
    void setName(std::string newName);
    int getScore();
    std::string getName();
-   std::string getHand();
+   std::string getHandStr();
    void setHand(std::string newHand);
    void addScore(int score);
    bool isEmptyHand();
@@ -32,8 +32,11 @@ public:
    // Used to return a tile to the hand (if a valid tile is selected but can't
    // be placed)
    void addToHand(Tile* tile);
+
+   // INDIVIDUAL
    void setAIStatus(bool AIStatus);
    bool getAIStatus();
+   LinkedList* getHand();
 
 private:
    Bag* bag;
@@ -41,6 +44,8 @@ private:
    LinkedList* hand;
    std::string name;
    int score;
+
+   // INDIVIDUAL
    bool AIStatus;
 };
 

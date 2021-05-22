@@ -21,6 +21,10 @@ public:
    // Returns -1 otherwise
    int findTileIndex(std::string tileString);
 
+   // INDIVIDUAL
+   int getSize();
+   Tile* getTileAtIndex(int tileIndex);
+
 private:
    Node* head;
    Node* tail;
