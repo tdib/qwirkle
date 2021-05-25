@@ -22,7 +22,7 @@ public:
    void setName(std::string newName);
    int getScore();
    std::string getName();
-   std::string getHandStr();
+   std::string getHandStr(bool colourPrinting);
    void setHand(std::string newHand);
    void addScore(int score);
    bool isEmptyHand();

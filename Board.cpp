@@ -108,7 +108,7 @@ Board::~Board()
    }
 }
 
-void Board::printBoard()
+void Board::printBoard(bool colourPrinting)
 {
    std::cout << "   ";
 
@@ -127,8 +127,7 @@ void Board::printBoard()
    std::cout << std::endl;
    std::cout << "  ";
 
-   // Static 79 for the 26x26 board
-   for (int i = 0; i < 79; i++)
+   for (int i = 0; i <= dimCols * 3; i++)
    {
       std::cout << "-";
    }
@@ -150,7 +149,14 @@ void Board::printBoard()
          }
          else
          {
-            tilesOnBoard[row][col]->printTile();
+            if (colourPrinting)
+            {
+               tilesOnBoard[row][col]->printTileColour();
+            }
+            else
+            {
+               tilesOnBoard[row][col]->printTile();
+            }
          }
          std::cout << "|";
       }
@@ -163,8 +169,7 @@ void Board::printBoard()
 
    std::cout << "  ";
 
-   // Static 79 for the 26x26 board
-   for (int i = 0; i < 79; i++)
+   for (int i = 0; i <= dimCols * 3; i++)
    {
       std::cout << "-";
    }
@@ -501,24 +506,6 @@ int Board::getDimCols()
 int Board::getDimRows()
 {
    return dimRows;
-}
-
-int Board::calculateScore(int col, int row)
-{
-   int verticalScore   = calculateScoreVertical(col, row);
-   int horizontalScore = calculateScoreHorizontal(col, row);
-
-   // If qwirkle or double qwirkle
-   if (verticalScore == 12 && horizontalScore == 12)
-   {
-      std::cout << "DOUBLE QWIRKLE!!!!" << std::endl;
-   }
-   else if (verticalScore == 12 || horizontalScore == 12)
-   {
-      std::cout << "QWIRKLE!!!" << std::endl;
-   }
-
-   return verticalScore + horizontalScore;
 }
 
 std::vector<std::vector<Tile*>> Board::getTilesOnBoard()

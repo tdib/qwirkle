@@ -16,7 +16,7 @@ public:
    // Grabs a tile from a specific index in the LinkedList
    Tile* grab(int index);
    bool isEmpty();
-   std::string getContents();
+   std::string getContents(bool colourPrinting);
    // Returns the index of the first matching tile in the LinkedList (if any).
    // Returns -1 otherwise
    int findTileIndex(std::string tileString);

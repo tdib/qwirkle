@@ -94,5 +94,5 @@ LinkedList* Bag::getTilesInBag()
 
 std::string Bag::saveBag()
 {
-   return tilesInBag->getContents();
+   return tilesInBag->getContents(false);
 }

@@ -1,6 +1,8 @@
 #ifndef ASSIGN2_TILE_H
 #define ASSIGN2_TILE_H
 
+#include "TileCodes.hpp"
+
 #include <iostream>
 #include <string>
 
@@ -16,6 +18,10 @@ public:
    Tile(Shape shape, Colour colour);
    std::string toString();
    void printTile();
+
+   // INDIVIDUAL - used for printing in colour instead of white
+   std::string toStringColour();
+   void printTileColour();
 
 private:
    Shape shape;

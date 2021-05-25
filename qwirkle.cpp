@@ -22,8 +22,9 @@ int main(int argc, char* argv[])
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
    std::cout << std::endl;
-   bool loopAgain = true;
-   std::string input;
+   bool loopAgain      = true;
+   std::string input   = "";
+   bool colourPrinting = false;
    printMenu();
    while (loopAgain == true)
    {
@@ -40,7 +41,8 @@ int main(int argc, char* argv[])
 
             // Create a game. Takes in the number of players
             // which is calculated by getNumPlayers()
-            Game* game = new Game(getNumPlayers());
+            // TODO
+            Game* game = new Game(getNumPlayers(), colourPrinting);
             for (int i = 0; i < argc; i++)
             {
                // convert c-style string to lowercase std::string
@@ -110,6 +112,21 @@ int main(int argc, char* argv[])
             printCredits();
             printMenu();
          }
+         else if (input == TOGGLE_COLOUR)
+         {
+            if (colourPrinting)
+            {
+               colourPrinting = false;
+               std::cout << "The colours of the tiles have been turned off."
+                         << std::endl;
+            }
+            else
+            {
+               colourPrinting = true;
+               std::cout << "The colours of the tiles will now be shown."
+                         << std::endl;
+            }
+         }
          else if (input == QUIT)
          {
             printQuitMessage();
@@ -154,7 +171,8 @@ void printMenu()
    std::cout << "1. New Game" << std::endl;
    std::cout << "2. Load Game" << std::endl;
    std::cout << "3. Credits (Show student information)" << std::endl;
-   std::cout << "4. Quit" << std::endl;
+   std::cout << "4. Toggle tile colours" << std::endl;
+   std::cout << "5. Quit" << std::endl;
    std::cout << std::endl;
 }
 

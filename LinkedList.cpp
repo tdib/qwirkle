@@ -124,7 +124,7 @@ bool LinkedList::isEmpty()
    return head == nullptr;
 }
 
-std::string LinkedList::getContents()
+std::string LinkedList::getContents(bool colourPrinting)
 {
    std::string contents = "";
 
@@ -135,7 +135,15 @@ std::string LinkedList::getContents()
       {
          contents += ',';
       }
-      contents += currentNode->tile->toString();
+
+      if (colourPrinting)
+      {
+         contents += currentNode->tile->toStringColour();
+      }
+      else
+      {
+         contents += currentNode->tile->toString();
+      }
       currentNode = currentNode->next;
    }
 

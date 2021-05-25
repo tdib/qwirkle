@@ -15,7 +15,7 @@ public:
    Board();
    Board(int dimX, int dimY, std::string boardState);
    ~Board();
-   void printBoard();
+   void printBoard(bool colourPrinting);
    bool placeTile(Tile* tileToPlace, int x, int y);
    bool isFirstTile();
    int calculateScoreHorizontal(int coordX, int coordY);
@@ -29,9 +29,6 @@ public:
    bool canPlaceVertical(Tile* tileToPlace, int x, int y);
    bool hasAdjacent(int x, int y);
    std::vector<std::vector<Tile*>> getTilesOnBoard();
-
-   // INDIVIDUAL
-   int calculateScore(int col, int row);
 
 private:
    std::vector<std::vector<Tile*>> tilesOnBoard;

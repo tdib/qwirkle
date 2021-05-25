@@ -16,7 +16,7 @@
 class Game
 {
 public:
-   Game(int numPlayers);
+   Game(int numPlayers, bool printingColours);
    Game(std::ifstream& savedGame);
    ~Game();
    void playGame();
@@ -53,11 +53,12 @@ private:
    // used for AI players to execute their turn
    bool playBestMove(Player* player);
    // used for providing a hint to a player, will print the lowest scored move
-   void printWorstMove(Player* player);
+   void printHint(Player* player);
    bool parseUserInput(bool& gameRunning, int currentPlayerIndex);
    bool customSaveGame(Player* player, std::string saveFileName);
 
    bool AIMode;
+   bool colourPrinting;
 };
 
 #endif // ASSIGN2_GAME_H

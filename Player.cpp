@@ -134,9 +134,9 @@ int Player::getScore()
    return this->score;
 }
 
-std::string Player::getHandStr()
+std::string Player::getHandStr(bool colourPrinting)
 {
-   return hand->getContents();
+   return hand->getContents(colourPrinting);
 }
 
 bool Player::isEmptyHand()
