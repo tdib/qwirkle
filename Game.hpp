@@ -16,8 +16,8 @@
 class Game
 {
 public:
-   Game(int numPlayers, bool printingColours);
-   Game(std::ifstream& savedGame);
+   Game(int numPlayers, bool colourPrinting);
+   Game(std::ifstream& savedGame, bool colourPrinting);
    ~Game();
    void playGame();
    int getColFromCoordinate(std::string coordinate);
@@ -45,7 +45,8 @@ private:
    void saveGameCommand(std::vector<std::string> rawCommand,
       std::vector<std::string> rawSaveCommand, int currPlayer);
    void helpCommand();
-   void finaliseGame(int currPlayer);
+   // void finaliseGame(int currPlayer);
+   void finaliseGame(Player* player);
 
    // INDIVIDUAL
    // check if the player name ends in " AI", indicating they are an AI player

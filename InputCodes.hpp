@@ -8,6 +8,10 @@
 #define SAVE     "SAVE"
 #define HELP     "HELP"
 #define HINT     "HINT"
+#define MENU     "MENU"
+// #define FORFEIT "FORFEIT"
+
+#define CANCEL "CANCEL"
 
 #define NEW_GAME      "1"
 #define LOAD_GAME     "2"

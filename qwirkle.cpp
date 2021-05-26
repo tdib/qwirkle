@@ -47,14 +47,13 @@ int main(void)
 
             // Create a game. Takes in the number of players
             // which is calculated by getNumPlayers()
-            // Game* game = new Game(getNumPlayers(), colourPrinting);
             game = new Game(getNumPlayers(), colourPrinting);
             game->playGame();
+            delete game;
             if (std::cin.eof())
             {
                printQuitMessage();
             }
-            delete game;
          }
          else if (input == LOAD_GAME)
          {
@@ -81,7 +80,7 @@ int main(void)
                   {
                      std::ifstream savedGame(fileName + ".save");
                      // Game* game = new Game(savedGame);
-                     game = new Game(savedGame);
+                     game = new Game(savedGame, colourPrinting);
                      game->playGame();
                      delete game;
                      loopFileNameAgain = false;
