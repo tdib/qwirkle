@@ -1,0 +1,13 @@
+1
+2
+CHE
+JOSHUA
+place P5 at E14
+place G5 at F14
+place Y5 at G14
+place R5 at H14
+place R1 at H15
+place R2 at H16
+replace P1
+place B5 at D14
+save 7-savegame-static
