@@ -15,44 +15,40 @@ void printStudent(std::string name, std::string id);
 void printQuitMessage();
 bool isValidFile(std::string fileName);
 bool isNumeric(std::string str);
-int getNumPlayers();
 
-int main(int argc, char* argv[])
+// INDIVIDUAL
+// get count of players (2-4)
+int getNumPlayers();
+// determines if the game will be printed in colour or white
+bool colourPrinting;
+Game* game;
+
+int main(void)
 {
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
    std::cout << std::endl;
-   bool loopAgain      = true;
-   std::string input   = "";
-   bool colourPrinting = false;
-   printMenu();
+   bool loopAgain    = true;
+   std::string input = "";
+   colourPrinting    = false;
    while (loopAgain == true)
    {
+      printMenu();
       std::cout << "> ";
       try
       {
          std::getline(std::cin, input);
          if (input == NEW_GAME)
          {
-            loopAgain = false;
+            // loopAgain = false;
             std::cout << std::endl;
             std::cout << "Starting a New Game" << std::endl;
             std::cout << std::endl;
 
             // Create a game. Takes in the number of players
             // which is calculated by getNumPlayers()
-            // TODO
-            Game* game = new Game(getNumPlayers(), colourPrinting);
-            for (int i = 0; i < argc; i++)
-            {
-               // convert c-style string to lowercase std::string
-               std::string arg(argv[i]);
-               std::transform(arg.begin(), arg.end(), arg.begin(), ::tolower);
-               if (arg == "--ai")
-               {
-                  game->setAIMode(true);
-               }
-            }
+            // Game* game = new Game(getNumPlayers(), colourPrinting);
+            game = new Game(getNumPlayers(), colourPrinting);
             game->playGame();
             if (std::cin.eof())
             {
@@ -62,7 +58,7 @@ int main(int argc, char* argv[])
          }
          else if (input == LOAD_GAME)
          {
-            loopAgain            = false;
+            // loopAgain            = false;
             std::string fileName = "";
             std::cout << std::endl;
             std::cout << "Enter the filename from which to load a game"
@@ -84,7 +80,8 @@ int main(int argc, char* argv[])
                   else if (isValidFile(fileName))
                   {
                      std::ifstream savedGame(fileName + ".save");
-                     Game* game = new Game(savedGame);
+                     // Game* game = new Game(savedGame);
+                     game = new Game(savedGame);
                      game->playGame();
                      delete game;
                      loopFileNameAgain = false;
@@ -110,7 +107,12 @@ int main(int argc, char* argv[])
          {
             std::cout << std::endl;
             printCredits();
-            printMenu();
+            // printMenu();
+         }
+         else if (input == QUIT)
+         {
+            printQuitMessage();
+            loopAgain = false;
          }
          else if (input == TOGGLE_COLOUR)
          {
@@ -118,19 +120,17 @@ int main(int argc, char* argv[])
             {
                colourPrinting = false;
                std::cout << "The colours of the tiles have been turned off."
+                         << std::endl
                          << std::endl;
             }
             else
             {
                colourPrinting = true;
                std::cout << "The colours of the tiles will now be shown."
+                         << std::endl
                          << std::endl;
             }
-         }
-         else if (input == QUIT)
-         {
-            printQuitMessage();
-            loopAgain = false;
+            // printMenu();
          }
          else if (std::cin.eof())
          {
@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
          else
          {
             throw std::invalid_argument(
-               "Please select a valid option (1-4 inclusive).");
+               "Please select a valid option (1-5 inclusive).");
          }
       }
       catch (std::invalid_argument& e)
@@ -149,6 +149,7 @@ int main(int argc, char* argv[])
          std::cout << e.what() << std::endl;
       }
    }
+   // delete game;
    return EXIT_SUCCESS;
 }
 
@@ -171,19 +172,27 @@ void printMenu()
    std::cout << "1. New Game" << std::endl;
    std::cout << "2. Load Game" << std::endl;
    std::cout << "3. Credits (Show student information)" << std::endl;
-   std::cout << "4. Toggle tile colours" << std::endl;
-   std::cout << "5. Quit" << std::endl;
+   std::cout << "4. Quit" << std::endl;
+   std::cout << "5. Toggle tile colours";
+   if (colourPrinting)
+   {
+      std::cout << " [ON]" << std::endl;
+   }
+   else
+   {
+      std::cout << " [OFF]" << std::endl;
+   }
    std::cout << std::endl;
 }
 
 void printCredits()
 {
-   std::cout << "----------------------------------" << std::endl;
+   std::cout << "----------------------------------" << std::endl << std::endl;
    printStudent("Martin Krisnanto Putra", "3608646");
    printStudent("Riley James Gozzard", "3811315");
    printStudent("Ryan Iem", "3700995");
    printStudent("Thomas Joseph Dib", "3838765");
-   std::cout << "----------------------------------" << std::endl;
+   std::cout << "----------------------------------" << std::endl << std::endl;
 }
 
 void printStudent(std::string name, std::string id)
@@ -219,6 +228,7 @@ int getNumPlayers()
    std::string numPlayersStr = "";
    int numPlayers            = 0;
    bool isValidNumber        = false;
+   bool eofChar              = false;
    std::cout << "How many players are playing?" << std::endl;
    do
    {
@@ -239,6 +249,11 @@ int getNumPlayers()
                   "Please choose a number between 2-4 (inclusive).");
             }
          }
+         else if (std::cin.eof())
+         {
+            eofChar = true;
+            printQuitMessage();
+         }
          else
          {
             throw std::invalid_argument("Please enter an integer value.");
@@ -248,7 +263,7 @@ int getNumPlayers()
       {
          std::cerr << e.what() << '\n';
       }
-   } while (!isNumeric(numPlayersStr) || !isValidNumber);
+   } while ((!isNumeric(numPlayersStr) || !isValidNumber) && (!eofChar));
 
    return numPlayers;
 }

@@ -97,6 +97,7 @@ Board::~Board()
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
    {
+      // int colSize = tilesOnBoard[row].size();
       int colSize = tilesOnBoard[row].size();
       for (int col = 0; col < colSize; col++)
       {

@@ -64,6 +64,9 @@ Game::Game(std::ifstream& savedGame)
    }
    else
    {
+      // coloured printing was not a part of the original design so we disable
+      colourPrinting = false;
+
       // 2 is the default player count
       this->numPlayers = 2;
       players          = new Player*[2];
@@ -155,8 +158,8 @@ Game::~Game()
    }
    delete[] players;
 
-   delete bag;
    delete board;
+   delete bag;
 }
 
 void Game::initalisePlayers()
@@ -171,7 +174,8 @@ void Game::initalisePlayers()
 
       while (validName == false && !std::cin.eof())
       {
-         std::cout << "Enter a name for player " << i + 1
+         std::cout << std::endl
+                   << "Enter a name for player " << i + 1
                    << " (uppercase characters only)" << std::endl;
          std::cout << "> ";
 
@@ -188,7 +192,7 @@ void Game::initalisePlayers()
                else
                {
                   throw std::invalid_argument("Please type a valid name with "
-                                              "uppercase characters only\n");
+                                              "uppercase characters only");
                }
             }
             catch (std::invalid_argument& e)
@@ -203,7 +207,8 @@ void Game::initalisePlayers()
       }
 
       players[i] = new Player();
-      // players.push_back(new Player());
+      std::transform(
+         playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       if (isAIName(playerName))
       {
          AIMode = true;
@@ -213,8 +218,6 @@ void Game::initalisePlayers()
             0, playerName.length() - std::string(AI_NAMETAG).length());
          playerName = playerName + " (AI)";
       }
-      // std::transform(
-      // playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       players[i]->setName(playerName);
       players[i]->setBoard(this->board);
       players[i]->setBag(this->bag);
@@ -370,7 +373,8 @@ bool Game::isValidName(std::string name, int currNameIndex)
    // check every character in the name for a lowercase
    for (int i = 0; i < length && isValid; i++)
    {
-      if (!isupper(name[i]) && name[i] != ' ')
+      // if (!isupper(name[i]) && name[i] != ' ')
+      if (!isalnum(name[i]) && name[i] != ' ')
       {
          isValid = false;
       }
@@ -585,7 +589,6 @@ void Game::saveGameCommand(std::vector<std::string> rawCommand,
    if (rawCommand.size() == 2)
    {
       std::string saveFileName = rawSaveCommand[1];
-      // TODO
       if (numPlayers != 2 || colourPrinting || AIMode)
       {
          if (customSaveGame(players[currPlayer], saveFileName))
@@ -664,11 +667,12 @@ void Game::finaliseGame(int currPlayer)
    if (!isDraw)
    {
       std::cout << winner->getName() << " won with a score of "
-                << winner->getScore() << "!" << std::endl;
+                << winner->getScore() << "!" << std::endl
+                << std::endl;
    }
    else
    {
-      std::cout << "It's a draw!" << std::endl;
+      std::cout << "It's a draw!" << std::endl << std::endl;
    }
 }
 
@@ -786,6 +790,7 @@ bool Game::playBestMove(Player* player)
    int highestColPosition   = 0;
    int highestRowPosition   = 0;
    int highestTileIndex     = 0;
+   Tile* iterationTile      = nullptr;
 
    // if ai is making the first move
    if (board->isFirstTile())
@@ -794,22 +799,22 @@ bool Game::playBestMove(Player* player)
       srand(time(0));
       int randRow = std::rand() % board->getDimRows();
       int randCol = std::rand() % board->getDimCols();
-      board->placeTile(player->getHand()->getTileAtIndex(0), randCol, randRow);
+      board->placeTile(player->getHand()->grab(0), randCol, randRow);
    }
    else
    {
-      // every space on the board (across and then down)
-      for (int col = 0; col < board->getDimCols() && !hasPlayedMove; col++)
+      // every tile in current player's hand
+      for (int i = 0; i < player->getHand()->getSize() && !hasPlayedMove; i++)
       {
-         for (int row = 0; row < board->getDimRows() && !hasPlayedMove; row++)
-         {
-            // every tile in current player's hand
-            for (int i = 0; i < player->getHand()->getSize() && !hasPlayedMove;
-                 i++)
-            {
-               // get the tile at the index of the iteration
-               Tile* iterationTile = player->getHand()->getTileAtIndex(i);
+         // get the tile at the index of the iteration
+         iterationTile = player->getHand()->getTileAtIndex(i);
 
+         // every space on the board (across and then down)
+         for (int col = 0; col < board->getDimCols() && !hasPlayedMove; col++)
+         {
+            for (int row = 0; row < board->getDimRows() && !hasPlayedMove;
+                 row++)
+            {
                // if tile can be placed at the current location on the board
                if (board->getTilesOnBoard()[row][col] == nullptr &&
                    board->hasAdjacent(col, row) &&
@@ -822,20 +827,10 @@ bool Game::playBestMove(Player* player)
                   int horizontalScore =
                      board->calculateScoreHorizontal(col, row);
                   int score = verticalScore + horizontalScore;
-                  // std::cout << iterationTile->toString() << " AT "
-                  //           << static_cast<char>(row + 65) << col << " FOR "
-                  //           << score << " POINTS" << std::endl;
                   if (score > highestScorePossible)
                   {
-                     // std::cout << "SCORE : " << score
-                     //           << " - HIGHEST : " << highestScorePossible
-                     //           << std::endl;
                      // if it is the best move yet, set the variables to store
                      // this location and tile
-                     // std::cout << iterationTile->toString() << " AT "
-                     //           << static_cast<char>(row + 65) << col << " FOR
-                     //           "
-                     //           << score << " IS THE HIGHEST" << std::endl;
                      highestScorePossible = score;
                      highestTile          = iterationTile;
                      highestColPosition   = col;
@@ -859,11 +854,8 @@ bool Game::playBestMove(Player* player)
          player->addScore(score);
          player->drawTile();
          hasPlayedMove = true;
-         // std::cout << "PLACING TILE " << highestTile->toString() << " AT "
-         //           << static_cast<char>(highestRowPosition + 65)
-         //           << highestColPosition << std::endl;
       }
-      // if the
+      // if there is no tile found to be placed
       else
       {
          // replace first tile in hand
@@ -934,7 +926,7 @@ void Game::printHint(Player* player)
 
       if (isPossibleMove)
       {
-         std::cout << "Psst! You could play tile " << lowestTile->toString()
+         std::cout << "Psst! You could place tile " << lowestTile->toString()
                    << " at " << static_cast<char>(lowestRowPosition + 65)
                    << lowestColPosition << "!" << std::endl;
       }
