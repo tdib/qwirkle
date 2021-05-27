@@ -3,12 +3,11 @@
 Board::Board()
 {
    this->loadingFromSave = false;
-   // X (Cols)
-   this->dimCols = 26;
-   // Y (Rows)
-   this->dimRows = 26;
+   this->dimCols         = MAX_COLS;
+   this->dimRows         = MAX_ROWS;
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
 
+   // initialise entire board to nullptrs
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
    {
@@ -23,16 +22,15 @@ Board::Board()
 Board::Board(int dimCols, int dimRows, std::string boardState)
 {
    this->loadingFromSave = true;
-   // X (Cols)
-   this->dimCols = dimCols;
-   // Y (Rows)
-   this->dimRows = dimRows;
+   this->dimCols         = dimCols;
+   this->dimRows         = dimRows;
    this->tilesOnBoard.resize(dimRows, std::vector<Tile*>(dimCols, 0));
    std::stringstream boardTiles(boardState);
 
    // iterate through boardstate
    while (boardTiles.good())
    {
+      // parse board information (e.g. B1@A0) to tile and location
       Tile* tileToPlace          = nullptr;
       std::string tileToPlaceStr = "";
       std::getline(boardTiles, tileToPlaceStr, '@');
@@ -41,9 +39,9 @@ Board::Board(int dimCols, int dimRows, std::string boardState)
       toConvert.push_back(tileToPlaceStr[1]);
       Shape tileShape = atoi(toConvert.c_str());
 
+      // check if tile is valid and create a tile object for it
       Colour colours[] = {RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE};
       Shape shapes[]   = {CIRCLE, STAR_4, DIAMOND, SQUARE, STAR_6, CLOVER};
-      // check if tile is valid
       for (Colour colour : colours)
       {
          for (Shape shape : shapes)
@@ -97,7 +95,6 @@ Board::~Board()
    int rowSize = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
    {
-      // int colSize = tilesOnBoard[row].size();
       int colSize = tilesOnBoard[row].size();
       for (int col = 0; col < colSize; col++)
       {
@@ -111,8 +108,10 @@ Board::~Board()
 
 void Board::printBoard(bool colourPrinting)
 {
+   // print initial padding
    std::cout << "   ";
 
+   // print column numbers
    for (int i = 0; i < dimCols; i++)
    {
       if (i >= 10)
@@ -125,22 +124,23 @@ void Board::printBoard(bool colourPrinting)
       }
    }
 
+   // padding for second line
    std::cout << std::endl;
    std::cout << "  ";
 
+   // print top edge of board
    for (int i = 0; i <= dimCols * 3; i++)
    {
-      std::cout << "-";
+      std::cout << TOP_BOTTOM_EDGE;
    }
-
    std::cout << std::endl;
 
-   // Used to output the respective row character on the board
-   char c      = 'A';
-   int rowSize = tilesOnBoard.size();
+   // used to output the respective row character on the board
+   char rowChar = FIRST_BOARD_CHAR;
+   int rowSize  = tilesOnBoard.size();
    for (int row = 0; row < rowSize; row++)
    {
-      std::cout << c << " |";
+      std::cout << rowChar << " " << LEFT_RIGHT_EDGE;
       int colSize = tilesOnBoard[row].size();
       for (int col = 0; col < colSize; col++)
       {
@@ -150,6 +150,7 @@ void Board::printBoard(bool colourPrinting)
          }
          else
          {
+            // print each tile on the board (in colour or white)
             if (colourPrinting)
             {
                tilesOnBoard[row][col]->printTileColour();
@@ -159,22 +160,23 @@ void Board::printBoard(bool colourPrinting)
                tilesOnBoard[row][col]->printTile();
             }
          }
-         std::cout << "|";
+         std::cout << LEFT_RIGHT_EDGE;
       }
 
       std::cout << std::endl;
 
-      // Increment the row character
-      c++;
+      // increment the row character
+      rowChar++;
    }
 
+   // print padding for last line (bottom edge)
    std::cout << "  ";
 
+   // print bottom edge
    for (int i = 0; i <= dimCols * 3; i++)
    {
-      std::cout << "-";
+      std::cout << TOP_BOTTOM_EDGE;
    }
-
    std::cout << std::endl;
 }
 
@@ -398,17 +400,17 @@ bool Board::hasAdjacent(int x, int y)
       success = true;
    }
    // right
-   if (x < dimCols - 1 && tilesOnBoard[y][x + 1] != nullptr)
+   else if (x < dimCols - 1 && tilesOnBoard[y][x + 1] != nullptr)
    {
       success = true;
    }
    // up
-   if (y > 0 && tilesOnBoard[y - 1][x] != nullptr)
+   else if (y > 0 && tilesOnBoard[y - 1][x] != nullptr)
    {
       success = true;
    }
    // down
-   if (y < dimRows - 1 && tilesOnBoard[y + 1][x] != nullptr)
+   else if (y < dimRows - 1 && tilesOnBoard[y + 1][x] != nullptr)
    {
       success = true;
    }
@@ -418,10 +420,11 @@ bool Board::hasAdjacent(int x, int y)
 
 bool Board::isFirstTile()
 {
+   // check every tile for a non nullptr (meaning something has been placed)
    bool firstTile = true;
-   for (int y = 0; y < dimRows; y++)
+   for (int y = 0; y < dimRows && firstTile; y++)
    {
-      for (int x = 0; x < dimCols; x++)
+      for (int x = 0; x < dimCols && firstTile; x++)
       {
          if (tilesOnBoard[y][x] != nullptr)
          {
@@ -442,6 +445,7 @@ bool Board::placeTile(Tile* tileToPlace, int x, int y)
       {
          if (!loadingFromSave)
          {
+            // if tile can be placed at x, y, place it
             if ((hasAdjacent(x, y) && canPlaceHorizontal(tileToPlace, x, y) &&
                    canPlaceVertical(tileToPlace, x, y)) ||
                 isFirstTile())
@@ -450,6 +454,7 @@ bool Board::placeTile(Tile* tileToPlace, int x, int y)
                success            = true;
             }
          }
+         // tile is loading from save, no validation (it does not require it)
          else
          {
             tilesOnBoard[y][x] = tileToPlace;
@@ -466,6 +471,7 @@ std::string Board::saveBoard()
    std::string boardState = "";
    int rowSize            = tilesOnBoard.size();
    bool matchingTile      = false;
+   // iterate through locations on the board and add them to a string
    for (int row = 0; row < rowSize; row++)
    {
       int colSize = tilesOnBoard[row].size();
@@ -473,23 +479,23 @@ std::string Board::saveBoard()
       {
          if (tilesOnBoard[row][col] != nullptr)
          {
-            // Converting row into alphbetical
-            char c = 'A';
+            // converting row into alphbetical
+            char rowChar = FIRST_BOARD_CHAR;
             for (int i = 0; i < rowSize; i++)
             {
                if (i == row)
                {
                   matchingTile = true;
                   boardState.append(tilesOnBoard[row][col]->toString() + "@" +
-                                    c + std::to_string(col) + ", ");
+                                    rowChar + std::to_string(col) + ", ");
                }
-               c++;
+               rowChar++;
             }
          }
       }
    }
 
-   // Removes the extra ", " from the end of the board state in save files
+   // removes the extra ", " from the end of the board state in save files
    if (matchingTile)
    {
       int size = boardState.size();

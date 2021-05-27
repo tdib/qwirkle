@@ -28,7 +28,6 @@ Player::~Player()
    {
       delete hand->pop();
    }
-
    delete hand;
 }
 

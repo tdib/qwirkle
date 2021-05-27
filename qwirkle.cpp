@@ -9,139 +9,99 @@
 #define MIN_PLAYERS 2
 #define MAX_PLAYERS 4
 
+// print the menu options
 void printMenu();
+// print the student credits
 void printCredits();
+// utility method - used to format a student name and id
 void printStudent(std::string name, std::string id);
+// say goodbye to the user
 void printQuitMessage();
+// check if a given file exists and can be accessed
 bool isValidFile(std::string fileName);
+// check if given input is a numeric value
 bool isNumeric(std::string str);
 
 // INDIVIDUAL
+
 // get count of players (2-4)
 int getNumPlayers();
+// function for beginning a new game
+void newGameCommand();
+// function for getting a save file name from the user
+bool loadGameCommand();
+// toggle whether tiles are shown in colour or not and inform the user
+void toggleTileColour();
 // determines if the game will be printed in colour or white
 bool colourPrinting;
+// now placed here due to returning to the menu
 Game* game;
+// determines if the player has attempted to terminate the game
+bool hasQuit;
 
 int main(void)
 {
+   // print intro text
    std::cout << "Welcome to Qwirkle!" << std::endl;
    std::cout << "-------------------" << std::endl;
    std::cout << std::endl;
-   bool loopAgain    = true;
+
+   // loop until the user has quit or an eof character is detected
    std::string input = "";
+   hasQuit           = false;
    colourPrinting    = false;
-   bool hasQuit      = false;
-   while (loopAgain == true && !hasQuit)
+   while (!hasQuit)
    {
-      printMenu();
-      std::cout << "> ";
       try
       {
+         // print menu and prompt for user input
+         printMenu();
+         std::cout << "> ";
          std::getline(std::cin, input);
+
+         // user presses 1 to begin new game
          if (input == NEW_GAME)
          {
-            std::cout << std::endl;
-            std::cout << "Starting a New Game" << std::endl;
-            std::cout << std::endl;
-
-            // Create a game. Takes in the number of players
-            // which is calculated by getNumPlayers()
-            game = new Game(getNumPlayers(), colourPrinting);
-            game->playGame(hasQuit);
-            delete game;
-            if (std::cin.eof())
-            {
-               printQuitMessage();
-               loopAgain = false;
-            }
+            newGameCommand();
          }
+         // user presses 2 to load game
          else if (input == LOAD_GAME)
          {
-            std::string fileName = "";
-            std::cout << std::endl;
-            std::cout << "Enter the filename from which to load a game"
-                      << std::endl;
-
-            bool loopFileNameAgain = true;
-            while (loopFileNameAgain == true)
+            input          = "";
+            bool loopAgain = true;
+            while (loopAgain == true)
             {
-               std::cout << "> ";
-               try
-               {
-                  std::getline(std::cin, fileName);
-                  if (std::cin.eof())
-                  {
-                     loopFileNameAgain = false;
-                     std::cout << std::endl;
-                     printQuitMessage();
-                  }
-                  else if (isValidFile(fileName))
-                  {
-                     std::ifstream savedGame(fileName + ".save");
-                     // Game* game = new Game(savedGame);
-                     game = new Game(savedGame, colourPrinting);
-                     game->playGame(hasQuit);
-                     delete game;
-                     loopFileNameAgain = false;
-
-                     if (std::cin.eof())
-                     {
-                        printQuitMessage();
-                        loopAgain = false;
-                     }
-                  }
-                  else
-                  {
-                     throw std::invalid_argument(
-                        "Please enter a relative path to a file");
-                  }
-               }
-               catch (std::invalid_argument& e)
-               {
-                  std::cerr << e.what() << '\n';
-               }
+               loopAgain = loadGameCommand();
             }
          }
+         // user presses 3 to display student credits
          else if (input == CREDITS)
          {
             std::cout << std::endl;
             printCredits();
-            // printMenu();
          }
+         // user presses 4 to quit the game
          else if (input == QUIT)
          {
-            loopAgain = false;
+            hasQuit = true;
             printQuitMessage();
          }
+         // user presses 5 to toggle whether tile colours are displayed or not
          else if (input == TOGGLE_COLOUR)
          {
-            if (colourPrinting)
-            {
-               colourPrinting = false;
-               std::cout << "The colours of the tiles have been turned off."
-                         << std::endl
-                         << std::endl;
-            }
-            else
-            {
-               colourPrinting = true;
-               std::cout << "The colours of the tiles will now be shown."
-                         << std::endl
-                         << std::endl;
-            }
-            // printMenu();
+            toggleTileColour();
          }
+         // end of file character detected
          else if (std::cin.eof())
          {
-            loopAgain = false;
+            hasQuit = true;
             std::cout << std::endl;
             printQuitMessage();
          }
          else
          {
             throw std::invalid_argument(
-               "Please select a valid option (1-5 inclusive).");
+               "Please select a valid option (1-5 inclusive).\n");
          }
       }
       catch (std::invalid_argument& e)
@@ -235,7 +195,7 @@ int getNumPlayers()
       std::getline(std::cin, numPlayersStr);
       try
       {
-         // if user input consists of only integers
+         // make sure user input consists of only integers
          if (isNumeric(numPlayersStr) && numPlayersStr.length() > 0)
          {
             // convert string to integer and validate the number of players
@@ -248,11 +208,13 @@ int getNumPlayers()
                   "Please choose a number between 2-4 (inclusive).");
             }
          }
+         // eof character detected
          else if (std::cin.eof())
          {
             eofChar = true;
             printQuitMessage();
          }
+         // non integer value
          else
          {
             throw std::invalid_argument("Please enter an integer value.");
@@ -260,9 +222,106 @@ int getNumPlayers()
       }
       catch (const std::invalid_argument& e)
       {
-         std::cerr << e.what() << '\n';
+         std::cout << e.what() << std::endl;
       }
    } while ((!isNumeric(numPlayersStr) || !isValidNumber) && (!eofChar));
 
    return numPlayers;
+}
+
+void newGameCommand()
+{
+   std::cout << std::endl;
+   std::cout << "Starting a New Game" << std::endl;
+   std::cout << std::endl;
+
+   // create a game, takes in the number of players which is calculated
+   // by getNumPlayers(), and whether colour is enabled
+   game    = new Game(getNumPlayers(), colourPrinting);
+   hasQuit = game->playGame();
+   delete game;
+   // if an eof character is detected - say goodbye and close game
+   if (std::cin.eof())
+   {
+      printQuitMessage();
+      hasQuit = true;
+   }
+}
+
+bool loadGameCommand()
+{
+   std::string userInput = "";
+   std::cout << std::endl;
+   std::cout << "Enter the filename from which to load a game" << std::endl;
+
+   // loop until a proper file is received
+   bool loopAgain = true;
+   try
+   {
+      std::cout << "> ";
+      std::getline(std::cin, userInput);
+      if (std::cin.eof())
+      {
+         hasQuit   = true;
+         loopAgain = false;
+         std::cout << std::endl;
+         printQuitMessage();
+      }
+      // check if entered file exists
+      else if (isValidFile(userInput))
+      {
+         // load into game
+         std::ifstream savedGame(userInput + ".save");
+         game      = new Game(savedGame, colourPrinting);
+         loopAgain = false;
+         hasQuit   = game->playGame();
+         delete game;
+
+         if (std::cin.eof())
+         {
+            printQuitMessage();
+            hasQuit = true;
+         }
+      }
+      // if the entered file does not exist
+      else
+      {
+         // check if the user input was cancel
+         std::transform(
+            userInput.begin(), userInput.end(), userInput.begin(), ::toupper);
+         if (userInput == CANCEL)
+         {
+            // stop prompting user for input (return to menu)
+            loopAgain = false;
+            std::cout << std::endl;
+         }
+         // entered file does not exist and input was not cancel
+         else
+         {
+            throw std::invalid_argument(
+               "Please enter a relative path to a file");
+         }
+      }
+   }
+   catch (std::invalid_argument& e)
+   {
+      std::cout << e.what() << std::endl;
+   }
+   return loopAgain;
+}
+
+void toggleTileColour()
+{
+   // toggle tile colour (^ is an xor)
+   colourPrinting = colourPrinting ^ true;
+   if (!colourPrinting)
+   {
+      std::cout << "The colours of the tiles have been turned off." << std::endl
+                << std::endl;
+   }
+   else
+   {
+      std::cout << "The colours of the tiles will now be shown." << std::endl
+                << std::endl;
+   }
 }
