@@ -10,4 +10,4 @@ place R1 at H15
 place R2 at H16
 replace P1
 place B5 at D14
-save 7-savegame-static
+save 7-static-savegame
