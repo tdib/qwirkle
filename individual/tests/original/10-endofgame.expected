@@ -157,3 +157,15 @@ Game over!!
 Score for ONE: 10
 Score for TWO: 2
 ONE won with a score of 10!
+
+Menu
+----
+1. New Game
+2. Load Game
+3. Credits (Show student information)
+4. Quit
+5. Toggle tile colours [OFF]
+
+> 
+
+Goodbye

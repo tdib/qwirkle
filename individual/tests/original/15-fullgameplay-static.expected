@@ -13,8 +13,10 @@ Menu
 Starting a New Game
 
 How many players are playing?
-> Enter a name for player 1 (uppercase characters only)
-> Enter a name for player 2 (uppercase characters only)
+> 
+Enter a name for player 1
+> 
+Enter a name for player 2
 > 
 Let's Play!
 
@@ -2982,3 +2984,15 @@ Game over!!
 Score for ALICE: 130
 Score for BOB: 139
 BOB won with a score of 139!
+
+Menu
+----
+1. New Game
+2. Load Game
+3. Credits (Show student information)
+4. Quit
+5. Toggle tile colours [OFF]
+
+> 
+
+Goodbye

@@ -49,12 +49,21 @@ X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  
 Y |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 Z |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
   -------------------------------------------------------------------------------
-JOHN, it's your turn
-Score for JOHN: 0
-Score for FRED: 0
+TOM, it's your turn
+Score for TOM: 0
+Score for JERRY: 0
 
 Your hand is
 P5,B4,R3,P1,Y5,P4
+
+> You may use the following (case insensitive) commands.
+-----------------------------------------------
+Placing a tile:     place <tile> at <location>
+Replacing a tile:   replace <tile>
+Getting a hint:     hint
+Saving the game:    save <filename or relative filepath>
+Returning to menu:  menu
+Quitting the game:  quit
 
 > 
 
