@@ -14,10 +14,8 @@ A strange game. The only winning move is not to play.
   <s3838765@student.rmit.edu.au>
 
 ## Tests
-Tests (`.input` files) are designed to be executed from the tests/ folder.
-Make sure to use `cd tests/` before using these tests as the savegame files
-are relative to this directory. For example:
+Tests (`.input` files) are designed to be executed from the respective tests/ folder. If you would like to run the original tests (from the group submission), make sure to use `cd original/tests/` before using these tests as the savegame files are relative to this directory. For example:
 `cd tests`, `../qwirkle < 1-newgame-static.input`
-will execute the first test.
+will execute the first test. Executing the tests for the individual portion can be done in a similar manner, by changing directory to `individual/tests/`.
 
 Any tests labelled with static should use a static seed (meaning the generated tiles will be scrambled in the same order). This can be changed within the `bag.cpp` file in the `scrambleTiles()` method. By default, tiles will be randomly scrambled, however if the scrambling should be static, the line consisting of a `std::default_random_engine` should be uncommented, and the seed that has been used within the static tests is the integer 1. Any value besides this will not work.
