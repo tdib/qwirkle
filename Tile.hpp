@@ -16,11 +16,16 @@ class Tile
 {
 public:
    Tile(Shape shape, Colour colour);
+   // return a string for the given tile (e.g. B6)
    std::string toString();
+   // print a tile in white (e.g. B6)
    void printTile();
 
-   // INDIVIDUAL - used for printing in colour instead of white
+   // INDIVIDUAL
+
+   // return a string for the given tile (e.g B6)
    std::string toStringColour();
+   // print a tile (e.g. B6) in colour instead of white
    void printTileColour();
 
 private:
