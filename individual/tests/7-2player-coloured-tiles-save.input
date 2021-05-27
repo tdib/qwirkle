@@ -1,3 +1,4 @@
+5
 1
 2
 ALICE
@@ -7,4 +8,4 @@ place r5 at b0
 place p5 at a0
 place r2 at c1
 place p2 at c2
-save ../saves/no-enhancements
+save 7-2player-coloured-tiles-save

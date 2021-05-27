@@ -1,13 +1,10 @@
 1
 4
 alice
-ALICE
+BOB
 bob
-BOB
-BOB
 charlie
 CHARLIE
-dave
 DAVE
 place p1 at d3
 place p6 at d2
@@ -20,4 +17,4 @@ place p6 at e3
 place p5 at e4
 place r5 at f4
 place p1 at e5
-save 9-4player-no-enhancements
+save 10-4player-no-enhancements-save
