@@ -30,11 +30,6 @@ Game::Game(std::ifstream& savedGame, bool colourPrinting)
    getline(savedGame, firstLine);
    if (firstLine == "#myFormat")
    {
-      // TODO
-      // std::string colourPrintingStr = "";
-      // getline(savedGame, colourPrintingStr);
-      // this->colourPrinting = colourPrintingStr == "1";
-
       std::string numPlayersStr = "";
       getline(savedGame, numPlayersStr);
       this->numPlayers = std::stoi(numPlayersStr);
@@ -65,9 +60,6 @@ Game::Game(std::ifstream& savedGame, bool colourPrinting)
    }
    else
    {
-      // coloured printing was not a part of the original design so we disable
-      // colourPrinting = false;
-
       // 2 is the default player count
       this->numPlayers = 2;
       players          = new Player*[2];
@@ -181,6 +173,8 @@ void Game::initalisePlayers()
          std::cout << "> ";
 
          std::getline(std::cin, playerName);
+         std::transform(playerName.begin(), playerName.end(),
+            playerName.begin(), ::toupper);
 
          if (!std::cin.eof())
          {
@@ -192,8 +186,8 @@ void Game::initalisePlayers()
                }
                else
                {
-                  throw std::invalid_argument("Please type a valid name with "
-                                              "uppercase characters only");
+                  throw std::invalid_argument(
+                     "Please type a valid name with no special characters");
                }
             }
             catch (std::invalid_argument& e)
@@ -208,8 +202,6 @@ void Game::initalisePlayers()
       }
 
       players[i] = new Player();
-      std::transform(
-         playerName.begin(), playerName.end(), playerName.begin(), ::toupper);
       if (isAIName(playerName))
       {
          AIMode = true;
@@ -371,7 +363,7 @@ bool Game::isValidName(std::string name, int currNameIndex)
       isValid = false;
    }
 
-   // check every character in the name for a lowercase
+   // check every character in the name for any invalid characters
    for (int i = 0; i < length && isValid; i++)
    {
       // TODO
@@ -382,7 +374,7 @@ bool Game::isValidName(std::string name, int currNameIndex)
       }
    }
 
-   if (currNameIndex > 0 && isValid)
+   if (isValid && currNameIndex > 0)
    {
       for (int i = 0; i < currNameIndex; i++)
       {
@@ -633,6 +625,7 @@ void Game::helpCommand()
    std::cout << "Saving the game:    save <filename or relative "
                 "filepath>"
              << std::endl;
+   std::cout << "Returning to menu:  menu" << std::endl;
    std::cout << "Quitting the game:  quit" << std::endl;
 }
 
@@ -793,14 +786,14 @@ bool Game::isAIName(std::string playerName)
 
 bool Game::playBestMove(Player* player)
 {
-   bool hasPlayedMove = false;
+   bool hasPlayedMove  = false;
+   Tile* iterationTile = nullptr;
    // declare variables to store values of the best move
    int highestScorePossible = 0;
    Tile* highestTile        = nullptr;
    int highestColPosition   = 0;
    int highestRowPosition   = 0;
    int highestTileIndex     = 0;
-   Tile* iterationTile      = nullptr;
 
    // if ai is making the first move
    if (board->isFirstTile())

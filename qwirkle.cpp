@@ -53,6 +53,7 @@ int main(void)
             if (std::cin.eof())
             {
                printQuitMessage();
+               loopAgain = false;
             }
          }
          else if (input == LOAD_GAME)
