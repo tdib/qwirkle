@@ -57,6 +57,7 @@ Replacing a tile:   replace <tile>
 Getting a hint:     hint
 Saving the game:    save <filename or relative filepath>
 Returning to menu:  menu
+Forfeiting:         forfeit
 Quitting the game:  quit
 
 > 
