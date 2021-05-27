@@ -19,7 +19,7 @@ public:
    Game(int numPlayers, bool colourPrinting);
    Game(std::ifstream& savedGame, bool colourPrinting);
    ~Game();
-   void playGame();
+   void playGame(bool& hasQuit);
    int getColFromCoordinate(std::string coordinate);
    int getRowFromCoordinate(std::string coordinate);
    void setAIMode(bool AIMode);
@@ -55,7 +55,8 @@ private:
    bool playBestMove(Player* player);
    // used for providing a hint to a player, will print the lowest scored move
    void printHint(Player* player);
-   bool parseUserInput(bool& gameRunning, int currentPlayerIndex);
+   bool parseUserInput(
+      bool& gameRunning, bool& hasQuit, int currentPlayerIndex);
    bool customSaveGame(Player* player, std::string saveFileName);
 
    bool AIMode;

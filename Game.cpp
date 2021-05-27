@@ -228,7 +228,7 @@ void Game::initalisePlayers()
    }
 }
 
-void Game::playGame()
+void Game::playGame(bool& hasQuit)
 {
    bool gameRunning = true;
    while (!std::cin.eof() && gameRunning == true)
@@ -253,7 +253,7 @@ void Game::playGame()
          {
             if (players[i]->getAIStatus() == false)
             {
-               validInput = parseUserInput(gameRunning, i);
+               validInput = parseUserInput(gameRunning, hasQuit, i);
             }
             else
             {
@@ -673,7 +673,8 @@ void Game::finaliseGame(Player* player)
    }
 }
 
-bool Game::parseUserInput(bool& gameRunning, int currentPlayerIndex)
+bool Game::parseUserInput(
+   bool& gameRunning, bool& hasQuit, int currentPlayerIndex)
 {
    std::string rawUserInput = "";
    bool validInput          = false;
@@ -735,6 +736,7 @@ bool Game::parseUserInput(bool& gameRunning, int currentPlayerIndex)
       {
          validInput  = true;
          gameRunning = false;
+         hasQuit     = true;
          printQuitMessage();
       }
       // eof character

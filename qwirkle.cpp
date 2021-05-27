@@ -31,7 +31,8 @@ int main(void)
    bool loopAgain    = true;
    std::string input = "";
    colourPrinting    = false;
-   while (loopAgain == true)
+   bool hasQuit      = false;
+   while (loopAgain == true && !hasQuit)
    {
       printMenu();
       std::cout << "> ";
@@ -40,7 +41,6 @@ int main(void)
          std::getline(std::cin, input);
          if (input == NEW_GAME)
          {
-            // loopAgain = false;
             std::cout << std::endl;
             std::cout << "Starting a New Game" << std::endl;
             std::cout << std::endl;
@@ -48,7 +48,7 @@ int main(void)
             // Create a game. Takes in the number of players
             // which is calculated by getNumPlayers()
             game = new Game(getNumPlayers(), colourPrinting);
-            game->playGame();
+            game->playGame(hasQuit);
             delete game;
             if (std::cin.eof())
             {
@@ -58,7 +58,6 @@ int main(void)
          }
          else if (input == LOAD_GAME)
          {
-            // loopAgain            = false;
             std::string fileName = "";
             std::cout << std::endl;
             std::cout << "Enter the filename from which to load a game"
@@ -82,13 +81,14 @@ int main(void)
                      std::ifstream savedGame(fileName + ".save");
                      // Game* game = new Game(savedGame);
                      game = new Game(savedGame, colourPrinting);
-                     game->playGame();
+                     game->playGame(hasQuit);
                      delete game;
                      loopFileNameAgain = false;
 
                      if (std::cin.eof())
                      {
                         printQuitMessage();
+                        loopAgain = false;
                      }
                   }
                   else
@@ -111,8 +111,8 @@ int main(void)
          }
          else if (input == QUIT)
          {
-            printQuitMessage();
             loopAgain = false;
+            printQuitMessage();
          }
          else if (input == TOGGLE_COLOUR)
          {
@@ -149,7 +149,6 @@ int main(void)
          std::cout << e.what() << std::endl;
       }
    }
-   // delete game;
    return EXIT_SUCCESS;
 }
 
