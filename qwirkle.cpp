@@ -312,8 +312,8 @@ bool loadGameCommand()
 
 void toggleTileColour()
 {
-   // toggle tile colour (^ is an xor)
-   colourPrinting = colourPrinting ^ true;
+   // toggle tile colour
+   colourPrinting = !colourPrinting;
    if (!colourPrinting)
    {
       std::cout << "The colours of the tiles have been turned off." << std::endl
